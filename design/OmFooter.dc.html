@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="padding:18px 40px;background:{{ th.bg }};border-top:1px solid {{ th.line }};font-size:12.5px;color:{{ th.dim }};display:flex;justify-content:space-between;align-items:center">
+  <span>Copyright 2026 Radosław Omelański</span>
+  <span style="display:flex;gap:20px">
+    <sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+      <span onMouseEnter="{{ it.enter }}" onMouseLeave="{{ it.leave }}" style="position:relative;padding-bottom:4px;color:{{ it.color }};cursor:pointer;transition:color .2s ease">
+        {{ it.label }}
+        <span style="position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform:scaleX({{ it.scale }});transform-origin:50% 50%;transition:transform .28s cubic-bezier(.22,.61,.36,1)"></span>
+      </span>
+    </sc-for>
+  </span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:60},&quot;isLight&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const NAV = ['Strona główna', 'Akty prawne', 'Oferta', 'RODO', 'Kontakt'];
+
+const THEMES = {
+  dark: { bg:'#0c1723', ink:'#f2f6fb', line:'rgba(242,246,251,.14)', dim:'rgba(242,246,251,.6)' },
+  light: { bg:'#ffffff', ink:'#12253d', line:'rgba(18,37,61,.15)', dim:'rgba(18,37,61,.74)' }
+};
+
+class Component extends DCLogic {
+  state = { hover: null };
+  renderVals() {
+    const th = THEMES[this.props.isLight ? 'light' : 'dark'];
+    return {
+      th,
+      items: NAV.map(label => ({
+        label,
+        color: this.state.hover === label ? th.ink : th.dim,
+        scale: this.state.hover === label ? 1 : 0,
+        enter: () => this.setState({ hover: label }),
+        leave: () => this.setState({ hover: null })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

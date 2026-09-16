@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 128" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">Zarządzanie Nieruchomościami – Radosław Omelański</title>
+  <style>
+    .grey { fill: #818181; }
+    .accent { fill: #009fe3; }
+    .win { fill: #fff; }
+    text { font-family: Barlow, "DIN Alternate", "Roboto Condensed", Arial, sans-serif; font-weight: 600; fill: #2d2d2d; }
+  </style>
+  <defs>
+    <g id="windows">
+      <rect x="6" y="22.75" width="5.5" height="5.5"/><rect x="17.75" y="22.75" width="5.5" height="5.5"/><rect x="29.5" y="22.75" width="5.5" height="5.5"/>
+      <rect x="6" y="34.25" width="5.5" height="5.5"/><rect x="17.75" y="34.25" width="5.5" height="5.5"/><rect x="29.5" y="34.25" width="5.5" height="5.5"/>
+    </g>
+  </defs>
+
+  <!-- budynki -->
+  <path class="grey" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z"/>
+  <path class="accent" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z"/>
+  <path class="grey" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z"/>
+  <g class="win">
+    <use href="#windows"/>
+    <use href="#windows" x="47"/>
+    <use href="#windows" x="94.25"/>
+  </g>
+
+  <!-- napisy -->
+  <text x="19.5" y="79.5" font-size="15" textLength="95.5" lengthAdjust="spacingAndGlyphs">ZARZĄDZANIE</text>
+  <text x="0.5" y="97" font-size="15" textLength="134" lengthAdjust="spacingAndGlyphs">NIERUCHOMOŚCIAMI</text>
+
+  <!-- pasek -->
+  <rect class="grey" x="0" y="103.75" width="40.5" height="6.25"/>
+  <rect class="accent" x="47" y="103.75" width="40.75" height="6.25"/>
+  <rect class="grey" x="94.25" y="103.75" width="40.5" height="6.25"/>
+
+  <text x="0.5" y="127.2" font-size="15.5" textLength="134" lengthAdjust="spacingAndGlyphs">Radosław Omelański</text>
+</svg>

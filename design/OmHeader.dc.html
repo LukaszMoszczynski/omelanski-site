@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="background:{{ th.surf }};border-bottom:1px solid {{ th.line }}">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 40px;font-size:12.5px;color:{{ th.mid }}">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:7px;height:7px;border-radius:50%;background:{{ accent }};animation:omPulse 2.2s ease-in-out infinite"></span>
+      <span style="font:500 12.5px 'JetBrains Mono',monospace;color:{{ accentText }};letter-spacing:.06em">AWARIA?</span>
+      <span style="font-family:'JetBrains Mono',monospace">112 · 998 · 992 · 993 · 994 · 991</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:22px">
+      <span style="cursor:pointer" style-hover="text-decoration:underline">tel. 518 629 878</span>
+      <span style="cursor:pointer" style-hover="text-decoration:underline">biuro@omelanska.com</span>
+      <span>pon.–pt. 8.00–16.00</span>
+      <div onClick="{{ toggleTheme }}" style="position:relative;display:flex;align-items:center;background:{{ th.wash }};border:1px solid {{ th.line }};border-radius:20px;padding:2px;cursor:pointer;user-select:none">
+        <span style="position:absolute;top:2px;left:2px;width:calc(50% - 2px);height:calc(100% - 4px);background:{{ accent }};border-radius:16px;transform:{{ knobShift }};transition:transform .28s cubic-bezier(.22,.61,.36,1)"></span>
+        <span style="position:relative;padding:4px 11px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.04em;color:{{ darkLabelColor }};transition:color .24s ease">CIEMNY</span>
+        <span style="position:relative;padding:4px 11px;font:600 11px 'JetBrains Mono',monospace;letter-spacing:.04em;color:{{ lightLabelColor }};transition:color .24s ease">JASNY</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 40px;background:{{ th.bg }};border-bottom:1px solid {{ th.line }}">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="width:44px;height:44px;border:1px solid {{ th.line }};background:repeating-linear-gradient(45deg,{{ th.washA }} 0 6px,{{ th.wash }} 6px 12px);display:grid;place-items:center;font:500 8px 'JetBrains Mono',monospace;color:{{ th.dim }}">logo</div>
+    <div>
+      <div style="font-weight:600;font-size:16.5px;letter-spacing:-.01em;color:{{ th.ink }}">Radosław Omelański</div>
+      <div style="font-size:12px;color:{{ th.dim }};letter-spacing:.05em;text-transform:uppercase">Zarządzanie Nieruchomościami</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:26px">
+    <nav style="display:flex;gap:22px;font-size:14.5px;font-weight:500">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+        <span onMouseEnter="{{ it.enter }}" onMouseLeave="{{ it.leave }}" style="position:relative;padding-bottom:5px;color:{{ it.color }};cursor:pointer;transition:color .2s ease">
+          {{ it.label }}
+          <span style="position:absolute;left:0;right:0;bottom:0;height:2px;background:{{ it.bar }};transform:scaleX({{ it.scale }});transform-origin:50% 50%;transition:transform .28s cubic-bezier(.22,.61,.36,1)"></span>
+        </span>
+      </sc-for>
+    </nav>
+    <div style="background:{{ accent }};color:{{ th.onAccent }};padding:11px 20px;border-radius:3px;font-size:14px;font-weight:600;cursor:pointer;transition:transform .2s cubic-bezier(.22,.61,.36,1),box-shadow .2s ease" style-hover="transform:translateY(-2px);box-shadow:0 8px 22px -8px rgba(0,0,0,.45)">E-kartoteka</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div style="padding:9px 18px;background:{{ th.surf }};display:flex;align-items:center;gap:8px;font:500 11.5px 'JetBrains Mono',monospace">
+    <span style="width:6px;height:6px;border-radius:50%;background:{{ accent }};animation:omPulse 2.2s ease-in-out infinite"></span>
+    <span style="color:{{ accentText }}">AWARIA?</span><span style="color:{{ th.dim }}">112 · 998 · 992 · 994</span>
+    <div onClick="{{ toggleTheme }}" style="position:relative;margin-left:auto;display:flex;align-items:center;background:{{ th.wash }};border:1px solid {{ th.line }};border-radius:18px;padding:2px;cursor:pointer;user-select:none">
+      <span style="position:absolute;top:2px;left:2px;width:calc(50% - 2px);height:calc(100% - 4px);background:{{ accent }};border-radius:14px;transform:{{ knobShift }};transition:transform .28s cubic-bezier(.22,.61,.36,1)"></span>
+      <span style="position:relative;padding:3px 9px;font:600 10px 'JetBrains Mono',monospace;color:{{ darkLabelColor }};transition:color .24s ease">CIEMNY</span>
+      <span style="position:relative;padding:3px 9px;font:600 10px 'JetBrains Mono',monospace;color:{{ lightLabelColor }};transition:color .24s ease">JASNY</span>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:{{ th.bg }};border-bottom:1px solid {{ th.line }}">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border:1px solid {{ th.line }};background:repeating-linear-gradient(45deg,{{ th.washA }} 0 5px,{{ th.wash }} 5px 10px)"></div>
+      <div>
+        <div style="font-weight:600;font-size:13.5px;color:{{ th.ink }}">Radosław Omelański</div>
+        <div style="font-size:9.5px;color:{{ th.dim }};letter-spacing:.05em;text-transform:uppercase">Zarządzanie Nieruchomościami</div>
+      </div>
+    </div>
+    <div onClick="{{ toggleMenu }}" style="width:38px;height:38px;display:grid;place-items:center;cursor:pointer">
+      <div style="position:relative;width:20px;height:14px">
+        <span style="position:absolute;left:0;top:0;width:20px;height:2px;background:{{ th.ink }};transform:{{ bar1 }};transition:transform .3s cubic-bezier(.22,.61,.36,1)"></span>
+        <span style="position:absolute;left:0;top:6px;width:20px;height:2px;background:{{ th.ink }};opacity:{{ bar2Opacity }};transform:{{ bar2 }};transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .2s ease"></span>
+        <span style="position:absolute;left:0;top:12px;width:20px;height:2px;background:{{ th.ink }};transform:{{ bar3 }};transition:transform .3s cubic-bezier(.22,.61,.36,1)"></span>
+      </div>
+    </div>
+  </div>
+  <div onClick="{{ toggleMenu }}" style="position:absolute;left:0;right:0;bottom:0;z-index:5;background:{{ th.surf }};border-top:1px solid {{ th.line }};border-radius:12px 12px 0 0;padding:20px 18px 24px;box-shadow:0 -18px 40px -12px {{ th.shadow }};transform:{{ sheetTransform }};opacity:{{ sheetOpacity }};transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .24s ease;cursor:pointer">
+    <div style="width:38px;height:4px;border-radius:2px;background:{{ th.line2 }};margin:0 auto 18px"></div>
+    <div style="display:grid;gap:2px;font-size:17px;font-weight:600;color:{{ th.ink }}">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+        <div style="padding:13px 0;border-bottom:1px solid {{ th.line }};color:{{ it.color }}">{{ it.label }}</div>
+      </sc-for>
+    </div>
+    <div style="margin-top:16px;background:{{ accent }};color:{{ th.onAccent }};padding:15px;border-radius:3px;text-align:center;font-weight:600;font-size:15px">E-kartoteka</div>
+  </div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:140},&quot;th&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2a5db0&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accentText&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2a5db0&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;isLight&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Strona główna&quot;,&quot;Akty prawne&quot;,&quot;Oferta&quot;,&quot;RODO&quot;,&quot;Kontakt&quot;],&quot;default&quot;:&quot;Strona główna&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;toggleTheme&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+const NAV = ['Strona główna', 'Akty prawne', 'Oferta', 'RODO', 'Kontakt'];
+
+// Zduplikowane celowo: dziecko wylicza motyw z prymitywu isLight, żeby przemalowało się
+// przy każdym przełączeniu, nie tylko przy zmianie tożsamości obiektu th.
+const THEMES = {
+  dark: { bg:'#0c1723', surf:'#12253d', surfHi:'#173254', ink:'#f2f6fb', onAccent:'#ffffff',
+    wash:'rgba(242,246,251,.05)', washA:'rgba(242,246,251,.1)', line:'rgba(242,246,251,.14)',
+    line2:'rgba(242,246,251,.3)', dim:'rgba(242,246,251,.6)', mid:'rgba(242,246,251,.72)',
+    body:'rgba(242,246,251,.85)', shadow:'rgba(0,0,0,.7)' },
+  light: { bg:'#ffffff', surf:'#f1f4f9', surfHi:'#e6ecf5', ink:'#12253d', onAccent:'#ffffff',
+    wash:'rgba(18,37,61,.05)', washA:'rgba(18,37,61,.1)', line:'rgba(18,37,61,.15)',
+    line2:'rgba(18,37,61,.3)', dim:'rgba(18,37,61,.74)', mid:'rgba(18,37,61,.82)',
+    body:'rgba(18,37,61,.9)', shadow:'rgba(18,37,61,.2)' }
+};
+
+class Component extends DCLogic {
+  state = { hover: null, open: false };
+  renderVals() {
+    const th = THEMES[this.props.isLight ? 'light' : 'dark'];
+    const active = this.props.active || 'Strona główna';
+    const open = this.state.open;
+    return {
+      th,
+      accent: this.props.accent ?? '#2a5db0',
+      accentText: this.props.accentText ?? this.props.accent ?? '#2a5db0',
+      isDesktop: !this.props.mobile,
+      isMobile: !!this.props.mobile,
+      toggleTheme: this.props.toggleTheme,
+      knobShift: this.props.isLight ? 'translateX(100%)' : 'translateX(0)',
+      darkLabelColor: this.props.isLight ? th.dim : th.onAccent,
+      lightLabelColor: this.props.isLight ? th.onAccent : th.dim,
+      items: NAV.map(label => {
+        const isActive = label === active;
+        const on = isActive || this.state.hover === label;
+        return {
+          label,
+          color: on ? th.ink : th.mid,
+          bar: isActive ? (this.props.accent ?? '#2a5db0') : th.ink,
+          scale: on ? 1 : 0,
+          enter: () => this.setState({ hover: label }),
+          leave: () => this.setState({ hover: null })
+        };
+      }),
+      toggleMenu: () => this.setState(s => ({ open: !s.open })),
+      bar1: open ? 'translateY(6px) rotate(45deg)' : 'none',
+      bar2: open ? 'scaleX(.3)' : 'none',
+      bar2Opacity: open ? 0 : 1,
+      bar3: open ? 'translateY(-6px) rotate(-45deg)' : 'none',
+      sheetTransform: open ? 'translateY(0)' : 'translateY(101%)',
+      sheetOpacity: open ? 1 : 0
+    };
+  }
+}
+</script>
+</body>
+</html>
