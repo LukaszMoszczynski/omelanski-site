@@ -1,0 +1,50 @@
+---
+import { CONTACT, EMERGENCY } from '../data/site';
+import { telHref } from '../lib/phone';
+import ThemeToggle from './ThemeToggle.astro';
+
+const numbers = EMERGENCY.filter((e) => e.topBar);
+---
+<div class="topbar">
+  <div class="wrap topbar__inner">
+    <p class="topbar__sos">
+      <span class="topbar__dot" aria-hidden="true"></span>
+      <span class="topbar__label">Awaria?</span>
+      {numbers.map((e) => (
+        <a
+          class:list={['topbar__num', { 'desktop-only': e.topBar === 'desktop' }]}
+          href={telHref(e.number)}
+          aria-label={`${e.label}: ${e.number}`}
+        >{e.number}</a>
+      ))}
+    </p>
+    <p class="topbar__contact desktop-only">
+      <a href={telHref(CONTACT.phone)}>tel. {CONTACT.phone}</a>
+      <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+      <span>{CONTACT.hoursShort}</span>
+    </p>
+    <ThemeToggle />
+  </div>
+</div>
+
+<style>
+  .topbar { background: var(--surf); border-bottom: 1px solid var(--line); color: var(--mid); }
+  .topbar__inner { display: flex; align-items: center; gap: 12px; padding-block: 7px; }
+  .topbar__sos { display: flex; align-items: center; flex-wrap: wrap; gap: 0 2px; font: 500 11.5px var(--font-mono); }
+  .topbar__dot { width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.2s ease-in-out infinite; }
+  .topbar__label { margin-right: 6px; color: var(--accent-text); letter-spacing: .06em; text-transform: uppercase; }
+  .topbar__num { display: inline-flex; align-items: center; min-height: 24px; min-width: 24px; padding-inline: 3px; color: var(--dim); text-decoration: none; }
+  .topbar__num:hover { color: var(--ink); text-decoration: underline; }
+  .topbar__num + .topbar__num::before { content: '·' / ''; margin-right: 6px; color: var(--dim); }
+  .topbar__contact { display: flex; gap: 22px; margin-left: auto; font-size: 12.5px; }
+  .topbar__contact a { color: inherit; text-decoration: none; }
+  .topbar__contact a:hover { text-decoration: underline; }
+  .topbar :global(.toggle) { margin-left: auto; }
+  @keyframes pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+  @media (min-width: 900px) {
+    .topbar__inner { padding-block: 10px; gap: 22px; }
+    .topbar__sos { font-size: 12.5px; }
+    .topbar__dot { width: 7px; height: 7px; }
+    .topbar :global(.toggle) { margin-left: 0; }
+  }
+</style>

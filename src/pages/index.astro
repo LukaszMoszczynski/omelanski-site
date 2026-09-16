@@ -1,5 +1,8 @@
 ---
-import { url } from '../lib/url';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { HERO } from '../data/content';
+import { PAGES } from '../data/pages';
 ---
-<html lang="pl"><head><meta charset="utf-8" /><title>Omelański</title></head>
-<body><a href={url('/')}>start</a></body></html>
+<BaseLayout page={PAGES.home}>
+  <section class="wrap"><h1 tabindex="-1">{HERO.title}</h1></section>
+</BaseLayout>

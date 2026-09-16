@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { PAGES } from '../data/pages';
+---
+<BaseLayout page={PAGES.acts}>
+  <PageIntro eyebrow="Podstawa prawna" title="Akty prawne" lead="Przepisy, na których opiera się administrowanie Wspólnotą Mieszkaniową. Każda pozycja prowadzi do aktualnego tekstu w Dzienniku Ustaw." />
+</BaseLayout>

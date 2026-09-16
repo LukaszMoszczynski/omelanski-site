@@ -1,0 +1,91 @@
+---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/700.css';
+import plexLatin400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
+import plexLatin600 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { fullTitle, type PageMeta } from '../data/pages';
+import { absoluteUrl, url } from '../lib/url';
+
+interface Props { page: PageMeta; noindex?: boolean }
+const { page, noindex = false } = Astro.props;
+const title = fullTitle(page);
+const canonical = absoluteUrl(page.path);
+const ogImage = absoluteUrl('/og.png');
+---
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={page.description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#0c1723" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={url('/favicon-32.png')} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <link rel="preload" href={plexLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexLatin600} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Radosław Omelański – Zarządzanie Nieruchomościami" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={page.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var theme = null;
+        try { theme = localStorage.getItem('theme'); } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        root.dataset.theme = theme;
+        document.addEventListener('astro:before-swap', function (event) {
+          event.newDocument.documentElement.dataset.theme = root.dataset.theme;
+        });
+      })();
+    </script>
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      // After client-side navigation move focus to the new page's h1.
+      // ClientRouter's built-in announcer reads the new title.
+      // `astro:after-swap` only fires on client navigation, so the initial load is never affected
+      // regardless of when this module runs.
+      let swapped = false;
+      document.addEventListener('astro:after-swap', () => { swapped = true; });
+      document.addEventListener('astro:page-load', () => {
+        if (!swapped) return;
+        swapped = false;
+        if (location.hash) return;
+        document.querySelector<HTMLElement>('main h1')?.focus({ preventScroll: true });
+      });
+    </script>
+  </body>
+</html>

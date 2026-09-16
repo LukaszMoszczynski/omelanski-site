@@ -1,0 +1,22 @@
+---
+interface Props { class?: string }
+const { class: className } = Astro.props;
+---
+<svg class:list={['logo', className]} viewBox="0 0 135 58" aria-hidden="true" focusable="false">
+  <path class="logo__grey" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z" />
+  <path class="logo__blue" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z" />
+  <path class="logo__grey" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z" />
+  {[0, 47, 94.25].map((x) => (
+    <g class="logo__win" transform={`translate(${x} 0)`}>
+      <rect x="6" y="22.75" width="5.5" height="5.5" /><rect x="17.75" y="22.75" width="5.5" height="5.5" /><rect x="29.5" y="22.75" width="5.5" height="5.5" />
+      <rect x="6" y="34.25" width="5.5" height="5.5" /><rect x="17.75" y="34.25" width="5.5" height="5.5" /><rect x="29.5" y="34.25" width="5.5" height="5.5" />
+    </g>
+  ))}
+</svg>
+
+<style>
+  .logo { display: block; height: auto; }
+  .logo__grey { fill: var(--logo-grey); }
+  .logo__blue { fill: var(--logo-blue); }
+  .logo__win { fill: var(--logo-window); }
+</style>

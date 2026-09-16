@@ -1,0 +1,57 @@
+---
+import { NAV } from '../data/pages';
+import { BUSINESS, EKARTOTEKA_URL } from '../data/site';
+import { url } from '../lib/url';
+import Logo from './Logo.astro';
+import MobileMenu from './MobileMenu.astro';
+import TopBar from './TopBar.astro';
+
+const current = Astro.url.pathname;
+---
+<header class="header">
+  <TopBar />
+  <div class="header__bar">
+    <div class="wrap header__inner">
+      <a class="brand" href={url('/')}>
+        <Logo class="brand__mark" />
+        <span class="brand__text">
+          <span class="brand__name">{BUSINESS.shortName}</span>
+          <span class="brand__tagline">{BUSINESS.tagline}</span>
+        </span>
+      </a>
+      <nav class="nav desktop-only" aria-label="Główna">
+        <ul>
+          {NAV.map((p) => (
+            <li><a href={url(p.path)} aria-current={url(p.path) === current ? 'page' : undefined}>{p.nav}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <a class="btn btn--primary desktop-only" href={EKARTOTEKA_URL}>E-kartoteka</a>
+      <MobileMenu current={current} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .header__bar { background: var(--bg); border-bottom: 1px solid var(--line); }
+  .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 26px; padding-block: 14px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
+  .brand :global(.brand__mark) { width: 48px; }
+  .brand__text { display: grid; }
+  .brand__name { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; }
+  .brand__tagline { font-size: 9.5px; color: var(--dim); letter-spacing: .05em; text-transform: uppercase; }
+  .nav { margin-left: auto; }
+  .nav ul { list-style: none; display: flex; gap: 22px; }
+  .nav a { position: relative; display: inline-block; padding-block: 4px 5px; color: var(--mid); font-size: 14.5px; font-weight: 500; text-decoration: none; transition: color .2s ease; }
+  .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink); transform: scaleX(0); transition: transform .28s var(--ease); }
+  .nav a:hover, .nav a[aria-current='page'] { color: var(--ink); }
+  .nav a:hover::after, .nav a[aria-current='page']::after { transform: scaleX(1); }
+  .nav a[aria-current='page']::after { background: var(--accent); }
+  @media (min-width: 900px) {
+    .header__inner { padding-block: 20px; }
+    .brand { gap: 14px; }
+    .brand :global(.brand__mark) { width: 64px; }
+    .brand__name { font-size: 16.5px; }
+    .brand__tagline { font-size: 12px; }
+  }
+</style>

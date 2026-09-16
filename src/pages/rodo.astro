@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { PAGES } from '../data/pages';
+---
+<BaseLayout page={PAGES.rodo}>
+  <PageIntro eyebrow="Ochrona danych osobowych" title="Klauzula informacyjna RODO" lead="Informacja o przetwarzaniu danych osobowych właścicieli lokali i mieszkańców nieruchomości administrowanych przez naszą firmę." />
+</BaseLayout>

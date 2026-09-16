@@ -1,0 +1,28 @@
+---
+interface Props { eyebrow: string; title: string; lead: string; subtitle?: string }
+const { eyebrow, title, lead, subtitle } = Astro.props;
+---
+<section class="intro">
+  <div class="wrap">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 tabindex="-1">{title}</h1>
+    {subtitle && <p class="intro__subtitle">{subtitle}</p>}
+    <p class="intro__lead">{lead}</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .intro { padding-block: 26px 20px; border-bottom: 1px solid var(--line); }
+  .eyebrow { margin-bottom: 12px; }
+  h1 { font-size: 30px; line-height: 1.12; letter-spacing: -.03em; margin-bottom: 12px; }
+  .intro__subtitle { font-size: 15px; font-weight: 600; line-height: 1.35; margin-bottom: 12px; }
+  .intro__lead { font-size: 14.5px; line-height: 1.55; color: var(--mid); max-width: 46em; }
+  @media (min-width: 900px) {
+    .intro { padding-block: 46px 36px; }
+    .eyebrow { margin-bottom: 14px; }
+    h1 { font-size: 40px; }
+    .intro__subtitle { font-size: 17px; margin-bottom: 14px; }
+    .intro__lead { font-size: 16px; line-height: 1.6; }
+  }
+</style>

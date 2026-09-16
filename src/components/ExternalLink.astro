@@ -1,0 +1,7 @@
+---
+interface Props { href: string; class?: string; newTab?: boolean }
+const { href, class: className, newTab = true } = Astro.props;
+---
+<a href={href} class={className} target={newTab ? '_blank' : undefined} rel={newTab ? 'noopener noreferrer' : undefined}>
+  <slot />{newTab && <span class="visually-hidden"> (otwiera się w nowej karcie)</span>}
+</a>
