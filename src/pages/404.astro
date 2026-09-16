@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { NAV } from '../data/pages';
+import { url } from '../lib/url';
+
+const page = {
+  path: '/404.html',
+  nav: '',
+  title: 'Nie znaleziono strony',
+  description: 'Strona o podanym adresie nie istnieje.',
+};
+---
+<BaseLayout page={page} noindex>
+  <PageIntro eyebrow="Błąd 404" title="Nie znaleziono strony" lead="Strona o podanym adresie nie istnieje lub została przeniesiona. Wybierz jedną z poniższych stron." />
+  <div class="wrap notfound">
+    <ul role="list">
+      {NAV.map((p) => <li><a class="btn btn--ghost" href={url(p.path)}>{p.nav}</a></li>)}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound { padding-block: 28px 56px; }
+  ul { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+</style>
