@@ -12,7 +12,9 @@ import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import JsonLd from '../components/JsonLd.astro';
 import { fullTitle, type PageMeta } from '../data/pages';
+import { breadcrumbJsonLd, businessJsonLd } from '../lib/jsonld';
 import { absoluteUrl, url } from '../lib/url';
 
 interface Props { page: PageMeta; noindex?: boolean }
@@ -20,6 +22,7 @@ const { page, noindex = false } = Astro.props;
 const title = fullTitle(page);
 const canonical = absoluteUrl(page.path);
 const ogImage = absoluteUrl('/og.png');
+const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
 ---
 <!doctype html>
 <html lang="pl">
@@ -64,6 +67,9 @@ const ogImage = absoluteUrl('/og.png');
       })();
     </script>
     <ClientRouter />
+    <JsonLd data={businessJsonLd(absoluteUrl)} />
+    {breadcrumb && <JsonLd data={breadcrumb} />}
+    <link rel="alternate" type="text/plain" href={url('/llms.txt')} title="llms.txt" />
     <slot name="head" />
   </head>
   <body>

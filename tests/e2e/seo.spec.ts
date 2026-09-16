@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { ROUTES } from './routes';
 
 test('404 page offers navigation and is noindex', async ({ page }) => {
   await page.goto('404.html');
@@ -33,4 +34,28 @@ test('build writes .htaccess files', () => {
   expect(root).toContain('ErrorDocument 404 /404.html');
   const assets = readFileSync('dist/_astro/.htaccess', 'utf8');
   expect(assets).toContain('immutable');
+});
+
+for (const route of ROUTES) {
+  test(`head metadata: /${route.path}`, async ({ page }) => {
+    await page.goto(route.path);
+    const canonical = `https://omelanska.com/${route.path}`;
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{50,}/);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanska.com/og.png');
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const parsed = blocks.map((b) => JSON.parse(b));
+    expect(parsed.some((d) => d['@type'] === 'RealEstateAgent')).toBe(true);
+    expect(parsed.some((d) => d['@type'] === 'BreadcrumbList')).toBe(route.path !== '');
+  });
+}
+
+test('llms.txt and llms-full.txt are served as UTF-8 text', async ({ request }) => {
+  for (const file of ['llms.txt', 'llms-full.txt']) {
+    const res = await request.get(file);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('text/plain');
+    expect(await res.text()).toContain('Radosław Omelański');
+  }
 });
