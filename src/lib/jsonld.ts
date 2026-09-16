@@ -1,4 +1,4 @@
-import { BUSINESS, CONTACT, EKARTOTEKA_URL, MAPS_URL } from '../data/site';
+import { BUSINESS, CONTACT, MAPS_URL } from '../data/site';
 import { telHref } from './phone';
 
 type Abs = (path: string) => string;
@@ -12,7 +12,7 @@ export function businessJsonLd(abs: Abs): Record<string, unknown> {
     '@id': `${abs('/')}#firma`,
     name: BUSINESS.name,
     url: abs('/'),
-    logo: abs('/favicon.svg'),
+    logo: abs('/apple-touch-icon.png'),
     image: abs('/og.png'),
     description:
       'Administrowanie, zarządzanie i rozliczanie Wspólnot Mieszkaniowych oraz Spółdzielni Mieszkaniowych w powiecie kamieńskim i gryfickim.',
@@ -39,7 +39,6 @@ export function businessJsonLd(abs: Abs): Record<string, unknown> {
         closes: '16:00',
       },
     ],
-    sameAs: [EKARTOTEKA_URL],
   };
 }
 

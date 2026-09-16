@@ -14,6 +14,8 @@ describe('businessJsonLd', () => {
     expect(data.faxNumber).toBe('+48913217878');
     expect(data.email).toBe('biuro@omelanska.com');
     expect(data.taxID).toBe('9860145783');
+    expect(data.logo).toBe('https://example.pl/apple-touch-icon.png');
+    expect(data.sameAs).toBeUndefined();
     expect(data.address).toMatchObject({
       '@type': 'PostalAddress',
       streetAddress: 'ul. Jedności Narodowej 1/4',
