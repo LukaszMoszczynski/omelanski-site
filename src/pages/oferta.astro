@@ -1,8 +1,62 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import NumberedList from '../components/NumberedList.astro';
 import PageIntro from '../components/PageIntro.astro';
+import { DUTIES } from '../data/duties';
 import { PAGES } from '../data/pages';
+import { CONTACT } from '../data/site';
+import { telHref } from '../lib/phone';
 ---
 <BaseLayout page={PAGES.offer}>
   <PageIntro eyebrow="Dla wspólnot i spółdzielni" title="Oferta" subtitle="Radosław Omelański Zarządzanie Nieruchomościami" lead="Poniższy zakres jest zakresem podstawowym. Modyfikujemy go indywidualnie na życzenie Wspólnoty — wystarczy telefon albo wiadomość na biuro@omelanska.com." />
+  {DUTIES.map((group, i) => (
+    <section class="duty" aria-labelledby={`offer-${group.id}`}>
+      <div class="wrap duty__grid">
+        <div>
+          <p class="duty__n">0{i + 1} — {group.label}</p>
+          <h2 id={`offer-${group.id}`}>{group.head}</h2>
+        </div>
+        <NumberedList items={group.items} />
+      </div>
+    </section>
+  ))}
+  <section class="talk" aria-labelledby="talk-title">
+    <div class="wrap talk__inner">
+      <div>
+        <h2 id="talk-title">Rozmowa o współpracy</h2>
+        <p>Przygotujemy ofertę dla Twojej Wspólnoty po zapoznaniu się z budynkiem i dokumentacją.</p>
+      </div>
+      <p class="talk__actions">
+        <a class="btn btn--primary" href={`mailto:${CONTACT.email}`}>Napisz do nas</a>
+        <a class="btn btn--ghost" href={telHref(CONTACT.phone)}>
+          <span class="mobile-only">Zadzwoń&nbsp;</span>{CONTACT.phone}
+        </a>
+      </p>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .duty { padding-block: 22px; border-bottom: 1px solid var(--line); }
+  .duty__grid { display: grid; gap: 14px; }
+  .duty__n { margin-bottom: 8px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
+  .duty h2 { font-size: 19px; line-height: 1.25; }
+  .talk { background: var(--surf); padding-block: 24px 28px; }
+  .talk__inner { display: grid; gap: 14px; }
+  .talk h2 { margin-bottom: 8px; font-size: 20px; }
+  .talk p { font-size: 14px; line-height: 1.55; color: var(--mid); }
+  .talk__actions { display: grid; gap: 9px; }
+  .talk__actions .btn { min-height: 50px; font-size: 14.5px; }
+  @media (min-width: 900px) {
+    .duty { padding-block: 36px; }
+    .duty__grid { grid-template-columns: .55fr 1.45fr; gap: 44px; }
+    .duty__n { margin-bottom: 10px; font-size: 11px; }
+    .duty h2 { font-size: 24px; line-height: 1.2; }
+    .talk { padding-block: 38px; }
+    .talk__inner { display: flex; justify-content: space-between; align-items: center; gap: 40px; }
+    .talk h2 { font-size: 26px; }
+    .talk p { font-size: 15px; }
+    .talk__actions { display: flex; gap: 10px; flex: none; }
+    .talk__actions .btn { padding: 14px 22px; font-size: 15px; }
+  }
+</style>

@@ -1,8 +1,99 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MapLink from '../components/MapLink.astro';
 import PageIntro from '../components/PageIntro.astro';
 import { PAGES } from '../data/pages';
+import { AFTER_HOURS, BUSINESS, CONTACT } from '../data/site';
+import { telHref } from '../lib/phone';
 ---
 <BaseLayout page={PAGES.contact}>
   <PageIntro eyebrow="Biuro w Kamieniu Pomorskim" title="Kontakt" lead="Sprawy bieżące najszybciej załatwimy telefonicznie w godzinach pracy biura. Awarie po godzinach — bezpośrednio do właściwego pogotowia." />
+  <div class="contact">
+    <section class="contact__main" aria-labelledby="fast-title">
+      <h2 id="fast-title">Najszybszy kontakt</h2>
+      <ul class="cards" role="list">
+        <li>
+          <a class="card card--primary" href={telHref(CONTACT.phone)}>
+            <span><span class="card__label">Telefon</span><span class="card__value">{CONTACT.phone}</span></span>
+            <span class="card__action">Zadzwoń <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href={`mailto:${CONTACT.email}`}>
+            <span><span class="card__label">E-mail</span><span class="card__value">{CONTACT.email}</span></span>
+            <span class="card__action card__action--accent">Napisz <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+        <li>
+          <a class="card" href={telHref(CONTACT.phoneFax)}>
+            <span><span class="card__label">Telefon / fax</span><span class="card__value">{CONTACT.phoneFax}</span></span>
+            <span class="card__hint">w godzinach pracy biura</span>
+          </a>
+        </li>
+      </ul>
+      <h2 class="after__title" id="after-title">Awaria po godzinach pracy biura</h2>
+      <ul class="after" role="list" aria-labelledby="after-title">
+        {AFTER_HOURS.map((a) => (
+          <li>
+            <a href={telHref(a.number)} aria-label={`${a.label}: ${a.number}`}>
+              <span>{a.label}</span><span class="after__num">{a.number}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+    <section class="contact__office" aria-labelledby="office-title">
+      <h2 id="office-title">Dane biura</h2>
+      <dl class="facts">
+        <div><dt>Adres</dt><dd>{BUSINESS.street}<br />{BUSINESS.postalCode} {BUSINESS.city}</dd></div>
+        <div><dt>Telefon</dt><dd>telefon/fax: {CONTACT.phoneFax}<br />tel.: {CONTACT.phone}</dd></div>
+        <div><dt>E-mail</dt><dd><a class="link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>
+        <div><dt>Godziny otwarcia</dt><dd>{CONTACT.hoursDays}<br /><strong>{CONTACT.hoursTime}</strong></dd></div>
+      </dl>
+      <MapLink height={230} />
+    </section>
+  </div>
 </BaseLayout>
+
+<style>
+  .contact__main, .contact__office { padding: 24px var(--gutter); }
+  .contact__office { background: var(--surf); border-top: 1px solid var(--line); }
+  h2 { margin-bottom: 16px; font-size: 20px; }
+  .cards { list-style: none; display: grid; gap: 9px; margin-bottom: 26px; }
+  .card { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 18px; background: var(--surf); border: 1px solid var(--line); border-radius: 3px; color: var(--ink); text-decoration: none; transition: transform .2s var(--ease), border-color .22s ease, box-shadow .2s ease; }
+  .card:hover { border-color: var(--accent-border); }
+  .card--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .card__label { display: block; margin-bottom: 5px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .card--primary .card__label { color: var(--on-accent); opacity: .85; }
+  .card__value { font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+  .card__action { flex: none; font-size: 14px; font-weight: 600; }
+  .card__action--accent { color: var(--accent-text); }
+  .card__hint { font-size: 13px; color: var(--dim); text-align: right; }
+  .after__title { margin-bottom: 14px; font-size: 18px; }
+  .after { list-style: none; font-size: 15px; line-height: 1.7; color: var(--body); }
+  .after li { border-top: 1px solid var(--line); }
+  .after li:last-child { border-bottom: 1px solid var(--line); }
+  .after a { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; color: inherit; text-decoration: none; }
+  .after a:hover .after__num { text-decoration: underline; }
+  .after__num { font: 500 14px var(--font-mono); color: var(--accent-text); }
+  .facts { display: grid; gap: 2px; margin: 0 0 18px; font-size: 14.5px; line-height: 1.75; color: var(--body); }
+  .facts div { padding: 13px 0; border-top: 1px solid var(--line); }
+  .facts div:last-child { border-bottom: 1px solid var(--line); }
+  .facts dt { margin-bottom: 5px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .facts dd { margin: 0; }
+  .facts strong { color: var(--ink); }
+  @media (min-width: 900px) {
+    .contact { display: grid; grid-template-columns: .58fr .42fr; max-width: var(--max); margin-inline: auto; }
+    .contact__main { padding: 38px 40px 44px var(--gutter); border-right: 1px solid var(--line); }
+    .contact__office { padding: 38px var(--gutter) 44px 40px; border-top: 0; }
+    h2 { margin-bottom: 22px; font-size: 22px; }
+    .card { padding: 20px 22px; }
+    .card:hover { transform: translateY(-2px); }
+    .card--primary:hover { box-shadow: 0 10px 26px -10px rgba(0, 0, 0, .45); }
+    .card__label { font-size: 11px; }
+    .card__value { font-size: 19px; }
+    .facts { font-size: 15px; }
+    .facts div { padding: 14px 0; }
+    .facts dt { font-size: 11px; }
+  }
+</style>

@@ -2,7 +2,71 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import { PAGES } from '../data/pages';
+import { RODO, RODO_COOKIES_NOTE } from '../data/rodo';
+import { CONTACT } from '../data/site';
 ---
 <BaseLayout page={PAGES.rodo}>
   <PageIntro eyebrow="Ochrona danych osobowych" title="Klauzula informacyjna RODO" lead="Informacja o przetwarzaniu danych osobowych właścicieli lokali i mieszkańców nieruchomości administrowanych przez naszą firmę." />
+  <div class="rodo">
+    <div class="rodo__side">
+      <div class="rodo__sticky">
+        <nav aria-labelledby="toc-title">
+          <p id="toc-title" class="rodo__toc-title">Spis treści</p>
+          <ol role="list" class="toc">
+            {RODO.map((r) => (
+              <li><a href={`#${r.id}`}><span class="toc__n" aria-hidden="true">{r.n}</span>{r.title}</a></li>
+            ))}
+          </ol>
+        </nav>
+        <p class="rodo__ask desktop-only">
+          Pytania o dane osobowe<br /><a href={`mailto:${CONTACT.email}`}><strong>{CONTACT.email}</strong></a>
+        </p>
+      </div>
+    </div>
+    <div class="rodo__body">
+      {RODO.map((r) => (
+        <section id={r.id} class="clause" aria-labelledby={`${r.id}-title`}>
+          <h2 id={`${r.id}-title`}><span class="clause__n" aria-hidden="true">{r.n}</span>{r.title}</h2>
+          <p>{r.body}</p>
+        </section>
+      ))}
+      <section id="cookies" class="clause" aria-labelledby="cookies-title">
+        <h2 id="cookies-title"><span class="clause__n" aria-hidden="true">07</span>Pliki cookies</h2>
+        <p>{RODO_COOKIES_NOTE}</p>
+      </section>
+    </div>
+  </div>
 </BaseLayout>
+
+<style>
+  .rodo__side { padding: 18px var(--gutter); background: var(--surf); border-bottom: 1px solid var(--line); }
+  .rodo__toc-title { margin-bottom: 10px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .toc { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; }
+  .toc a { display: flex; align-items: baseline; gap: 7px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 2px; color: var(--mid); font-size: 12.5px; font-weight: 600; text-decoration: none; transition: background-color .22s ease, color .22s ease, padding-left .24s var(--ease); }
+  .toc a:hover { color: var(--ink); background: var(--wash); }
+  .toc__n { font: 500 10px var(--font-mono); color: var(--accent-text); }
+  .rodo__body { padding: 8px var(--gutter) 28px; }
+  .clause { padding: 18px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; transition: background-color .24s ease, border-color .24s ease; }
+  .clause:target { background: var(--wash); }
+  .clause h2 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; }
+  .clause__n { font: 500 10.5px var(--font-mono); color: var(--accent-text); }
+  .clause p { margin-left: 22px; font-size: 14px; line-height: 1.6; color: var(--body); max-width: 44em; }
+  .rodo__ask { margin-top: 22px; padding: 16px 18px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; font-size: 13.5px; line-height: 1.6; color: var(--mid); }
+  .rodo__ask a { color: var(--ink); }
+  @media (min-width: 900px) {
+    .rodo { display: grid; grid-template-columns: .32fr .68fr; max-width: var(--max); margin-inline: auto; }
+    .rodo__side { padding: 34px 32px 40px var(--gutter); border-bottom: 0; border-right: 1px solid var(--line); }
+    .rodo__sticky { position: sticky; top: 16px; }
+    .rodo__toc-title { margin-bottom: 16px; font-size: 11px; }
+    .toc { display: grid; gap: 0; }
+    .toc a { gap: 12px; margin-inline: -8px; padding: 11px 8px; border: 0; border-top: 1px solid var(--line); border-radius: 2px; font-size: 14px; font-weight: 400; }
+    .toc a:hover { padding-left: 16px; background: none; }
+    .toc__n { font-size: 11px; }
+    .rodo__body { padding: 34px var(--gutter) 44px 40px; }
+    .clause { margin-left: -16px; padding: 22px 18px 22px 16px; border-left: 3px solid transparent; }
+    .clause:target { border-left-color: var(--accent); }
+    .clause h2 { gap: 14px; margin-bottom: 8px; font-size: 20px; }
+    .clause__n { font-size: 11px; }
+    .clause p { margin-left: 25px; font-size: 15px; }
+  }
+</style>
