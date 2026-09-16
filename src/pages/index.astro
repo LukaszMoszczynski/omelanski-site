@@ -1,8 +1,194 @@
 ---
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { HERO } from '../data/content';
+import MapLink from '../components/MapLink.astro';
+import PhoneGrid from '../components/PhoneGrid.astro';
+import Tabs from '../components/Tabs.astro';
+import { ABOUT, HERO } from '../data/content';
+import { DUTIES, DUTIES_NOTE } from '../data/duties';
 import { PAGES } from '../data/pages';
+import { BUSINESS, CONTACT, EKARTOTEKA_URL } from '../data/site';
+import { telHref } from '../lib/phone';
+import { url } from '../lib/url';
+import hero from '../assets/hero.jpg';
+
+const tiles = [
+  { n: '01', title: 'Zobacz swoje rozliczenia', desc: 'E-kartoteka — saldo, opłaty, media', href: EKARTOTEKA_URL, primary: true },
+  { n: '02', title: 'Zgłoś awarię lub usterkę', desc: `${CONTACT.phone} albo ${CONTACT.email}`, href: url('/kontakt/') },
+  { n: '03', title: 'Akty prawne', desc: 'Ustawy i uchwały wspólnot', href: url('/akty-prawne/') },
+  { n: '04', title: 'Oferta dla Wspólnoty', desc: 'Zakres i warunki współpracy', href: url('/oferta/') },
+];
 ---
 <BaseLayout page={PAGES.home}>
-  <section class="wrap"><h1 tabindex="-1">{HERO.title}</h1></section>
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">{HERO.eyebrow}</p>
+        <h1 tabindex="-1">{HERO.title}</h1>
+        <p class="hero__lead">{HERO.lead}</p>
+        <p class="hero__cta desktop-only">
+          <a class="btn btn--soft" href={url('/oferta/')}>Zobacz ofertę</a>
+          <a class="btn btn--ghost" href={url('/kontakt/')}>Zgłoś awarię</a>
+        </p>
+      </div>
+      <ul class="tiles" role="list">
+        {tiles.map((t) => (
+          <li>
+            <a class:list={['tile', { 'tile--primary': t.primary }]} href={t.href}>
+              <span class="tile__n" aria-hidden="true">{t.n}</span>
+              <span class="tile__title">{t.title}</span>
+              <span class="tile__desc">{t.desc}</span>
+              <span class="tile__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Picture
+    src={hero}
+    formats={['avif', 'webp']}
+    alt="Molo i nabrzeże w Kamieniu Pomorskim z widokiem na kamienice starego miasta"
+    layout="full-width"
+    priority
+    class="hero-photo"
+  />
+
+  <section class="about" aria-labelledby="about-title">
+    <div class="wrap two-col">
+      <div>
+        <p class="eyebrow">{ABOUT.eyebrow}</p>
+        <h2 id="about-title">Doświadczenie<br class="desktop-only" /> i kontakt z&nbsp;mieszkańcami</h2>
+      </div>
+      <div class="about__text">
+        {ABOUT.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="duties" aria-labelledby="duties-title">
+    <div class="wrap">
+      <div class="duties__head">
+        <h2 id="duties-title">Zakres obowiązków</h2>
+        <p class="duties__note desktop-only">{DUTIES_NOTE}</p>
+      </div>
+      <Tabs label="Zakres obowiązków" groups={DUTIES} />
+    </div>
+  </section>
+
+  <section class="info">
+    <div class="wrap info__grid">
+      <section class="info__phones" aria-labelledby="phones-title">
+        <h2 id="phones-title">Ważne telefony</h2>
+        <PhoneGrid />
+      </section>
+      <section class="info__office" aria-labelledby="office-title">
+        <h2 id="office-title">Biuro</h2>
+        <div class="office">
+          <div>
+            <p class="office__label">Kontakt</p>
+            <p>
+              telefon/fax: <a href={telHref(CONTACT.phoneFax)}>{CONTACT.phoneFax}</a><br />
+              tel.: <a href={telHref(CONTACT.phone)}>{CONTACT.phone}</a><br />
+              <a class="link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            </p>
+          </div>
+          <div>
+            <p class="office__label">Adres i godziny</p>
+            <p>
+              {BUSINESS.street}<br />{BUSINESS.postalCode} {BUSINESS.city}<br />
+              pon.–pt. <strong>{CONTACT.hoursTime}</strong>
+            </p>
+          </div>
+        </div>
+        <MapLink height={132} />
+      </section>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .hero__grid { display: grid; }
+  .hero__copy { padding-block: 28px 22px; }
+  .hero .eyebrow { margin-bottom: 12px; }
+  h1 { margin-bottom: 14px; font-size: 30px; line-height: 1.12; letter-spacing: -.03em; }
+  .hero__lead { font-size: 14.5px; line-height: 1.55; color: var(--mid); max-width: 34em; }
+  .hero__cta { display: flex; gap: 12px; margin-top: 28px; }
+  .hero__cta .btn { padding: 14px 24px; font-size: 15px; }
+
+  .tiles { list-style: none; display: grid; gap: 9px; padding-bottom: 22px; }
+  .tile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+    padding: 14px 18px;
+    background: var(--surf);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .22s var(--ease), border-color .22s ease, background-color .22s ease;
+  }
+  .tile:hover { border-color: var(--accent-border); }
+  .tile:active { transform: scale(.975); }
+  .tile--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .tile__n, .tile__desc { display: none; }
+  .tile__title { font-weight: 600; font-size: 15px; }
+  .tile__arrow { color: var(--dim); }
+  .tile--primary .tile__arrow { color: var(--on-accent); }
+
+  :global(.hero-photo) { width: 100%; height: 170px; object-fit: cover; object-position: 50% 55%; border-block: 1px solid var(--wash-a); }
+
+  .about { border-bottom: 1px solid var(--wash-a); padding-block: 26px; }
+  .two-col { display: grid; gap: 14px; }
+  .about .eyebrow { margin-bottom: 10px; }
+  .about h2 { font-size: 21px; line-height: 1.2; }
+  .about__text { display: grid; gap: 14px; font-size: 14px; line-height: 1.65; color: var(--body); max-width: 46em; }
+
+  .duties { padding-block: 26px; }
+  .duties__head { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; margin-bottom: 16px; }
+  .duties h2 { font-size: 21px; }
+  .duties__note { font-size: 13.5px; color: var(--dim); }
+
+  .info { background: var(--surf); border-top: 1px solid var(--wash-a); }
+  .info__grid { display: grid; }
+  .info h2 { margin-bottom: 14px; font-size: 20px; }
+  .info__phones, .info__office { padding-block: 26px; }
+  .info__office { border-top: 1px solid var(--wash-a); }
+  .office { display: grid; gap: 16px; margin-bottom: 16px; font-size: 14.5px; line-height: 1.75; color: var(--body); }
+  .office a { color: inherit; }
+  .office .link { color: var(--accent-text); }
+  .office strong { color: var(--ink); }
+  .office__label { margin-bottom: 7px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+
+  @media (min-width: 900px) {
+    .hero__grid { grid-template-columns: 1.1fr .9fr; }
+    .hero__copy { padding: 56px 44px 52px 0; border-right: 1px solid var(--wash-a); }
+    .hero .eyebrow { margin-bottom: 18px; }
+    h1 { margin-bottom: 20px; font-size: 46px; max-width: 16em; }
+    .hero__lead { font-size: 16.5px; line-height: 1.6; }
+    .tiles { grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; padding: 32px 0 32px 36px; }
+    .tile, .tile--primary { display: block; padding: 20px; background: var(--surf); border-color: var(--line); color: var(--ink); height: 100%; }
+    .tile:hover { transform: translateY(-3px); background: var(--accent-wash); }
+    .tile__n { display: block; margin-bottom: 30px; font: 500 11px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
+    .tile__title { display: block; font-size: 15.5px; }
+    .tile__desc { display: block; margin-top: 5px; font-size: 12.5px; color: var(--dim); }
+    .tile__arrow { display: none; }
+    :global(.hero-photo) { height: 280px; }
+    .about { padding-block: 52px 56px; }
+    .two-col { grid-template-columns: .55fr 1.45fr; gap: 44px; }
+    .about .eyebrow { margin-bottom: 14px; }
+    .about h2 { font-size: 30px; line-height: 1.15; }
+    .about__text { gap: 18px; font-size: 15.5px; line-height: 1.7; }
+    .duties { padding-block: 52px 56px; }
+    .duties__head { margin-bottom: 22px; }
+    .duties h2 { font-size: 30px; }
+    .info__grid { grid-template-columns: 1.1fr .9fr; }
+    .info h2 { margin-bottom: 20px; font-size: 24px; }
+    .info__phones { padding: 44px 40px 44px 0; border-right: 1px solid var(--wash-a); }
+    .info__office { padding: 44px 0 44px 40px; border-top: 0; }
+    .office { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+</style>

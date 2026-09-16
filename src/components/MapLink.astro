@@ -1,0 +1,43 @@
+---
+import { BUSINESS, MAPS_URL } from '../data/site';
+import ExternalLink from './ExternalLink.astro';
+
+interface Props { height: number; mobileHeight?: number }
+const { height, mobileHeight = 170 } = Astro.props;
+---
+<div class="map-wrap" style={`--map-h: ${height}px; --map-mh: ${mobileHeight}px`}>
+  <ExternalLink href={MAPS_URL} class="map">
+    <svg class="map__pin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" />
+    </svg>
+    <span class="map__text">
+      <span class="map__cta">Pokaż na mapie Google</span>
+      <span class="map__addr">{BUSINESS.street}, {BUSINESS.postalCode} {BUSINESS.city}</span>
+    </span>
+  </ExternalLink>
+</div>
+
+<style>
+  .map-wrap { height: var(--map-mh); }
+  .map-wrap :global(.map) {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    height: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: repeating-linear-gradient(135deg, var(--wash-a) 0 10px, var(--wash) 10px 20px);
+    color: var(--ink);
+    text-align: center;
+    text-decoration: none;
+    transition: border-color .2s ease;
+  }
+  .map-wrap :global(.map:hover) { border-color: var(--accent-border); }
+  .map__pin { width: 28px; height: 28px; fill: var(--accent-text); }
+  .map__text { display: grid; gap: 2px; }
+  .map__cta { font-weight: 600; font-size: 14px; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+  .map__addr { font: 500 11px var(--font-mono); color: var(--dim); }
+  @media (min-width: 900px) { .map-wrap { height: var(--map-h); } }
+</style>
