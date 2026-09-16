@@ -7,3 +7,5 @@ playwright-report/
 .env.*
 .DS_Store
 Thumbs.db
+.base-test/
+.og-tmp/
