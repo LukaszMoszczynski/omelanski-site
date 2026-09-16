@@ -62,7 +62,6 @@ src/
   pages/
     index.astro  akty-prawne.astro  oferta.astro  rodo.astro  kontakt.astro  404.astro
     llms.txt.ts  llms-full.txt.ts   build-time endpoints
-  (OG image: static public/og.png, 1200×630, made once from hero photo + logo)
   styles/
     tokens.css              dark/light tokens copied from the design (THEMES object)
     global.css              reset, typography, focus styles, reduced-motion rules
