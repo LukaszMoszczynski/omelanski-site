@@ -27,11 +27,11 @@ Rebuild the website of *Zarządzanie Nieruchomościami Radosław Omelański* (Ka
 
 ## Stack
 
-- **Astro 5**, output `static`, `build.format: 'directory'` (URLs like `/oferta/` → `oferta/index.html`, works on any server without rewrites).
+- **Astro 7** (verified 7.3.x on 2026-09-16), output `static`, `build.format: 'directory'` (URLs like `/oferta/` → `oferta/index.html`, works on any server without rewrites).
 - **`<ClientRouter />`** (Astro view transitions) for client-side navigation with prefetch on hover/viewport. Links remain plain `<a href>`; site works fully with JS disabled.
 - **TypeScript**, plain CSS with custom properties (theme tokens). No UI framework, no Tailwind.
 - Interactive pieces as small vanilla custom elements: theme toggle, mobile menu, tabs.
-- **Fonts** self-hosted via `@fontsource` (IBM Plex Sans, JetBrains Mono, Barlow for the logo). No requests to Google (RODO).
+- **Fonts** self-hosted via `@fontsource` (IBM Plex Sans, JetBrains Mono). Barlow is used only by the one-off OG image script (full logo lettering). No requests to Google (RODO).
 - **Images** via `astro:assets` (AVIF/WebP, responsive `srcset`, explicit dimensions).
 - **`@astrojs/sitemap`** for `sitemap-index.xml`.
 - Node 22 LTS for development.
@@ -53,8 +53,10 @@ src/
     ThemeToggle.astro       CIEMNY / JASNY toggle (custom element)
     Tabs.astro              accessible tabs (custom element)
     PhoneGrid.astro         emergency numbers grid
-    OfficeInfo.astro        office contact + address + hours
-    MapLink.astro           static map image linking to Google Maps
+    PageIntro.astro         eyebrow + h1 + lead block shared by subpages
+    NumberedList.astro      numbered item list (home tabs, Oferta)
+    ExternalLink.astro      link opening in a new tab with hidden hint
+    MapLink.astro           map card (design pattern + pin + address) linking to Google Maps
     Logo.astro              inline SVG logo (full and mark-only variants)
     Footer.astro
   data/site.ts              nav items, phones, address, hours, URLs, business metadata
@@ -94,13 +96,13 @@ Layouts must match the design screenshots at desktop (1280 px) and mobile (~390 
 
 - All internal links built with `url('/oferta/')` so a non-root `base` (e.g. `/pl`) works.
 - `ClientRouter` swaps page content with a short cross-fade; animation disabled under `prefers-reduced-motion`.
-- On `astro:page-load`: set focus to the page `<h1>` (`tabindex="-1"`), announce the new title through a polite live region, update `aria-current="page"` in the nav, close the mobile menu.
+- On `astro:page-load` after a client-side navigation (not on the first load, not when the URL has a hash): focus the page `<h1>` (`tabindex="-1"`). The new title is announced by ClientRouter's built-in route announcer. `aria-current="page"` is rendered server-side per page, so the swapped header is always correct. The mobile menu closes when a link in it is clicked.
 - Custom elements must re-initialise correctly after each client-side navigation.
 
 ## Theme
 
 - Initial theme: saved preference in `localStorage` if present, otherwise `prefers-color-scheme`.
-- Inline script in `<head>` sets `data-theme` on `<html>` before first paint (no flash). It must also run on `astro:after-swap`.
+- Inline script in `<head>` sets `data-theme` on `<html>` before first paint (no flash). On `astro:before-swap` it copies the current theme onto the incoming document so navigation never flashes. Without JS the CSS follows `prefers-color-scheme`.
 - Toggle is a `<button aria-pressed>` with visible "CIEMNY / JASNY" labels. All `localStorage` access wrapped in `try/catch`.
 
 ## SEO
@@ -124,12 +126,12 @@ Layouts must match the design screenshots at desktop (1280 px) and mobile (~390 
 - Skip link "Przejdź do treści" as the first focusable element.
 - Visible focus styles in both themes; targets ≥ 24×24 px.
 - Contrast verified for all token pairs in both themes; the light-theme `dim` colour must be checked and adjusted if below 4.5:1.
-- Mobile menu: `<button aria-expanded aria-controls>`, focus moved into the sheet, focus trapped while open, Esc and overlay click close it, focus returns to the trigger.
+- Mobile menu: `<button aria-expanded aria-controls>` opening a native modal `<dialog>` styled as the bottom sheet (focus trap, Esc and inert background from the platform); backdrop click and a "Zamknij menu" button close it; focus returns to the trigger.
 - Tabs: WAI-ARIA tabs pattern (`role="tablist"`, `tab`, `tabpanel`, roving tabindex, Arrow/Home/End keys).
 - `prefers-reduced-motion`: pulse animation, transitions and view-transition animations disabled.
 - External links that open a new tab have visually hidden "(otwiera się w nowej karcie)" text.
 - Phone numbers are `tel:` links; email is a `mailto:` link.
-- Map: static image with meaningful alt text; no third-party embed (no cookies, no RODO consent needed).
+- Map: a link card styled like the design placeholder (pattern, pin icon, address, "Pokaż na mapie Google"); no third-party embed and no map tiles (no cookies, no RODO consent needed). A real map screenshot can replace the pattern later.
 
 ## Performance
 
@@ -175,3 +177,16 @@ npm run preview        # local check
 ## Out of scope
 
 Contact form, CMS, analytics, multiple languages, CI/CD.
+
+## Implementation notes (added after design review)
+
+- Desktop and mobile layouts share one markup per section; CSS switches layout at 900 px. Where the design uses different labels on mobile (e.g. hero tiles "Zobacz swoje rozliczenia" vs "E-kartoteka"), the desktop label is used everywhere.
+- E-kartoteka opens in the same tab. Dz.U. and Google Maps links open in a new tab.
+- Long-form text (about paragraphs, duties, acts, RODO) lives in `src/data/*.ts` so the pages and `llms-full.txt` share one source.
+- `.htaccess` is written by `scripts/postbuild.mjs` so the 404 path follows `base`.
+
+## Content still owed by the client
+
+- RODO clause: the design text contains "Tekst zastępczy" placeholders to be replaced with the law firm's text.
+- Akty prawne: final list of acts (design shows two as a proposal).
+- Real logo files, if the redrawn SVG is not accepted.
