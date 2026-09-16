@@ -1,0 +1,18 @@
+export interface RodoSection {
+  id: string;
+  n: string;
+  title: string;
+  body: string;
+}
+
+export const RODO: RodoSection[] = [
+  { id: 'administrator', n: '01', title: 'Administrator danych osobowych', body: 'Radosław Omelański, Zarządzanie Nieruchomościami, ul. Jedności Narodowej 1/4, 72-400 Kamień Pomorski, NIP: 9860145783, REGON: 527844342. Administrator odpowiada za bezpieczeństwo powierzonych danych oraz za spełnienie obowiązków informacyjnych wobec właścicieli lokali i mieszkańców. Tekst zastępczy — docelowa treść zostanie uzupełniona przez kancelarię. Miejsce na wskazanie zakresu umocowania wynikającego z umowy o administrowanie nieruchomością wspólną.' },
+  { id: 'cel-i-podstawa', n: '02', title: 'Cel i podstawa przetwarzania', body: 'Tekst zastępczy. Dane przetwarzane są w celu realizacji umowy o administrowanie nieruchomością wspólną, prowadzenia rozliczeń, korespondencji z właścicielami lokali oraz wypełnienia obowiązków wynikających z przepisów prawa. Podstawą przetwarzania są art. 6 ust. 1 lit. b, c oraz f RODO. W tym miejscu znajdzie się wyliczenie poszczególnych celów wraz z przypisaną im podstawą prawną, a także informacja o prawnie uzasadnionym interesie administratora. Docelowa treść zostanie uzupełniona przez kancelarię prawną.' },
+  { id: 'odbiorcy', n: '03', title: 'Odbiorcy danych', body: 'Tekst zastępczy. Odbiorcami danych mogą być dostawcy mediów, biuro rachunkowe, wykonawcy prac remontowych i konserwacyjnych, firmy ubezpieczeniowe, kancelarie prawne oraz podmioty uprawnione na podstawie przepisów prawa. Dane mogą być również powierzane dostawcom usług informatycznych w zakresie niezbędnym do utrzymania systemów. W tym miejscu pojawi się pełna lista kategorii odbiorców wraz z informacją o ewentualnym przekazywaniu danych poza Europejski Obszar Gospodarczy.' },
+  { id: 'okres', n: '04', title: 'Okres przechowywania', body: 'Tekst zastępczy. Dane przechowywane są przez okres obowiązywania umowy, a po jej zakończeniu przez czas wynikający z przepisów o rachunkowości oraz terminów przedawnienia roszczeń. Dokumentacja techniczna nieruchomości przechowywana jest przez cały okres jej istnienia. W tym miejscu zostaną wskazane konkretne okresy retencji dla poszczególnych kategorii dokumentów.' },
+  { id: 'prawa', n: '05', title: 'Prawa osoby, której dane dotyczą', body: 'Tekst zastępczy. Osobie, której dane dotyczą, przysługuje prawo dostępu do danych, ich sprostowania, usunięcia lub ograniczenia przetwarzania, prawo wniesienia sprzeciwu, prawo do przenoszenia danych oraz prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych. Wnioski kieruje się do administratora danych — Radosław Omelański, Zarządzanie Nieruchomościami — osobiście w biurze lub drogą elektroniczną. Docelowa treść opisze tryb i termin rozpatrywania wniosków.' },
+  { id: 'kontakt', n: '06', title: 'Kontakt w sprawie danych', body: 'biuro@omelanska.com, tel. 518 629 878, pon.–pt. 8.00–16.00. Wnioski dotyczące danych osobowych można składać osobiście w biurze przy ul. Jedności Narodowej 1/4, listownie lub pocztą elektroniczną. Tekst zastępczy — do uzupełnienia informacja o ewentualnym wyznaczeniu inspektora ochrony danych.' },
+];
+
+export const RODO_COOKIES_NOTE =
+  'Strona nie używa plików cookies ani narzędzi analitycznych. Wybrany motyw kolorystyczny (jasny lub ciemny) jest zapisywany wyłącznie w pamięci Twojej przeglądarki (localStorage) i nie jest przesyłany do nas.';
