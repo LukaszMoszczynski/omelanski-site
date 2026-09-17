@@ -23,6 +23,8 @@ if (failed.length) process.exit(1);
 // linkinator's built-in static server listens on 127.0.0.1, not the literal
 // host name "localhost", so the skip pattern must exclude both to avoid
 // treating the site's own pages as "external" and skipping the whole crawl.
+// This double-quoted --skip value has been verified to survive npm running
+// this script through cmd.exe on Windows (`npm run test:base`), not just Bash.
 execSync('npx linkinator pl/ --server-root .base-test --recurse --skip "^https?://(?!localhost|127\\.0\\.0\\.1)"', {
   stdio: 'inherit',
 });
