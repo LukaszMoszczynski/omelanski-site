@@ -13,8 +13,15 @@ AddDefaultCharset UTF-8
 AddCharset UTF-8 .html .txt .xml .css .js .svg
 
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript text/javascript image/svg+xml
 </IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/xml application/javascript text/javascript image/svg+xml
+</IfModule>
+
+AddType image/avif .avif
+AddType font/woff2 .woff2
 
 <IfModule mod_headers.c>
   <FilesMatch "\\.(html|txt|xml)$">
@@ -23,6 +30,8 @@ AddCharset UTF-8 .html .txt .xml .css .js .svg
   <FilesMatch "\\.(png|svg|ico)$">
     Header set Cache-Control "public, max-age=604800"
   </FilesMatch>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 `;
 

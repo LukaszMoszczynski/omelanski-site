@@ -22,7 +22,7 @@ export function buildLlmsTxt(abs: Abs): string {
     '',
     ...NAV.map((p) => `- [${p.nav}](${abs(p.path)}): ${p.description}`),
     '',
-    '## Dodatkowe',
+    '## Optional',
     '',
     `- [Pełna treść strony](${abs('/llms-full.txt')}): cała treść serwisu w jednym pliku`,
     `- [E-kartoteka](${EKARTOTEKA_URL}): panel mieszkańca (saldo, opłaty, media, uchwały) – wymaga logowania`,

@@ -39,3 +39,32 @@ test.describe('without JavaScript', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kontakt');
   });
 });
+
+test.describe('reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('disables the view-transition cross-fade in CSS', async ({ page }) => {
+    await page.goto('');
+    const found = await page.evaluate(() => {
+      const matches = (rule: CSSRule): boolean => {
+        if ('selectorText' in rule && (rule as CSSStyleRule).selectorText?.includes('::view-transition-old')) {
+          return true;
+        }
+        if ('cssRules' in rule) {
+          return Array.from((rule as CSSMediaRule).cssRules).some(matches);
+        }
+        return false;
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        let rules: CSSRuleList;
+        try {
+          rules = sheet.cssRules;
+        } catch {
+          continue;
+        }
+        if (Array.from(rules).some(matches)) return true;
+      }
+      return false;
+    });
+    expect(found).toBe(true);
+  });
+});

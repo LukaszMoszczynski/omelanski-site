@@ -13,7 +13,7 @@ export function businessJsonLd(abs: Abs): Record<string, unknown> {
     name: BUSINESS.name,
     url: abs('/'),
     logo: abs('/apple-touch-icon.png'),
-    image: abs('/og.png'),
+    image: abs('/og.jpg'),
     description:
       'Administrowanie, zarządzanie i rozliczanie Wspólnot Mieszkaniowych oraz Spółdzielni Mieszkaniowych w powiecie kamieńskim i gryfickim.',
     telephone: e164(CONTACT.phone),

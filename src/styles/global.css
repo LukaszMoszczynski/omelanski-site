@@ -90,4 +90,5 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
     transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }

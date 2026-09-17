@@ -15,6 +15,10 @@ const checks = [
   ['no double slash', !/href="\/pl\/\//.test(html)],
   ['htaccess 404', readFileSync(`${out}/.htaccess`, 'utf8').includes('ErrorDocument 404 /pl/404.html')],
   ['llms absolute urls', readFileSync(`${out}/llms.txt`, 'utf8').includes('https://omelanski.com/pl/oferta/')],
+  [
+    'nav aria-current on base path',
+    /href="\/pl\/oferta\/"\s+aria-current="page"|aria-current="page"\s+href="\/pl\/oferta\/"/.test(html),
+  ],
 ];
 const failed = checks.filter(([, ok]) => !ok);
 for (const [name, ok] of checks) console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}`);

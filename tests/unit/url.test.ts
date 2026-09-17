@@ -16,7 +16,7 @@ describe('joinBase', () => {
   });
 
   it('keeps file paths without adding a slash', () => {
-    expect(joinBase('/pl/', '/og.png')).toBe('/pl/og.png');
+    expect(joinBase('/pl/', '/og.jpg')).toBe('/pl/og.jpg');
     expect(joinBase('/', 'favicon.svg')).toBe('/favicon.svg');
   });
 });

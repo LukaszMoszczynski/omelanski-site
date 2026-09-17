@@ -12,7 +12,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run build && npm run preview -- --port 4321',
     url: 'http://localhost:4321/',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 180_000,
     // Astro 7's CLI auto-detects coding-agent shells (e.g. this harness) and
     // silently daemonizes `astro preview`, which makes the wrapper command

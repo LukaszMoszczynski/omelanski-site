@@ -32,6 +32,8 @@ test('sitemap lists the five pages and not 404', async ({ request }) => {
 test('build writes .htaccess files', () => {
   const root = readFileSync('dist/.htaccess', 'utf8');
   expect(root).toContain('ErrorDocument 404 /404.html');
+  expect(root).toContain('text/javascript');
+  expect(root).toContain('nosniff');
   const assets = readFileSync('dist/_astro/.htaccess', 'utf8');
   expect(assets).toContain('immutable');
 });
@@ -43,7 +45,9 @@ for (const route of ROUTES) {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{50,}/);
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanska.com/og.png');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanska.com/og.jpg');
+    await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
+    await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', /.+/);
     const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
     const parsed = blocks.map((b) => JSON.parse(b));
     expect(parsed.some((d) => d['@type'] === 'RealEstateAgent')).toBe(true);

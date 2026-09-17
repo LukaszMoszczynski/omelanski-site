@@ -1,4 +1,4 @@
-// One-off asset generator. Run `npm run og` and commit the PNGs in public/.
+// One-off asset generator. Run `npm run og` and commit the images in public/.
 import { chromium } from '@playwright/test';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -37,7 +37,7 @@ writeFileSync(`${tmp}/og.html`, og);
 await page.setViewportSize({ width: 1200, height: 630 });
 await page.goto(pathToFileURL(`${tmp}/og.html`).href);
 await page.evaluate(() => document.fonts.ready);
-await page.screenshot({ path: 'public/og.png' });
+await page.screenshot({ path: 'public/og.jpg', type: 'jpeg', quality: 85 });
 
 for (const [size, name] of [[32, 'favicon-32.png'], [180, 'apple-touch-icon.png']]) {
   writeFileSync(`${tmp}/icon.html`, icon(size));
@@ -48,4 +48,4 @@ for (const [size, name] of [[32, 'favicon-32.png'], [180, 'apple-touch-icon.png'
 
 await browser.close();
 rmSync(tmp, { recursive: true, force: true });
-console.log('Wrote public/og.png, public/favicon-32.png, public/apple-touch-icon.png');
+console.log('Wrote public/og.jpg, public/favicon-32.png, public/apple-touch-icon.png');
