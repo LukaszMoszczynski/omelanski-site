@@ -15,8 +15,7 @@
     "test:links": "linkinator dist --recurse --skip \"^https?://(?!localhost|127\\.0\\.0\\.1)\"",
     "test:base": "node scripts/test-base.mjs",
     "test": "npm run check && npm run test:unit && npm run build && npm run test:links && npm run test:base && npm run test:e2e",
-    "og": "node scripts/make-og.mjs",
-    "map": "node scripts/make-map.mjs"
+    "og": "node scripts/make-og.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

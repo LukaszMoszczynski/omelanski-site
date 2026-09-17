@@ -15,7 +15,7 @@ const numbers = EMERGENCY.filter((e) => e.topBar);
           class:list={['topbar__num', { 'desktop-only': e.topBar === 'desktop' }]}
           href={telHref(e.number)}
           aria-label={`${e.label}: ${e.number}`}
-        >{e.number}</a>
+        ><span>{e.number}</span></a>
       ))}
     </p>
     <p class="topbar__contact desktop-only">
@@ -34,7 +34,9 @@ const numbers = EMERGENCY.filter((e) => e.topBar);
   .topbar__dot { width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.2s ease-in-out infinite; }
   .topbar__label { margin-right: 6px; color: var(--accent-text); letter-spacing: .06em; text-transform: uppercase; }
   .topbar__num { display: inline-flex; align-items: center; min-height: 24px; min-width: 24px; padding-inline: 3px; color: var(--dim); text-decoration: none; }
-  .topbar__num:hover { color: var(--ink); text-decoration: underline; }
+  /* Underline the number only — never the separator dot, which is a ::before on the link. */
+  .topbar__num:hover { color: var(--ink); }
+  .topbar__num:hover span { text-decoration: underline; }
   .topbar__num + .topbar__num::before { content: '·' / ''; margin-right: 6px; color: var(--dim); }
   .topbar__contact { display: flex; gap: 22px; margin-left: auto; font-size: 12.5px; }
   .topbar__contact a { color: inherit; text-decoration: none; }

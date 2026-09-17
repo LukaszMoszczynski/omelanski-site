@@ -1,64 +1,46 @@
 ---
-import { Image } from 'astro:assets';
 import { BUSINESS, MAPS_URL } from '../data/site';
 import ExternalLink from './ExternalLink.astro';
-import mapImage from '../assets/map-office.png';
 
 interface Props { height: number; mobileHeight?: number }
 const { height, mobileHeight = 170 } = Astro.props;
+
+// Same embed the current omelanska.com uses, pinned to the office address.
+const EMBED_SRC =
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2346.9765591101204!2d14.771303316170048!3d53.96768398011389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47aa8418b6c96f21%3A0x34f0fdab97370e0!2sJedno%C5%9Bci%20Narodowej%201%2F4%2C%2072-400%20Kamie%C5%84%20Pomorski!5e0!3m2!1spl!2spl!4v1572968282498!5m2!1spl!2spl';
 ---
 <div class="map-wrap" style={`--map-h: ${height}px; --map-mh: ${mobileHeight}px`}>
-  <ExternalLink href={MAPS_URL} class="map">
-    <Image
-      class="map__img"
-      src={mapImage}
-      alt={`Mapa okolicy biura – ${BUSINESS.street}, ${BUSINESS.postalCode} ${BUSINESS.city}`}
-      widths={[512, 1024]}
-      sizes="(min-width: 900px) 520px, 100vw"
-      loading="lazy"
-    />
-    <span class="map__bar">
-      <span class="map__cta">Pokaż na mapie Google</span>
-      <span class="map__addr">{BUSINESS.street}, {BUSINESS.postalCode} {BUSINESS.city}</span>
-    </span>
-  </ExternalLink>
-  <p class="map__credit">
-    Mapa: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap<span class="visually-hidden"> (otwiera się w nowej karcie)</span></a>
+  <iframe
+    class="map__frame"
+    src={EMBED_SRC}
+    title={`Mapa Google – ${BUSINESS.street}, ${BUSINESS.postalCode} ${BUSINESS.city}`}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+  ></iframe>
+  <p class="map__link">
+    <ExternalLink href={MAPS_URL}>Pokaż na mapie Google</ExternalLink>
   </p>
 </div>
 
 <style>
-  .map-wrap { display: grid; gap: 5px; }
-  .map-wrap :global(.map) {
-    position: relative;
+  .map-wrap { display: grid; gap: 6px; }
+  .map__frame {
     display: block;
+    width: 100%;
     height: var(--map-mh);
-    overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 3px;
-    color: var(--ink);
-    text-decoration: none;
-    transition: border-color .2s ease;
+    background: var(--wash);
   }
-  .map-wrap :global(.map:hover) { border-color: var(--accent-border); }
-  .map__img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
-  :global([data-theme='dark']) .map__img { filter: brightness(.88) saturate(.9); }
-  .map__bar {
-    position: absolute;
-    inset: auto 0 0;
-    display: grid;
-    gap: 1px;
-    padding: 8px 10px;
-    background: color-mix(in srgb, var(--surf) 88%, transparent);
-    border-top: 1px solid var(--line);
-    text-align: center;
-  }
-  .map__cta { font-weight: 600; font-size: 13.5px; color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
-  .map__addr { font: 500 10.5px var(--font-mono); color: var(--dim); }
-  .map__credit { font: 500 10px var(--font-mono); color: var(--dim); text-align: right; }
-  .map__credit a { color: inherit; }
+  /* Tabbing into the map moves focus inside the frame's own document, so the frame element
+     matches :focus-within rather than :focus — and gets no ring from the browser by default. */
+  .map__frame:focus,
+  .map__frame:focus-within { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+  .map__link { font-size: 13.5px; font-weight: 600; text-align: right; }
+  .map__link :global(a) { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
   @media (min-width: 900px) {
-    .map-wrap :global(.map) { height: var(--map-h); }
-    .map__cta { font-size: 14px; }
+    .map__frame { height: var(--map-h); }
+    .map__link { font-size: 14px; }
   }
 </style>

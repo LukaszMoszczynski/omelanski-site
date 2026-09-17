@@ -93,12 +93,28 @@ const { current } = Astro.props;
 
     private close(returnFocus = true) {
       if (!this.sheet || !this.button) return;
-      this.sheet.hidden = true;
+      const sheet = this.sheet;
       this.button.setAttribute('aria-expanded', 'false');
       this.classList.remove('is-open');
       if (this.label) this.label.textContent = 'Menu';
       this.unlock();
       if (returnFocus) this.button.focus();
+      // Let it slide back down before it is taken out of the layout.
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        sheet.hidden = true;
+        return;
+      }
+      sheet.classList.add('is-closing');
+      const done = () => {
+        sheet.classList.remove('is-closing');
+        sheet.hidden = true;
+      };
+      sheet.addEventListener('animationend', done, { once: true });
+      // Fallback in case the animation never runs (e.g. the element is hidden meanwhile).
+      window.setTimeout(() => {
+        if (sheet.classList.contains('is-closing')) done();
+      }, 400);
     }
 
     /**
@@ -171,10 +187,13 @@ const { current } = Astro.props;
     overscroll-behavior: contain;
     background: var(--bg);
     color: var(--ink);
-    animation: sheet-in .26s var(--ease) both;
+    animation: sheet-in .3s var(--ease) both;
   }
   .sheet[hidden] { display: none; }
-  @keyframes sheet-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  /* Slides up from the bottom, like the bottom sheet in the design. */
+  @keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes sheet-out { from { transform: none; } to { transform: translateY(100%); } }
+  .sheet.is-closing { animation: sheet-out .26s var(--ease) both; }
   .sheet__body { padding: 22px 18px 28px; }
   .sheet__list { list-style: none; display: grid; gap: 2px; }
   .sheet__list a { display: block; padding: 15px 0; border-bottom: 1px solid var(--line); color: var(--mid); font-size: 19px; font-weight: 600; text-decoration: none; }

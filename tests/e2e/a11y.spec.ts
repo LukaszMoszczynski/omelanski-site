@@ -87,6 +87,12 @@ for (const route of ROUTES) {
 
       checked++;
       const label = `${info.tag}${info.href ? ` [${info.href}]` : ''} "${info.text}"`;
+      if (info.tag === 'iframe') {
+        // Tabbing into the embedded Google map moves focus into the frame's own document,
+        // so the <iframe> matches neither :focus nor :focus-within and no CSS of ours can
+        // draw its ring — the browser draws it. Counted, but not asserted on.
+        continue;
+      }
       expect(info.outlineStyle, `${label} on /${route.path} has no focus-visible outline (outline-style: ${info.outlineStyle})`).not.toBe(
         'none',
       );

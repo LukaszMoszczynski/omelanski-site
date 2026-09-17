@@ -14,7 +14,9 @@
 <script>
   class BackToTop extends HTMLElement {
     private onScroll = () => {
-      const past = window.scrollY > window.innerHeight;
+      // Appears once a screenful (or 400px, whichever is smaller) has been scrolled,
+      // so it also shows up on shorter desktop pages.
+      const past = window.scrollY > Math.min(window.innerHeight, 400);
       this.classList.toggle('is-visible', past);
     };
 

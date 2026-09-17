@@ -36,7 +36,7 @@ test('RODO table of contents jumps to sections', async ({ page }) => {
   await toc.getByRole('link', { name: /Okres przechowywania/ }).click();
   await expect(page).toHaveURL(/#okres$/);
   await expect(page.getByRole('heading', { level: 2, name: 'Okres przechowywania' })).toBeInViewport();
-  await expect(page.getByText('Strona nie używa plików cookies')).toBeVisible();
+  await expect(page.getByText(/nie używa własnych plików cookies/)).toBeVisible();
   await toc.getByRole('link', { name: /Pliki cookies/ }).click();
   await expect(page).toHaveURL(/#cookies$/);
   await expect(page.getByRole('heading', { level: 2, name: 'Pliki cookies' })).toBeInViewport();

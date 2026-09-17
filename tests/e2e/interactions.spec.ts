@@ -76,33 +76,25 @@ test.describe('in-page anchors', () => {
 
 test.describe('office map', () => {
   for (const path of ['', 'kontakt/']) {
-    test(`/${path} shows the map picture with attribution`, async ({ page }) => {
+    test(`/${path} embeds the Google map`, async ({ page }) => {
       await page.goto(path);
-      const map = page.getByRole('img', { name: /Mapa/ });
-      await expect(map).toBeVisible();
-      // A real raster picture, not the old striped placeholder.
-      const loaded = await map.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0);
-      expect(loaded).toBe(true);
+      const frame = page.locator('iframe.map__frame');
+      await expect(frame).toHaveCount(1);
+      await expect(frame).toHaveAttribute('src', /google\.com\/maps\/embed/);
+      // Titled for screen readers, and deferred so it never blocks first paint.
+      await expect(frame).toHaveAttribute('title', /Mapa Google/);
+      await expect(frame).toHaveAttribute('loading', 'lazy');
       await expect(page.getByRole('link', { name: /Pokaż na mapie Google/ })).toHaveAttribute(
         'href',
         /google\.com\/maps/,
       );
-      await expect(page.getByRole('link', { name: /OpenStreetMap/ })).toHaveAttribute(
-        'href',
-        'https://www.openstreetmap.org/copyright',
-      );
     });
   }
 
-  test('the map is served from our own server', async ({ page }) => {
-    const external: string[] = [];
-    page.on('request', (request) => {
-      const host = new URL(request.url()).host;
-      if (!host.startsWith('localhost') && !host.startsWith('127.0.0.1')) external.push(request.url());
-    });
-    await page.goto('kontakt/');
-    await page.waitForLoadState('networkidle');
-    expect(external).toEqual([]);
+  test('RODO says the Google map may set cookies', async ({ page }) => {
+    await page.goto('rodo/');
+    await expect(page.getByText(/mapa Google Maps/)).toBeVisible();
+    await expect(page.getByText(/nie używa własnych plików cookies/)).toBeVisible();
   });
 });
 

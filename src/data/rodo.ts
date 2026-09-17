@@ -15,4 +15,4 @@ export const RODO: RodoSection[] = [
 ];
 
 export const RODO_COOKIES_NOTE =
-  'Strona nie używa plików cookies ani narzędzi analitycznych. Wybrany motyw kolorystyczny (jasny lub ciemny) jest zapisywany wyłącznie w pamięci Twojej przeglądarki (localStorage) i nie jest przesyłany do nas.';
+  'Strona nie używa własnych plików cookies ani narzędzi analitycznych. Wybrany motyw kolorystyczny (jasny lub ciemny) jest zapisywany wyłącznie w pamięci Twojej przeglądarki (localStorage) i nie jest przesyłany do nas. Na stronie głównej i na stronie Kontakt osadzona jest mapa Google Maps — jej wyświetlenie powoduje połączenie z serwerami Google LLC, które mogą zapisać pliki cookies i odnotować adres IP urządzenia. Zasady przetwarzania danych przez Google opisuje polityka prywatności Google.';
