@@ -18,6 +18,7 @@ import plexLatinExt600 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin
 import '../styles/tokens.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
+import BackToTop from '../components/BackToTop.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import JsonLd from '../components/JsonLd.astro';
@@ -91,6 +92,7 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
       <slot />
     </main>
     <Footer />
+    <BackToTop />
     <script>
       // After client-side navigation move focus to the new page's h1.
       // ClientRouter's built-in announcer reads the new title.

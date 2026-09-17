@@ -8,12 +8,11 @@ const { current } = Astro.props;
 ---
 <mobile-menu class="mobile-only">
   <button type="button" class="burger" aria-haspopup="dialog" aria-expanded="false" aria-controls="mobile-menu">
-    <span class="visually-hidden">Menu</span>
+    <span class="visually-hidden" data-label>Menu</span>
     <span class="burger__bars" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
-  <dialog id="mobile-menu" class="sheet" aria-label="Menu">
+  <div id="mobile-menu" class="sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden>
     <div class="sheet__body">
-      <div class="sheet__handle" aria-hidden="true"></div>
       <nav aria-label="Menu mobilne">
         <ul class="sheet__list">
           {NAV.map((p) => (
@@ -24,74 +23,161 @@ const { current } = Astro.props;
         </ul>
       </nav>
       <a class="btn btn--primary btn--block sheet__cta" href={EKARTOTEKA_URL}>E-kartoteka</a>
-      <button type="button" class="btn btn--ghost btn--block" data-close>Zamknij menu</button>
     </div>
-  </dialog>
+  </div>
 </mobile-menu>
 
 <script>
+  // An overlay under the header rather than a modal <dialog>: the burger must stay visible
+  // and clickable so its three bars can morph into the cross. The page below the header is
+  // made `inert` while the menu is open, which gives the focus trap a modal dialog would.
   class MobileMenu extends HTMLElement {
-    private onDesktopChange: ((event: MediaQueryListEvent) => void) | null = null;
+    private button: HTMLButtonElement | null = null;
+    private sheet: HTMLElement | null = null;
+    private label: HTMLElement | null = null;
+    private inerted: Element[] = [];
+    private onKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && this.isOpen) {
+        event.preventDefault();
+        this.close();
+      }
+    };
+    private onDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches && this.isOpen) this.close();
+    };
     private mq: MediaQueryList | null = null;
+    private initialised = false;
+
+    get isOpen() {
+      return this.sheet ? !this.sheet.hidden : false;
+    }
 
     connectedCallback() {
-      const button = this.querySelector<HTMLButtonElement>('.burger');
-      const dialog = this.querySelector('dialog');
-      if (!button || !dialog) return;
-      button.addEventListener('click', () => {
-        dialog.showModal();
-        button.setAttribute('aria-expanded', 'true');
-      });
-      dialog.addEventListener('close', () => {
-        button.setAttribute('aria-expanded', 'false');
-        button.focus();
-      });
-      dialog.addEventListener('click', (event) => {
-        const target = event.target as Element;
-        if (target === dialog || target.closest('[data-close], a')) dialog.close();
-      });
+      if (this.initialised) return;
+      this.button = this.querySelector<HTMLButtonElement>('.burger');
+      this.sheet = this.querySelector<HTMLElement>('.sheet');
+      this.label = this.querySelector<HTMLElement>('[data-label]');
+      if (!this.button || !this.sheet) return;
+      this.initialised = true;
 
+      this.button.addEventListener('click', () => (this.isOpen ? this.close() : this.open()));
+      this.sheet.addEventListener('click', (event) => {
+        if ((event.target as Element).closest('a')) this.close(false);
+      });
+      document.addEventListener('keydown', this.onKeydown);
       this.mq = matchMedia('(min-width: 900px)');
-      this.onDesktopChange = (event) => {
-        if (event.matches && dialog.open) dialog.close();
-      };
-      this.mq.addEventListener('change', this.onDesktopChange);
+      this.mq.addEventListener('change', this.onDesktop);
     }
 
     disconnectedCallback() {
-      if (this.mq && this.onDesktopChange) this.mq.removeEventListener('change', this.onDesktopChange);
+      document.removeEventListener('keydown', this.onKeydown);
+      this.mq?.removeEventListener('change', this.onDesktop);
       this.mq = null;
-      this.onDesktopChange = null;
+      this.unlock();
+      this.initialised = false;
+    }
+
+    private open() {
+      if (!this.sheet || !this.button) return;
+      // The overlay starts right below the header, so the logo and the cross stay visible.
+      const header = this.closest('header');
+      if (header) this.sheet.style.setProperty('--menu-top', `${Math.round(header.getBoundingClientRect().bottom)}px`);
+      this.sheet.hidden = false;
+      this.button.setAttribute('aria-expanded', 'true');
+      this.classList.add('is-open');
+      if (this.label) this.label.textContent = 'Zamknij menu';
+      this.hideOutside();
+      document.documentElement.classList.add('is-locked');
+      this.sheet.querySelector<HTMLElement>('a')?.focus();
+    }
+
+    private close(returnFocus = true) {
+      if (!this.sheet || !this.button) return;
+      this.sheet.hidden = true;
+      this.button.setAttribute('aria-expanded', 'false');
+      this.classList.remove('is-open');
+      if (this.label) this.label.textContent = 'Menu';
+      this.unlock();
+      if (returnFocus) this.button.focus();
+    }
+
+    /**
+     * Everything outside the header — at every level up to <body> — is put out of reach,
+     * so focus stays in the menu. The header itself stays usable: it holds the cross.
+     */
+    private hideOutside() {
+      let node: Element = this.closest('header') ?? this;
+      while (node.parentElement) {
+        const parent: HTMLElement = node.parentElement;
+        for (const sibling of Array.from(parent.children)) {
+          if (sibling === node || sibling.hasAttribute('inert')) continue;
+          sibling.toggleAttribute('inert', true);
+          sibling.setAttribute('aria-hidden', 'true');
+          this.inerted.push(sibling);
+        }
+        if (parent === document.body) break;
+        node = parent;
+      }
+    }
+
+    private unlock() {
+      for (const el of this.inerted) {
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      }
+      this.inerted = [];
+      document.documentElement.classList.remove('is-locked');
     }
   }
   if (!customElements.get('mobile-menu')) customElements.define('mobile-menu', MobileMenu);
 </script>
 
 <style>
-  .burger { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -6px; background: none; border: 0; cursor: pointer; }
-  .burger__bars { display: grid; gap: 4px; width: 20px; }
-  .burger__bars span { height: 2px; background: var(--ink); }
-  .sheet {
-    width: 100%;
-    max-width: 100%;
-    max-height: 85dvh;
-    margin: auto 0 0;
-    padding: 0;
+  mobile-menu { display: contents; }
+  .burger {
+    position: relative;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -6px;
+    background: none;
     border: 0;
-    border-top: 1px solid var(--line);
-    border-radius: 12px 12px 0 0;
-    background: var(--surf);
-    color: var(--ink);
-    box-shadow: 0 -18px 40px -12px var(--shadow);
-    transition: transform .3s var(--ease), opacity .24s ease, overlay .3s allow-discrete, display .3s allow-discrete;
+    cursor: pointer;
   }
-  .sheet:not([open]) { transform: translateY(101%); opacity: 0; }
-  @starting-style { .sheet[open] { transform: translateY(101%); opacity: 0; } }
-  .sheet::backdrop { background: rgba(0, 0, 0, .45); }
-  .sheet__body { padding: 20px 18px 24px; }
-  .sheet__handle { width: 38px; height: 4px; margin: 0 auto 18px; border-radius: 2px; background: var(--line2); }
+  .burger__bars { position: relative; width: 20px; height: 14px; }
+  .burger__bars span {
+    position: absolute;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    background: var(--ink);
+    transition: transform .3s var(--ease), opacity .2s ease;
+  }
+  .burger__bars span:nth-child(1) { top: 0; }
+  .burger__bars span:nth-child(2) { top: 6px; }
+  .burger__bars span:nth-child(3) { top: 12px; }
+  /* Burger → cross */
+  mobile-menu.is-open .burger__bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  mobile-menu.is-open .burger__bars span:nth-child(2) { opacity: 0; transform: scaleX(.3); }
+  mobile-menu.is-open .burger__bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .sheet {
+    position: fixed;
+    inset: var(--menu-top, 92px) 0 0;
+    z-index: 20;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg);
+    color: var(--ink);
+    animation: sheet-in .26s var(--ease) both;
+  }
+  .sheet[hidden] { display: none; }
+  @keyframes sheet-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  .sheet__body { padding: 22px 18px 28px; }
   .sheet__list { list-style: none; display: grid; gap: 2px; }
-  .sheet__list a { display: block; padding: 13px 0; border-bottom: 1px solid var(--line); color: var(--mid); font-size: 17px; font-weight: 600; text-decoration: none; }
+  .sheet__list a { display: block; padding: 15px 0; border-bottom: 1px solid var(--line); color: var(--mid); font-size: 19px; font-weight: 600; text-decoration: none; }
   .sheet__list a[aria-current='page'] { color: var(--ink); }
-  .sheet__cta { margin-block: 16px 8px; font-size: 15px; }
+  .sheet__cta { margin-top: 20px; font-size: 15px; }
 </style>

@@ -1,0 +1,74 @@
+---
+// Floating "back to top" button. Hidden until JS runs and until the visitor has
+// scrolled roughly one screen, so it never covers content on short pages.
+---
+<back-to-top class="to-top" hidden>
+  <button type="button">
+    <span class="visually-hidden">Do góry</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 5l7 7-1.4 1.4L13 8.8V20h-2V8.8l-4.6 4.6L5 12z" />
+    </svg>
+  </button>
+</back-to-top>
+
+<script>
+  class BackToTop extends HTMLElement {
+    private onScroll = () => {
+      const past = window.scrollY > window.innerHeight;
+      this.classList.toggle('is-visible', past);
+    };
+
+    connectedCallback() {
+      const button = this.querySelector('button');
+      if (!button) return;
+      this.hidden = false;
+      this.onScroll();
+      window.addEventListener('scroll', this.onScroll, { passive: true });
+      button.addEventListener('click', () => {
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        // Send the reading position back to the start of the page, not just the scrollbar.
+        document.querySelector<HTMLElement>('main')?.focus({ preventScroll: true });
+      });
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener('scroll', this.onScroll);
+    }
+  }
+  if (!customElements.get('back-to-top')) customElements.define('back-to-top', BackToTop);
+</script>
+
+<style>
+  .to-top {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 15;
+    /* Not shown until scrolled: kept out of the tab order too. */
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .22s ease, transform .22s var(--ease), visibility .22s;
+  }
+  .to-top[hidden] { display: none; }
+  .to-top.is-visible { visibility: visible; opacity: 1; transform: none; }
+  button {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background: var(--surf);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .5);
+    cursor: pointer;
+    transition: background-color .2s ease, border-color .2s ease, transform .2s var(--ease);
+  }
+  button:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translateY(-2px); }
+  svg { width: 22px; height: 22px; fill: currentColor; }
+  @media (min-width: 900px) {
+    .to-top { right: 24px; bottom: 24px; }
+  }
+</style>

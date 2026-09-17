@@ -1,6 +1,16 @@
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* In-page jumps (RODO table of contents, back-to-top) glide instead of snapping.
+     Turned off further down for prefers-reduced-motion. */
+  scroll-behavior: smooth;
+  scroll-padding-top: 16px;
+}
+
+/* Set while the mobile menu is open so the page behind cannot scroll. */
+html.is-locked, html.is-locked body { overflow: hidden; }
+html.is-locked body { overscroll-behavior: none; }
 
 body {
   margin: 0;

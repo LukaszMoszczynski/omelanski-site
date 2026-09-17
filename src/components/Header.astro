@@ -33,6 +33,7 @@ const current = Astro.url.pathname;
 </header>
 
 <style>
+  .header { position: relative; z-index: 25; }
   .header__bar { background: var(--bg); border-bottom: 1px solid var(--line); }
   .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 26px; padding-block: 14px; }
   .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
