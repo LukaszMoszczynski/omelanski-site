@@ -31,6 +31,9 @@ const { current } = Astro.props;
 
 <script>
   class MobileMenu extends HTMLElement {
+    private onDesktopChange: ((event: MediaQueryListEvent) => void) | null = null;
+    private mq: MediaQueryList | null = null;
+
     connectedCallback() {
       const button = this.querySelector<HTMLButtonElement>('.burger');
       const dialog = this.querySelector('dialog');
@@ -47,6 +50,18 @@ const { current } = Astro.props;
         const target = event.target as Element;
         if (target === dialog || target.closest('[data-close], a')) dialog.close();
       });
+
+      this.mq = matchMedia('(min-width: 900px)');
+      this.onDesktopChange = (event) => {
+        if (event.matches && dialog.open) dialog.close();
+      };
+      this.mq.addEventListener('change', this.onDesktopChange);
+    }
+
+    disconnectedCallback() {
+      if (this.mq && this.onDesktopChange) this.mq.removeEventListener('change', this.onDesktopChange);
+      this.mq = null;
+      this.onDesktopChange = null;
     }
   }
   if (!customElements.get('mobile-menu')) customElements.define('mobile-menu', MobileMenu);

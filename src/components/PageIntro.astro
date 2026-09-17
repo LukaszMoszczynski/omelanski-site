@@ -7,7 +7,7 @@ const { eyebrow, title, lead, subtitle } = Astro.props;
     <p class="eyebrow">{eyebrow}</p>
     <h1 tabindex="-1">{title}</h1>
     {subtitle && <p class="intro__subtitle">{subtitle}</p>}
-    <p class="intro__lead">{lead}</p>
+    <p class="intro__lead">{lead}<slot name="lead-end" /></p>
     <slot />
   </div>
 </section>

@@ -21,6 +21,11 @@ test('Oferta shows four duty sections and contact CTAs', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 2, name: head })).toBeVisible();
   }
   await expect(page.getByRole('listitem').filter({ hasText: 'Ubezpieczenie budynku.' })).toBeVisible();
+  await expect(page.getByText('wystarczy telefon albo wiadomość na biuro@omelanska.com.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'biuro@omelanska.com', exact: true }).first()).toHaveAttribute(
+    'href',
+    'mailto:biuro@omelanska.com',
+  );
   await expect(page.getByRole('link', { name: 'Napisz do nas' })).toHaveAttribute('href', 'mailto:biuro@omelanska.com');
   await expect(page.getByRole('link', { name: /518 629 878/ }).last()).toHaveAttribute('href', 'tel:+48518629878');
 });
@@ -32,6 +37,9 @@ test('RODO table of contents jumps to sections', async ({ page }) => {
   await expect(page).toHaveURL(/#okres$/);
   await expect(page.getByRole('heading', { level: 2, name: 'Okres przechowywania' })).toBeInViewport();
   await expect(page.getByText('Strona nie używa plików cookies')).toBeVisible();
+  await toc.getByRole('link', { name: /Pliki cookies/ }).click();
+  await expect(page).toHaveURL(/#cookies$/);
+  await expect(page.getByRole('heading', { level: 2, name: 'Pliki cookies' })).toBeInViewport();
 });
 
 test('Kontakt offers call, e-mail, fax, after-hours numbers and map link', async ({ page }) => {

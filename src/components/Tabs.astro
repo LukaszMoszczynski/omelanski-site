@@ -30,10 +30,13 @@ const { label, groups } = Astro.props;
   class TabsWidget extends HTMLElement {
     private tabs: HTMLButtonElement[] = [];
     private panels: HTMLElement[] = [];
+    private initialised = false;
 
     connectedCallback() {
+      if (this.initialised) return;
       const list = this.querySelector<HTMLElement>('[role="tablist"]');
       if (!list) return;
+      this.initialised = true;
       this.tabs = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
       this.panels = this.tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls')!)!);
       this.panels.forEach((panel, i) => {
@@ -51,6 +54,7 @@ const { label, groups } = Astro.props;
     }
 
     private onKey(event: KeyboardEvent) {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
       const current = this.tabs.indexOf(document.activeElement as HTMLButtonElement);
       if (current < 0) return;
       const last = this.tabs.length - 1;

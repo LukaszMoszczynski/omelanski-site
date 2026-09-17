@@ -16,6 +16,7 @@ import { CONTACT } from '../data/site';
             {RODO.map((r) => (
               <li><a href={`#${r.id}`}><span class="toc__n" aria-hidden="true">{r.n}</span>{r.title}</a></li>
             ))}
+            <li><a href="#cookies"><span class="toc__n" aria-hidden="true">07</span>Pliki cookies</a></li>
           </ol>
         </nav>
         <p class="rodo__ask desktop-only">
@@ -42,7 +43,7 @@ import { CONTACT } from '../data/site';
   .rodo__side { padding: 18px var(--gutter); background: var(--surf); border-bottom: 1px solid var(--line); }
   .rodo__toc-title { margin-bottom: 10px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
   .toc { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; }
-  .toc a { display: flex; align-items: baseline; gap: 7px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 2px; color: var(--mid); font-size: 12.5px; font-weight: 600; text-decoration: none; transition: background-color .22s ease, color .22s ease, padding-left .24s var(--ease); }
+  .toc a { display: flex; align-items: baseline; gap: 7px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 2px; color: var(--mid); font-size: 12.5px; font-weight: 600; text-decoration: none; transition: background-color .22s ease, color .22s ease, transform .24s var(--ease); }
   .toc a:hover { color: var(--ink); background: var(--wash); }
   .toc__n { font: 500 10px var(--font-mono); color: var(--accent-text); }
   .rodo__body { padding: 8px var(--gutter) 28px; }
@@ -60,7 +61,7 @@ import { CONTACT } from '../data/site';
     .rodo__toc-title { margin-bottom: 16px; font-size: 11px; }
     .toc { display: grid; gap: 0; }
     .toc a { gap: 12px; margin-inline: -8px; padding: 11px 8px; border: 0; border-top: 1px solid var(--line); border-radius: 2px; font-size: 14px; font-weight: 400; }
-    .toc a:hover { padding-left: 16px; background: none; }
+    .toc a:hover { transform: translateX(8px); background: none; }
     .toc__n { font-size: 11px; }
     .rodo__body { padding: 34px var(--gutter) 44px 40px; }
     .clause { margin-left: -16px; padding: 22px 18px 22px 16px; border-left: 3px solid transparent; }
