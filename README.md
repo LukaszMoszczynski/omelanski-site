@@ -35,7 +35,7 @@ The generated `.htaccess` files are Apache-only. On nginx or another server they
 
 The site is built for **https://omelanski.com** (served from the domain root). Canonical links, the sitemap, `robots.txt`, `llms.txt`, structured data and the social-share image all take their address from `site` in `astro.config.mjs`.
 
-The e-mail address (`biuro@omelanska.com`) and E-kartoteka (`ekartoteka.omelanska.com`) are separate services and keep their own addresses; change them in `src/data/site.ts` if they move too.
+The e-mail address is `biuro@omelanski.com`. E-kartoteka still links to `ekartoteka.omelanska.com`, because `ekartoteka.omelanski.com` has no DNS record yet — once that subdomain works, change `EKARTOTEKA_URL` in `src/data/site.ts`.
 
 ### Switching over from omelanska.com
 

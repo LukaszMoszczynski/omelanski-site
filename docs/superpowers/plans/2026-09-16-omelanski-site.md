@@ -8,7 +8,7 @@
 
 **Tech Stack:** Astro 7.3, TypeScript 5.9, @astrojs/sitemap 3.7, @fontsource (IBM Plex Sans, JetBrains Mono, Barlow for OG only), Vitest 5, Playwright 1.63, @axe-core/playwright 4.13, linkinator 8, Node ≥ 22.12.
 
-**Spec:** `docs/superpowers/specs/2026-09-16-omelanska-site-design.md`
+**Spec:** `docs/superpowers/specs/2026-09-16-omelanski-site-design.md`
 
 ## Global Constraints
 

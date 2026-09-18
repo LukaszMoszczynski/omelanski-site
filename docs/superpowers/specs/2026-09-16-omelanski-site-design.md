@@ -22,7 +22,7 @@ Rebuild the website of *Zarządzanie Nieruchomościami Radosław Omelański* (Ka
 | Language | Polish only (`<html lang="pl">`). |
 | Content | Hard-coded in `.astro` components. Shared facts (nav, phones, address, hours, external URLs) live in `src/data/site.ts`. |
 | Contact form | None. Contact data is shown as `tel:`/`mailto:` links. |
-| E-kartoteka | External link to `https://ekartoteka.omelanska.com/`. |
+| E-kartoteka | External link to `https://ekartoteka.omelanska.com/` until `ekartoteka.omelanski.com` exists. |
 | Analytics, CMS, i18n | Out of scope. |
 
 ## Stack
@@ -73,7 +73,7 @@ tests/
 
 ## Pages
 
-| Route | Content (from `design/Omelanska Redesign.dc.html`) |
+| Route | Content (from `design/Omelanski Redesign.dc.html`) |
 |---|---|
 | `/` | Hero ("Administrowanie i rozliczanie Wspólnot Mieszkaniowych") with 4 quick-link tiles and two CTAs; panoramic photo; "O nas"; "Zakres obowiązków" tabs (Prawo, Księgowość, Administracja, Technika); "Ważne telefony"; "Biuro" contact block with map link. |
 | `/akty-prawne/` | Intro; cards for *Ustawa o własności lokali* and *Ustawa Prawo budowlane* linking to Dz.U.; E-kartoteka CTA box. |

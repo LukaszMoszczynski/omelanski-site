@@ -39,7 +39,7 @@ export const PAGES = {
     nav: 'Kontakt',
     title: 'Kontakt',
     description:
-      'Biuro w Kamieniu Pomorskim, ul. Jedności Narodowej 1/4. Tel. 518 629 878, e-mail biuro@omelanska.com, pon.–pt. 8.00–16.00. Numery pogotowia po godzinach.',
+      'Biuro w Kamieniu Pomorskim, ul. Jedności Narodowej 1/4. Tel. 518 629 878, e-mail biuro@omelanski.com, pon.–pt. 8.00–16.00. Numery pogotowia po godzinach.',
   },
 } as const satisfies Record<string, PageMeta>;
 

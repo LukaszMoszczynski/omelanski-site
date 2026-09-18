@@ -21,12 +21,12 @@ test('Oferta shows four duty sections and contact CTAs', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 2, name: head })).toBeVisible();
   }
   await expect(page.getByRole('listitem').filter({ hasText: 'Ubezpieczenie budynku.' })).toBeVisible();
-  await expect(page.getByText('wystarczy telefon albo wiadomość na biuro@omelanska.com.')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'biuro@omelanska.com', exact: true }).first()).toHaveAttribute(
+  await expect(page.getByText('wystarczy telefon albo wiadomość na biuro@omelanski.com.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'biuro@omelanski.com', exact: true }).first()).toHaveAttribute(
     'href',
-    'mailto:biuro@omelanska.com',
+    'mailto:biuro@omelanski.com',
   );
-  await expect(page.getByRole('link', { name: 'Napisz do nas' })).toHaveAttribute('href', 'mailto:biuro@omelanska.com');
+  await expect(page.getByRole('link', { name: 'Napisz do nas' })).toHaveAttribute('href', 'mailto:biuro@omelanski.com');
   await expect(page.getByRole('link', { name: /518 629 878/ }).last()).toHaveAttribute('href', 'tel:+48518629878');
 });
 
@@ -45,7 +45,7 @@ test('RODO table of contents jumps to sections', async ({ page }) => {
 test('Kontakt offers call, e-mail, fax, after-hours numbers and map link', async ({ page }) => {
   await page.goto('kontakt/');
   await expect(page.getByRole('link', { name: /Zadzwoń/ }).first()).toHaveAttribute('href', 'tel:+48518629878');
-  await expect(page.getByRole('link', { name: /Napisz/ }).first()).toHaveAttribute('href', 'mailto:biuro@omelanska.com');
+  await expect(page.getByRole('link', { name: /Napisz/ }).first()).toHaveAttribute('href', 'mailto:biuro@omelanski.com');
   await expect(page.getByText('91 32 17 878').first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Pogotowie gazowe: 992' })).toHaveAttribute('href', 'tel:992');
   await expect(page.getByRole('link', { name: /Pokaż na mapie Google/ })).toHaveAttribute('href', /google\.com\/maps/);
