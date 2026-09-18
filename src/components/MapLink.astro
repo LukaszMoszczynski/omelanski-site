@@ -2,8 +2,9 @@
 import { BUSINESS, MAPS_URL } from '../data/site';
 import ExternalLink from './ExternalLink.astro';
 
-interface Props { height: number; mobileHeight?: number }
-const { height, mobileHeight = 170 } = Astro.props;
+// One size everywhere: below ~200px Google switches to a compact map with fewer controls.
+interface Props { height?: number; mobileHeight?: number }
+const { height = 230, mobileHeight = 170 } = Astro.props;
 
 // Same embed as the previous company site, pinned to the office address.
 const EMBED_SRC =

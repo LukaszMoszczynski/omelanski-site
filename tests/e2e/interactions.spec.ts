@@ -91,6 +91,19 @@ test.describe('office map', () => {
     });
   }
 
+  test('the map looks the same on the home page and on Kontakt', async ({ page }) => {
+    // Below ~200px Google switches to a compact map (short "Mapy" button, no
+    // fullscreen/satellite controls), so both pages must use the same size.
+    const heights: number[] = [];
+    for (const path of ['', 'kontakt/']) {
+      await page.goto(path);
+      const box = await page.locator('iframe.map__frame').boundingBox();
+      heights.push(Math.round(box!.height));
+    }
+    expect(heights[0]).toBe(heights[1]);
+    expect(heights[0]).toBeGreaterThanOrEqual(170);
+  });
+
   test('RODO says the Google map may set cookies', async ({ page }) => {
     await page.goto('rodo/');
     await expect(page.getByText(/mapa Google Maps/)).toBeVisible();

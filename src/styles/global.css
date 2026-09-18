@@ -6,6 +6,8 @@ html {
      Turned off further down for prefers-reduced-motion. */
   scroll-behavior: smooth;
   scroll-padding-top: 16px;
+  /* Keeps anything reached by keyboard clear of the floating back-to-top button. */
+  scroll-padding-bottom: 88px;
 }
 
 /* Set while the mobile menu is open so the page behind cannot scroll. */
