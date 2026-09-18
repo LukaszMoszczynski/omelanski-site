@@ -18,7 +18,7 @@ Rebuild the website of *Zarządzanie Nieruchomościami Radosław Omelański* (Ka
 |---|---|
 | Hosting | Static files. Developer runs `npm run build` and uploads the contents of `dist/` to the server (FTP/SFTP). |
 | Source control | GitHub. `dist/` and `node_modules/` are git-ignored. |
-| Domain | `https://omelanska.com` now; may move to `https://omelanski.com/pl`. Both must work by changing only `site` and `base` in `astro.config.mjs`. |
+| Domain | `https://omelanski.com` at the root (decided 2026-09-18; replaces omelanska.com). A sub-folder such as `/pl` must still work by changing only `base` in `astro.config.mjs`. E-mail and E-kartoteka keep their omelanska.com addresses. |
 | Language | Polish only (`<html lang="pl">`). |
 | Content | Hard-coded in `.astro` components. Shared facts (nav, phones, address, hours, external URLs) live in `src/data/site.ts`. |
 | Contact form | None. Contact data is shown as `tel:`/`mailto:` links. |

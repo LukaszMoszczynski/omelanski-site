@@ -31,7 +31,24 @@ The generated `.htaccess` files are Apache-only. On nginx or another server they
 
 **Troubleshooting:** if the whole site returns HTTP 500 right after upload, the host may not allow the `Options` directive in `.htaccess`. Delete the `Options -Indexes` line from `dist/.htaccess` and re-upload.
 
-## Moving to another domain or sub-folder
+## Domain
+
+The site is built for **https://omelanski.com** (served from the domain root). Canonical links, the sitemap, `robots.txt`, `llms.txt`, structured data and the social-share image all take their address from `site` in `astro.config.mjs`.
+
+The e-mail address (`biuro@omelanska.com`) and E-kartoteka (`ekartoteka.omelanska.com`) are separate services and keep their own addresses; change them in `src/data/site.ts` if they move too.
+
+### Switching over from omelanska.com
+
+Once omelanski.com serves the new site, redirect the old domain permanently so search rankings and bookmarks carry over. In the old domain's root `.htaccess`:
+
+```apache
+RewriteEngine On
+RewriteRule ^(.*)$ https://omelanski.com/$1 [R=301,L]
+```
+
+Then add omelanski.com to Google Search Console and submit `https://omelanski.com/sitemap-index.xml`.
+
+### Serving from a sub-folder instead (optional)
 
 Edit `astro.config.mjs`:
 
