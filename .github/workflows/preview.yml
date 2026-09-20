@@ -1,0 +1,53 @@
+# Builds the site and publishes it to GitHub Pages as a preview for the client.
+# The real site is still deployed by hand (see README: Deploying).
+name: Preview on GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One preview at a time; a newer push wins.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/configure-pages@v5
+        id: pages
+      - run: npm ci
+      # The preview lives under /<repo>/, so the base path comes from Pages itself.
+      # PREVIEW=1 adds noindex and a blocking robots.txt.
+      - run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PREVIEW: '1'
+      # Tells Pages to serve the _astro folder instead of treating it as Jekyll internals.
+      - run: touch dist/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

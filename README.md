@@ -68,6 +68,28 @@ Build and upload `dist/` into the `/pl` folder. Then:
 - Submit the new sitemap in Google Search Console.
 - With a `/pl` base, `llms.txt` and `llms-full.txt` are served at `/pl/llms.txt` and `/pl/llms-full.txt`. If you want them reachable at the domain root as well, copy them there too.
 
+## Preview for the client (GitHub Pages)
+
+`.github/workflows/preview.yml` builds the site on every push to `main` and publishes it to GitHub Pages,
+so the client can click through a working copy before launch. The real site is still uploaded by hand
+(see **Deploying**) — Pages is only a preview.
+
+One-time setup:
+
+1. Create the repository on GitHub and push `main`. Pages needs a **public** repository, unless the account has GitHub Pro.
+2. In the repository: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Push again, or start the workflow from the **Actions** tab. The address shows up in the workflow summary,
+   normally `https://<user>.github.io/<repo>/`.
+
+The preview build differs from the production build only through `PREVIEW=1`:
+
+- every page gets `<meta name="robots" content="noindex">` and no canonical link,
+- `robots.txt` answers `Disallow: /`.
+
+So the preview stays out of search results and never competes with omelanski.com. Content, styles and
+behaviour are identical. Pages ignores `.htaccess`, so the custom 404 page and the caching rules only
+take effect on the real server.
+
 ## Editing content
 
 | What | Where |

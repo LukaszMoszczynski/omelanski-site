@@ -26,8 +26,13 @@ import { fullTitle, type PageMeta } from '../data/pages';
 import { breadcrumbJsonLd, businessJsonLd } from '../lib/jsonld';
 import { absoluteUrl, url } from '../lib/url';
 
+// PREVIEW=1 builds (the GitHub Pages copy shown to the client) stay out of search results,
+// so the preview never competes with the real site.
+const isPreview = process.env.PREVIEW === '1';
+
 interface Props { page: PageMeta; noindex?: boolean }
-const { page, noindex = false } = Astro.props;
+const { page, noindex: noindexProp = false } = Astro.props;
+const noindex = noindexProp || isPreview;
 const title = fullTitle(page);
 const canonical = absoluteUrl(page.path);
 const ogImage = absoluteUrl('/og.jpg');
