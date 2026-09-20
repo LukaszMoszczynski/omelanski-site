@@ -33,9 +33,9 @@ test('Oferta shows four duty sections and contact CTAs', async ({ page }) => {
 test('RODO table of contents jumps to sections', async ({ page }) => {
   await page.goto('rodo/');
   const toc = page.getByRole('navigation', { name: 'Spis treści' });
-  await toc.getByRole('link', { name: /Okres przechowywania/ }).click();
-  await expect(page).toHaveURL(/#okres$/);
-  await expect(page.getByRole('heading', { level: 2, name: 'Okres przechowywania' })).toBeInViewport();
+  await toc.getByRole('link', { name: /Obowiązek podania danych/ }).click();
+  await expect(page).toHaveURL(/#obowiazek-podania-danych$/);
+  await expect(page.getByRole('heading', { level: 2, name: 'Obowiązek podania danych' })).toBeInViewport();
   await expect(page.getByText(/nie używa własnych plików cookies/)).toBeVisible();
   await toc.getByRole('link', { name: /Pliki cookies/ }).click();
   await expect(page).toHaveURL(/#cookies$/);

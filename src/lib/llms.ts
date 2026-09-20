@@ -47,7 +47,11 @@ export function buildLlmsFullTxt(abs: Abs): string {
   out.push('', `Uchwały i regulaminy Wspólnoty są dostępne po zalogowaniu do systemu E-kartoteka: ${EKARTOTEKA_URL}`, '');
 
   out.push(`## ${PAGES.rodo.title} (${abs(PAGES.rodo.path)})`, '');
-  for (const r of RODO) out.push(`### ${r.n}. ${r.title}`, '', r.body, '');
+  for (const r of RODO) {
+    out.push(`### ${r.n}. ${r.title}`, '');
+    for (const p of r.body) out.push(p, '');
+    if (r.items) out.push(...r.items.map((i) => `${i.label}) ${i.text}`), '');
+  }
   out.push('### Pliki cookies', '', RODO_COOKIES_NOTE, '');
 
   out.push(

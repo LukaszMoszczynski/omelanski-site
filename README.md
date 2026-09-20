@@ -106,6 +106,5 @@ take effect on the real server.
 
 ## Content still to provide
 
-- RODO clause text from the law firm (current text contains "Tekst zastępczy").
+- Confirmation of NIP and REGON in the RODO clause (they come from `src/data/site.ts`; the text the client sent still carried the previous firm's numbers).
 - Final list of legal acts.
-- Optional: a real map screenshot to replace the patterned map card.

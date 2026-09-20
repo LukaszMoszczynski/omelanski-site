@@ -4,6 +4,9 @@ import PageIntro from '../components/PageIntro.astro';
 import { PAGES } from '../data/pages';
 import { RODO, RODO_COOKIES_NOTE } from '../data/rodo';
 import { CONTACT } from '../data/site';
+
+// Cookies is the one section written here rather than in the clause data.
+const cookiesN = String(RODO.length + 1).padStart(2, '0');
 ---
 <BaseLayout page={PAGES.rodo}>
   <PageIntro eyebrow="Ochrona danych osobowych" title="Klauzula informacyjna RODO" lead="Informacja o przetwarzaniu danych osobowych właścicieli lokali i mieszkańców nieruchomości administrowanych przez naszą firmę." />
@@ -16,7 +19,7 @@ import { CONTACT } from '../data/site';
             {RODO.map((r) => (
               <li><a href={`#${r.id}`}><span class="toc__n" aria-hidden="true">{r.n}</span>{r.title}</a></li>
             ))}
-            <li><a href="#cookies"><span class="toc__n" aria-hidden="true">07</span>Pliki cookies</a></li>
+            <li><a href="#cookies"><span class="toc__n" aria-hidden="true">{cookiesN}</span>Pliki cookies</a></li>
           </ol>
         </nav>
         <p class="rodo__ask desktop-only">
@@ -28,11 +31,16 @@ import { CONTACT } from '../data/site';
       {RODO.map((r) => (
         <section id={r.id} class="clause" aria-labelledby={`${r.id}-title`}>
           <h2 id={`${r.id}-title`}><span class="clause__n" aria-hidden="true">{r.n}</span>{r.title}</h2>
-          <p>{r.body}</p>
+          {r.body.map((p) => <p>{p}</p>)}
+          {r.items && (
+            <ol class="clause__items">
+              {r.items.map((i) => <li>{i.text}</li>)}
+            </ol>
+          )}
         </section>
       ))}
       <section id="cookies" class="clause" aria-labelledby="cookies-title">
-        <h2 id="cookies-title"><span class="clause__n" aria-hidden="true">07</span>Pliki cookies</h2>
+        <h2 id="cookies-title"><span class="clause__n" aria-hidden="true">{cookiesN}</span>Pliki cookies</h2>
         <p>{RODO_COOKIES_NOTE}</p>
       </section>
     </div>
@@ -52,6 +60,9 @@ import { CONTACT } from '../data/site';
   .clause h2 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; }
   .clause__n { font: 500 10.5px var(--font-mono); color: var(--accent-text); }
   .clause p { margin-left: 22px; font-size: 14px; line-height: 1.6; color: var(--body); max-width: 44em; }
+  .clause p + p { margin-top: 9px; }
+  .clause__items { display: grid; gap: 9px; margin: 10px 0 0 40px; padding: 0; list-style: lower-alpha; font-size: 14px; line-height: 1.6; color: var(--body); max-width: 44em; }
+  .clause__items::marker, .clause__items li::marker { font: 500 12px var(--font-mono); color: var(--accent-text); }
   .rodo__ask { margin-top: 22px; padding: 16px 18px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; font-size: 13.5px; line-height: 1.6; color: var(--mid); }
   .rodo__ask a { color: var(--ink); }
   @media (min-width: 900px) {
@@ -69,5 +80,6 @@ import { CONTACT } from '../data/site';
     .clause h2 { gap: 14px; margin-bottom: 8px; font-size: 20px; }
     .clause__n { font-size: 11px; }
     .clause p { margin-left: 25px; font-size: 15px; }
+    .clause__items { margin-left: 43px; font-size: 15px; }
   }
 </style>
