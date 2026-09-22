@@ -1,5 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import MapLink from '../components/MapLink.astro';
 import PhoneGrid from '../components/PhoneGrid.astro';
@@ -12,6 +12,21 @@ import { telHref } from '../lib/phone';
 import { url } from '../lib/url';
 import hero from '../assets/hero.jpg';
 
+// The photo now sits behind the opening block, so it is prepared here instead of
+// being rendered as an <img>: two widths, AVIF with a WebP fallback, handed to CSS.
+const [wideAvif, wideWebp, smallAvif, smallWebp] = await Promise.all([
+  getImage({ src: hero, format: "avif", width: 1600, quality: 62 }),
+  getImage({ src: hero, format: "webp", width: 1600, quality: 72 }),
+  getImage({ src: hero, format: "avif", width: 900, quality: 60 }),
+  getImage({ src: hero, format: "webp", width: 900, quality: 70 }),
+]);
+const heroBackground = [
+  `--hero-sm: url("${smallWebp.src}")`,
+  `--hero-sm-set: image-set(url("${smallAvif.src}") type("image/avif"), url("${smallWebp.src}") type("image/webp"))`,
+  `--hero-lg: url("${wideWebp.src}")`,
+  `--hero-lg-set: image-set(url("${wideAvif.src}") type("image/avif"), url("${wideWebp.src}") type("image/webp"))`,
+].join("; ");
+
 const tiles = [
   { n: '01', title: 'Zobacz swoje rozliczenia', desc: 'E-kartoteka — saldo, opłaty, media', href: EKARTOTEKA_URL, primary: true },
   { n: '02', title: 'Zgłoś awarię lub usterkę', desc: `${CONTACT.phone} albo ${CONTACT.email}`, href: url('/kontakt/') },
@@ -20,7 +35,7 @@ const tiles = [
 ];
 ---
 <BaseLayout page={PAGES.home}>
-  <section class="hero">
+  <section class="hero" style={heroBackground}>
     <div class="wrap hero__grid">
       <div class="hero__copy">
         <p class="eyebrow">{HERO.eyebrow}</p>
@@ -45,16 +60,6 @@ const tiles = [
       </ul>
     </div>
   </section>
-
-  <Picture
-    src={hero}
-    formats={['avif', 'webp']}
-    alt="Molo i nabrzeże w Kamieniu Pomorskim z widokiem na kamienice starego miasta"
-    widths={[480, 760, 1024, 1440]}
-    sizes="(min-width: 1440px) 1440px, 100vw"
-    priority
-    class="hero-photo"
-  />
 
   <section class="about" aria-labelledby="about-title">
     <div class="wrap two-col">
@@ -110,11 +115,36 @@ const tiles = [
 </BaseLayout>
 
 <style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    background-image: var(--hero-sm);
+    background-image: var(--hero-sm-set);
+    background-size: cover;
+    background-position: 50% 58%;
+  }
+  /* The veil that makes white text readable over the photograph. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg, var(--hero-veil-from) 38%, var(--hero-veil-to));
+  }
+  .hero .eyebrow { color: var(--hero-eyebrow); }
+  .hero h1 { color: var(--hero-ink); }
+  .hero__lead { color: var(--hero-lead); }
+  /* Both buttons sit on the photograph, so they ignore the theme and stay cream-on-dark. */
+  .hero .btn--soft { background: rgba(251, 247, 240, .95); border-color: transparent; color: #12253d; }
+  .hero .btn--soft:hover { background: #fff; }
+  .hero .btn--ghost { color: var(--hero-ink); border-color: rgba(251, 247, 240, .55); }
+  .hero .btn--ghost:hover { border-color: var(--hero-ink); color: var(--hero-ink); }
+
   .hero__grid { display: grid; }
   .hero__copy { padding-block: 28px 22px; }
   .hero .eyebrow { margin-bottom: 12px; }
   h1 { margin-bottom: 14px; font-size: 30px; line-height: 1.12; letter-spacing: -.03em; }
-  .hero__lead { font-size: 14.5px; line-height: 1.55; color: var(--mid); max-width: 34em; }
+  .hero__lead { font-size: 14.5px; line-height: 1.55; max-width: 34em; }
   .hero__cta { display: flex; gap: 12px; margin-top: 28px; }
   .hero__cta .btn { padding: 14px 24px; font-size: 15px; }
 
@@ -132,6 +162,7 @@ const tiles = [
     text-decoration: none;
     transition: transform .22s var(--ease), border-color .22s ease, background-color .22s ease;
   }
+  .tile { background: var(--hero-tile-bg); border-color: var(--hero-tile-border); color: var(--hero-tile-ink); }
   .tile:hover { border-color: var(--accent-border); }
   .tile:active { transform: scale(.975); }
   .tile--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
@@ -167,13 +198,20 @@ const tiles = [
   .office__label { margin-bottom: 7px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
 
   @media (min-width: 900px) {
+    .hero {
+      max-width: 1440px;
+      margin-inline: auto;
+      border-radius: 4px;
+      background-image: var(--hero-lg);
+      background-image: var(--hero-lg-set);
+    }
     .hero__grid { grid-template-columns: 1.1fr .9fr; }
-    .hero__copy { padding: 56px 44px 52px 0; border-right: 1px solid var(--wash-a); }
+    .hero__copy { padding: 76px 44px 78px 0; }
     .hero .eyebrow { margin-bottom: 18px; }
     h1 { margin-bottom: 20px; font-size: 46px; max-width: 16em; }
     .hero__lead { font-size: 16.5px; line-height: 1.6; }
-    .tiles { grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; padding: 32px 0 32px 36px; }
-    .tile, .tile--primary { display: block; padding: 20px; background: var(--surf); border-color: var(--line); color: var(--ink); height: 100%; }
+    .tiles { grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; padding: 52px 0 52px 36px; }
+    .tile, .tile--primary { display: block; padding: 20px; background: var(--hero-tile-bg); border-color: var(--hero-tile-border); color: var(--hero-tile-ink); height: 100%; }
     .tile:hover { transform: translateY(-3px); background: var(--accent-wash); }
     .tile__n { display: block; margin-bottom: 30px; font: 500 11px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
     .tile__title { display: block; font-size: 15.5px; }

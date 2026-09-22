@@ -113,7 +113,7 @@ Alternatives shown to the client during the review round are kept in `design/moc
 | PDF-y aktów prawnych | `public/akty/` (plain ASCII file names; the size shown on the page is read from the file at build) |
 | RODO clause | `src/data/rodo.ts` |
 | Colours and fonts | `src/styles/tokens.css` |
-| Hero photo | `src/assets/hero.jpg` (cropped; the untouched original is `design/hero-original.jpg`) |
+| Hero photo | `src/assets/hero.jpg` — the background of the opening block, generated in `src/pages/index.astro` (cropped; the untouched original is `design/hero-original.jpg`) |
 
 `llms.txt`, `llms-full.txt`, the sitemap and structured data are generated from these files on build.
 

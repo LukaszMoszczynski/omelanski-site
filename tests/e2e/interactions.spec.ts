@@ -38,7 +38,8 @@ test.describe('back to top', () => {
     await page.goto('');
     const button = page.getByRole('button', { name: 'Do góry' });
     await expect(button).toBeHidden();
-    await page.evaluate(() => window.scrollTo(0, window.innerHeight * 2));
+    // One screen down, but not as far as the footer: the button steps aside there.
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight + 200));
     await expect(button).toBeVisible();
     await button.click();
     await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 5000 }).toBe(0);

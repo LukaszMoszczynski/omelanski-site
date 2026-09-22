@@ -8,7 +8,6 @@ test('hero, tiles and sections are present', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Zakres obowiązków' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Ważne telefony' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Tel. Alarmowy: 112' }).last()).toHaveAttribute('href', 'tel:112');
-  await expect(page.getByRole('img', { name: /Kamieniu Pomorskim/ })).toBeVisible();
 });
 
 test('tabs follow the WAI-ARIA pattern', async ({ page }) => {
@@ -64,23 +63,28 @@ test.describe('without JavaScript', () => {
   });
 });
 
-test('the photo band grows with the window instead of staying a strip', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop', 'desktop widths only');
-  // The client complained the band cropped the pier away on a monitor.
-  const photo = () => page.getByRole('img', { name: /Kamieniu Pomorskim/ });
-  await page.setViewportSize({ width: 1280, height: 900 });
+test('the photo carries the opening block', async ({ page }) => {
   await page.goto('');
-  const narrow = (await photo().boundingBox())!.height;
-  expect(narrow).toBeGreaterThan(300);
-  await page.setViewportSize({ width: 1800, height: 900 });
-  await page.waitForTimeout(200);
-  const wide = (await photo().boundingBox())!.height;
-  expect(wide).toBeGreaterThan(narrow);
-  expect(wide).toBeGreaterThanOrEqual(400);
-  // Never stretched past 1440px: the source is a phone photo and shows it.
-  expect((await photo().boundingBox())!.width).toBeLessThanOrEqual(1440);
+  const hero = page.locator('section.hero');
+  const bg = await hero.evaluate((el) => getComputedStyle(el).backgroundImage);
+  // A generated image, not the original file: Astro re-encodes it.
+  expect(bg).toMatch(/_astro\/hero\..*\.(avif|webp)/);
+  // A veil over the photo is what keeps the white text readable.
+  const veil = await hero.evaluate((el) => getComputedStyle(el, '::before').backgroundImage);
+  expect(veil).toContain('linear-gradient');
 });
 
+test('the opening block is a little wider than the text, not the whole window', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'full width on a phone');
+  await page.setViewportSize({ width: 1800, height: 900 });
+  await page.goto('');
+  const hero = (await page.locator('section.hero').boundingBox())!;
+  const text = (await page.getByRole('heading', { level: 1 }).boundingBox())!;
+  expect(hero.width).toBeLessThanOrEqual(1440);
+  expect(hero.width).toBeGreaterThan(text.width);
+  // Centred, so the same margin shows on both sides.
+  expect(Math.round(hero.x)).toBe(Math.round(1800 - hero.x - hero.width));
+});
 test('header and footer carry the company logo', async ({ page }) => {
   await page.goto('');
   // One image, the logo file itself, named for screen readers in both places.
