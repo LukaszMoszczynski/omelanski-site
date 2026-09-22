@@ -33,6 +33,7 @@
   --shadow: rgba(0, 0, 0, .7);
   --accent-text: #8ab6f0;
   --logo-grey: rgba(247, 243, 236, .62);
+  --logo-text: #f7f3ec;
 }
 
 @media (prefers-color-scheme: light) {
@@ -53,6 +54,7 @@
     --shadow: rgba(74, 54, 28, .22);
     --accent-text: #1e4c96;
     --logo-grey: #7d756a;
+    --logo-text: #2d2d2d;
   }
 }
 
@@ -73,6 +75,7 @@
   --shadow: rgba(74, 54, 28, .22);
   --accent-text: #1e4c96;
   --logo-grey: #7d756a;
+  --logo-text: #2d2d2d;
 }
 
 @media (min-width: 900px) {

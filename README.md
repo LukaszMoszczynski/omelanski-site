@@ -93,8 +93,10 @@ take effect on the real server.
 ## Look and feel
 
 Body and headings are set in **Source Serif 4**, self-hosted per subset (latin, latin-ext).
-The small labels stay in JetBrains Mono, and the logo wording uses Barlow (`--font-brand`), so the
-brand keeps its own typeface whatever the site uses. The light theme is a warm off-white rather than
+The small labels stay in JetBrains Mono. The logo is `src/components/Logo.astro` — the drawing from
+`design/logo.svg`, inlined so its Barlow lettering renders; nothing about it is rebuilt in HTML or CSS,
+and the only themed part is the lettering colour (`--logo-text`), which would otherwise vanish on the
+dark background. Sizes live in `Header.astro` and `Footer.astro`. The light theme is a warm off-white rather than
 pure white; `tests/unit/contrast.test.ts` fails if any palette change drops text below WCAG AA.
 
 Alternatives shown to the client during the review round are kept in `design/mockups/`.
@@ -118,4 +120,4 @@ Alternatives shown to the client during the review round are kept in `design/moc
 ## Content still to provide
 
 - Confirmation of NIP and REGON in the RODO clause (they come from `src/data/site.ts`; the text the client sent still carried the previous firm's numbers).
-- A PDF of Prawo budowlane, if the act should offer one like the other two.
+- A PDF of Prawo budowlane, if that act should come back (it was dropped because it had no file).

@@ -1,22 +1,42 @@
 ---
+// The company logo exactly as drawn in design/logo.svg: three houses, the two
+// tagline lines, the colour bar and the name. Inlined rather than <img> so the
+// Barlow webfont applies; nothing about it is rebuilt in HTML or CSS.
 interface Props { class?: string }
 const { class: className } = Astro.props;
 ---
-<svg class:list={['logo', className]} viewBox="0 0 135 58" aria-hidden="true" focusable="false">
-  <path class="logo__grey" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z" />
-  <path class="logo__blue" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z" />
-  <path class="logo__grey" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z" />
-  {[0, 47, 94.25].map((x) => (
-    <g class="logo__win" transform={`translate(${x} 0)`}>
+<svg class:list={['logo', className]} viewBox="0 0 135 128" role="img" aria-label="Zarządzanie Nieruchomościami – Radosław Omelański">
+  <defs>
+    <g id="logo-windows">
       <rect x="6" y="22.75" width="5.5" height="5.5" /><rect x="17.75" y="22.75" width="5.5" height="5.5" /><rect x="29.5" y="22.75" width="5.5" height="5.5" />
       <rect x="6" y="34.25" width="5.5" height="5.5" /><rect x="17.75" y="34.25" width="5.5" height="5.5" /><rect x="29.5" y="34.25" width="5.5" height="5.5" />
     </g>
-  ))}
+  </defs>
+
+  <path class="logo__grey" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z" />
+  <path class="logo__accent" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z" />
+  <path class="logo__grey" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z" />
+  <g class="logo__win">
+    <use href="#logo-windows" />
+    <use href="#logo-windows" x="47" />
+    <use href="#logo-windows" x="94.25" />
+  </g>
+
+  <text x="19.5" y="79.5" font-size="15" textLength="95.5" lengthAdjust="spacingAndGlyphs">ZARZĄDZANIE</text>
+  <text x="0.5" y="97" font-size="15" textLength="134" lengthAdjust="spacingAndGlyphs">NIERUCHOMOŚCIAMI</text>
+
+  <rect class="logo__grey" x="0" y="103.75" width="40.5" height="6.25" />
+  <rect class="logo__accent" x="47" y="103.75" width="40.75" height="6.25" />
+  <rect class="logo__grey" x="94.25" y="103.75" width="40.5" height="6.25" />
+
+  <text x="0.5" y="127.2" font-size="15.5" textLength="134" lengthAdjust="spacingAndGlyphs">Radosław Omelański</text>
 </svg>
 
 <style>
   .logo { display: block; height: auto; }
-  .logo__grey { fill: var(--logo-grey); }
-  .logo__blue { fill: var(--logo-blue); }
-  .logo__win { fill: var(--logo-window); }
+  .logo__grey { fill: #818181; }
+  .logo__accent { fill: #009fe3; }
+  .logo__win { fill: #fff; }
+  /* The only thing the theme touches: black lettering would vanish on the dark background. */
+  .logo text { font-family: var(--font-brand); font-weight: 600; fill: var(--logo-text); }
 </style>

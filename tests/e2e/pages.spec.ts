@@ -64,6 +64,6 @@ test('legal acts link straight to the PDF text', async ({ page, request }) => {
     expect(res.status()).toBe(200);
     expect(res.headers()['content-type']).toContain('application/pdf');
   }
-  // The official source stays one click away for every act.
-  await expect(page.getByRole('link', { name: /Otwórz w Dz.U./ })).toHaveCount(3);
+  // Both acts keep the official source one click away.
+  await expect(page.getByRole('link', { name: /Otwórz w Dz.U./ })).toHaveCount(2);
 });

@@ -8,7 +8,7 @@ export interface LegalAct {
   pdf?: string;
 }
 
-// Proposal from the design; PDFs supplied by the client.
+// The acts the client publishes, each with the text they supplied as a PDF.
 export const ACTS: LegalAct[] = [
   {
     kind: 'Ustawa',
@@ -23,11 +23,5 @@ export const ACTS: LegalAct[] = [
     citation: 'Dz.U. 1964 nr 16 poz. 93, z późn. zm.',
     href: 'https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19640160093',
     pdf: '/akty/kodeks-cywilny-wspolwlasnosc.pdf',
-  },
-  {
-    kind: 'Ustawa',
-    title: 'Ustawa Prawo budowlane',
-    citation: 'Dz.U. 1994 nr 89 poz. 414, z późn. zm.',
-    href: 'https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19940890414',
   },
 ];

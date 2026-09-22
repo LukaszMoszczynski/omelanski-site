@@ -31,22 +31,6 @@ const tiles = [
           <a class="btn btn--ghost" href={url('/kontakt/')}>Zgłoś awarię</a>
         </p>
       </div>
-      <div class="hero__photo">
-        <Picture
-          src={hero}
-          formats={['avif', 'webp']}
-          alt="Molo i nabrzeże w Kamieniu Pomorskim z widokiem na kamienice starego miasta"
-          widths={[480, 760, 1100, 1500]}
-          sizes="(min-width: 900px) 48vw, 100vw"
-          priority
-          class="hero-photo"
-        />
-      </div>
-    </div>
-  </section>
-
-  <section class="quick" aria-label="Skróty">
-    <div class="wrap">
       <ul class="tiles" role="list">
         {tiles.map((t) => (
           <li>
@@ -61,6 +45,15 @@ const tiles = [
       </ul>
     </div>
   </section>
+
+  <Picture
+    src={hero}
+    formats={['avif', 'webp']}
+    alt="Molo i nabrzeże w Kamieniu Pomorskim z widokiem na kamienice starego miasta"
+    layout="full-width"
+    priority
+    class="hero-photo"
+  />
 
   <section class="about" aria-labelledby="about-title">
     <div class="wrap two-col">
@@ -124,20 +117,7 @@ const tiles = [
   .hero__cta { display: flex; gap: 12px; margin-top: 28px; }
   .hero__cta .btn { padding: 14px 24px; font-size: 15px; }
 
-  /* Edge to edge on a phone even though it now sits inside the content column. */
-  .hero__photo { margin-inline: calc(var(--gutter) * -1); }
-  :global(.hero-photo) {
-    display: block;
-    width: 100%;
-    height: clamp(190px, 52vw, 280px);
-    object-fit: cover;
-    /* Keeps the pier and the old-town skyline in frame at every width. */
-    object-position: 50% 58%;
-    border-block: 1px solid var(--wash-a);
-  }
-
-  .quick { border-top: 1px solid var(--line); }
-  .tiles { list-style: none; display: grid; gap: 9px; padding-block: 18px 22px; }
+  .tiles { list-style: none; display: grid; gap: 9px; padding-bottom: 22px; }
   .tile {
     display: flex;
     align-items: center;
@@ -158,6 +138,9 @@ const tiles = [
   .tile__title { font-weight: 600; font-size: 15px; }
   .tile__arrow { color: var(--dim); }
   .tile--primary .tile__arrow { color: var(--on-accent); }
+
+  /* Grows with the window: on a wide monitor the old fixed band cropped the pier away. */
+  :global(.hero-photo) { width: 100%; height: clamp(190px, 50vw, 260px); object-fit: cover; object-position: 50% 52%; border-block: 1px solid var(--wash-a); }
 
   .about { border-bottom: 1px solid var(--wash-a); padding-block: 26px; }
   .two-col { display: grid; gap: 14px; }
@@ -182,21 +165,19 @@ const tiles = [
   .office__label { margin-bottom: 7px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
 
   @media (min-width: 900px) {
-    .hero__grid { grid-template-columns: 1.02fr .98fr; align-items: stretch; }
-    .hero__copy { display: flex; flex-direction: column; justify-content: center; padding: 56px 44px 52px 0; }
-    /* Grows with the window instead of staying a thin strip on wide monitors. */
-    .hero__photo { margin-inline: 0; min-height: clamp(340px, 27vw, 540px); }
-    :global(.hero-photo) { height: 100%; border: 1px solid var(--wash-a); border-radius: 3px; }
+    .hero__grid { grid-template-columns: 1.1fr .9fr; }
+    .hero__copy { padding: 56px 44px 52px 0; border-right: 1px solid var(--wash-a); }
     .hero .eyebrow { margin-bottom: 18px; }
     h1 { margin-bottom: 20px; font-size: 46px; max-width: 16em; }
     .hero__lead { font-size: 16.5px; line-height: 1.6; }
-    .tiles { grid-template-columns: repeat(4, 1fr); gap: 10px; padding-block: 26px 30px; }
+    .tiles { grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; padding: 32px 0 32px 36px; }
     .tile, .tile--primary { display: block; padding: 20px; background: var(--surf); border-color: var(--line); color: var(--ink); height: 100%; }
     .tile:hover { transform: translateY(-3px); background: var(--accent-wash); }
     .tile__n { display: block; margin-bottom: 30px; font: 500 11px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
     .tile__title { display: block; font-size: 15.5px; }
     .tile__desc { display: block; margin-top: 5px; font-size: 12.5px; color: var(--dim); }
     .tile__arrow { display: none; }
+    :global(.hero-photo) { height: clamp(300px, 26vw, 460px); }
     .about { padding-block: 52px 56px; }
     .two-col { grid-template-columns: .55fr 1.45fr; gap: 44px; }
     .about .eyebrow { margin-bottom: 14px; }

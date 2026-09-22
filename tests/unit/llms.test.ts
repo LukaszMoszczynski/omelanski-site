@@ -16,7 +16,7 @@ describe('buildLlmsTxt', () => {
 describe('buildLlmsFullTxt', () => {
   const txt = buildLlmsFullTxt(abs);
   it('contains all content sections', () => {
-    for (const s of ['Doświadczenie i kontakt z mieszkańcami', 'Obsługa rachunkowo-księgowa', 'Ustawa Prawo budowlane', 'Cel i podstawa prawna przetwarzania', 'jest podmiotem przetwarzającym w rozumieniu Rozporządzenia', 'Pogotowie gazowe: 992', 'biuro@omelanski.com', 'E-kartoteka']) {
+    for (const s of ['Doświadczenie i kontakt z mieszkańcami', 'Obsługa rachunkowo-księgowa', 'Ustawa o własności lokali', 'Kodeks cywilny – Dział IV. Współwłasność', 'Cel i podstawa prawna przetwarzania', 'jest podmiotem przetwarzającym w rozumieniu Rozporządzenia', 'Pogotowie gazowe: 992', 'biuro@omelanski.com', 'E-kartoteka']) {
       expect(txt).toContain(s);
     }
   });
