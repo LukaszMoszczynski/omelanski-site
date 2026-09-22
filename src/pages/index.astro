@@ -163,7 +163,7 @@ const tiles = [
     transition: transform .22s var(--ease), border-color .22s ease, background-color .22s ease;
   }
   .tile { background: var(--hero-tile-bg); border-color: var(--hero-tile-border); color: var(--hero-tile-ink); }
-  .tile:hover { border-color: var(--accent-border); }
+  .tile:hover { background: var(--hero-tile-bg-hover); border-color: var(--accent-border); }
   .tile:active { transform: scale(.975); }
   .tile--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .tile__n, .tile__desc { display: none; }
@@ -212,7 +212,7 @@ const tiles = [
     .hero__lead { font-size: 16.5px; line-height: 1.6; }
     .tiles { grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; padding: 52px 0 52px 36px; }
     .tile, .tile--primary { display: block; padding: 20px; background: var(--hero-tile-bg); border-color: var(--hero-tile-border); color: var(--hero-tile-ink); height: 100%; }
-    .tile:hover { transform: translateY(-3px); background: var(--accent-wash); }
+    .tile:hover { transform: translateY(-3px); background: var(--hero-tile-bg-hover); }
     .tile__n { display: block; margin-bottom: 30px; font: 500 11px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
     .tile__title { display: block; font-size: 15.5px; }
     .tile__desc { display: block; margin-top: 5px; font-size: 12.5px; color: var(--dim); }

@@ -15,8 +15,6 @@
   --logo-window: #ffffff;
   /* The opening block lays text over the photograph, so it stays dark in both
      themes; only the cards on top of it follow the theme. */
-  --hero-veil-from: rgba(8, 13, 18, .92);
-  --hero-veil-to: rgba(8, 13, 18, .6);
   --hero-ink: #fbf7f0;
   --hero-lead: rgba(251, 247, 240, .88);
   --hero-eyebrow: #a8c8f2;
@@ -41,7 +39,10 @@
   --accent-text: #8ab6f0;
   --logo-grey: rgba(247, 243, 236, .62);
   --logo-text: #f7f3ec;
-  --hero-tile-bg: rgba(16, 26, 36, .86);
+  --hero-veil-from: rgba(8, 13, 18, .9);
+  --hero-veil-to: rgba(8, 13, 18, .58);
+  --hero-tile-bg: rgba(16, 26, 36, .88);
+  --hero-tile-bg-hover: rgba(24, 38, 52, .96);
   --hero-tile-border: rgba(247, 243, 236, .24);
   --hero-tile-ink: var(--ink);
 }
@@ -65,7 +66,10 @@
     --accent-text: #1e4c96;
     --logo-grey: #7d756a;
     --logo-text: #2d2d2d;
-    --hero-tile-bg: rgba(252, 249, 243, .95);
+    --hero-veil-from: rgba(12, 20, 28, .76);
+    --hero-veil-to: rgba(12, 20, 28, .4);
+    --hero-tile-bg: rgba(252, 249, 243, .96);
+    --hero-tile-bg-hover: #fffdf9;
     --hero-tile-border: rgba(252, 249, 243, .6);
     --hero-tile-ink: #12253d;
   }
@@ -89,7 +93,10 @@
   --accent-text: #1e4c96;
   --logo-grey: #7d756a;
   --logo-text: #2d2d2d;
-  --hero-tile-bg: rgba(252, 249, 243, .95);
+  --hero-veil-from: rgba(12, 20, 28, .76);
+  --hero-veil-to: rgba(12, 20, 28, .4);
+  --hero-tile-bg: rgba(252, 249, 243, .96);
+  --hero-tile-bg-hover: #fffdf9;
   --hero-tile-border: rgba(252, 249, 243, .6);
   --hero-tile-ink: #12253d;
 }
