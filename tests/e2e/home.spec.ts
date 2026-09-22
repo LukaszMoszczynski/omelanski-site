@@ -76,7 +76,9 @@ test('the photo band grows with the window instead of staying a strip', async ({
   await page.waitForTimeout(200);
   const wide = (await photo().boundingBox())!.height;
   expect(wide).toBeGreaterThan(narrow);
-  expect(wide).toBeGreaterThan(420);
+  expect(wide).toBeGreaterThanOrEqual(400);
+  // Never stretched past 1440px: the source is a phone photo and shows it.
+  expect((await photo().boundingBox())!.width).toBeLessThanOrEqual(1440);
 });
 
 test('header and footer carry the company logo', async ({ page }) => {

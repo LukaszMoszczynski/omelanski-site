@@ -50,7 +50,8 @@ const tiles = [
     src={hero}
     formats={['avif', 'webp']}
     alt="Molo i nabrzeże w Kamieniu Pomorskim z widokiem na kamienice starego miasta"
-    layout="full-width"
+    widths={[480, 760, 1024, 1440]}
+    sizes="(min-width: 1440px) 1440px, 100vw"
     priority
     class="hero-photo"
   />
@@ -139,8 +140,9 @@ const tiles = [
   .tile__arrow { color: var(--dim); }
   .tile--primary .tile__arrow { color: var(--on-accent); }
 
-  /* Grows with the window: on a wide monitor the old fixed band cropped the pier away. */
-  :global(.hero-photo) { width: 100%; height: clamp(190px, 50vw, 260px); object-fit: cover; object-position: 50% 52%; border-block: 1px solid var(--wash-a); }
+  /* Grows with the window: on a wide monitor the old fixed band cropped the pier away.
+     Capped at 1440px because the source photo is not sharp enough to be stretched further. */
+  :global(.hero-photo) { width: 100%; max-width: 1440px; margin-inline: auto; height: clamp(190px, 50vw, 260px); object-fit: cover; object-position: 50% 52%; border: 1px solid var(--wash-a); border-radius: 3px; }
 
   .about { border-bottom: 1px solid var(--wash-a); padding-block: 26px; }
   .two-col { display: grid; gap: 14px; }
@@ -177,7 +179,7 @@ const tiles = [
     .tile__title { display: block; font-size: 15.5px; }
     .tile__desc { display: block; margin-top: 5px; font-size: 12.5px; color: var(--dim); }
     .tile__arrow { display: none; }
-    :global(.hero-photo) { height: clamp(300px, 26vw, 460px); }
+    :global(.hero-photo) { height: clamp(300px, 26vw, 420px); }
     .about { padding-block: 52px 56px; }
     .two-col { grid-template-columns: .55fr 1.45fr; gap: 44px; }
     .about .eyebrow { margin-bottom: 14px; }
