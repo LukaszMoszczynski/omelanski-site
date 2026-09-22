@@ -65,9 +65,6 @@
     --accent-text: #1e4c96;
     --logo-grey: #7d756a;
     --logo-text: #2d2d2d;
-  --hero-tile-bg: rgba(252, 249, 243, .95);
-  --hero-tile-border: rgba(252, 249, 243, .6);
-  --hero-tile-ink: #12253d;
     --hero-tile-bg: rgba(252, 249, 243, .95);
     --hero-tile-border: rgba(252, 249, 243, .6);
     --hero-tile-ink: #12253d;
@@ -92,6 +89,9 @@
   --accent-text: #1e4c96;
   --logo-grey: #7d756a;
   --logo-text: #2d2d2d;
+  --hero-tile-bg: rgba(252, 249, 243, .95);
+  --hero-tile-border: rgba(252, 249, 243, .6);
+  --hero-tile-ink: #12253d;
 }
 
 @media (min-width: 900px) {
