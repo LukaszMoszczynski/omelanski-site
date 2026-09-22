@@ -90,6 +90,15 @@ So the preview stays out of search results and never competes with omelanski.com
 behaviour are identical. Pages ignores `.htaccess`, so the custom 404 page and the caching rules only
 take effect on the real server.
 
+## Look and feel
+
+Body and headings are set in **Source Serif 4**, self-hosted per subset (latin, latin-ext).
+The small labels stay in JetBrains Mono, and the logo wording uses Barlow (`--font-brand`), so the
+brand keeps its own typeface whatever the site uses. The light theme is a warm off-white rather than
+pure white; `tests/unit/contrast.test.ts` fails if any palette change drops text below WCAG AA.
+
+Alternatives shown to the client during the review round are kept in `design/mockups/`.
+
 ## Editing content
 
 | What | Where |
@@ -99,12 +108,14 @@ take effect on the real server.
 | Home hero and "O nas" text | `src/data/content.ts` |
 | Zakres obowiązków / Oferta items | `src/data/duties.ts` |
 | Akty prawne | `src/data/acts.ts` |
+| PDF-y aktów prawnych | `public/akty/` (plain ASCII file names; the size shown on the page is read from the file at build) |
 | RODO clause | `src/data/rodo.ts` |
-| Colours | `src/styles/tokens.css` |
+| Colours and fonts | `src/styles/tokens.css` |
+| Hero photo | `src/assets/hero.jpg` (cropped; the untouched original is `design/hero-original.jpg`) |
 
 `llms.txt`, `llms-full.txt`, the sitemap and structured data are generated from these files on build.
 
 ## Content still to provide
 
 - Confirmation of NIP and REGON in the RODO clause (they come from `src/data/site.ts`; the text the client sent still carried the previous firm's numbers).
-- Final list of legal acts.
+- A PDF of Prawo budowlane, if the act should offer one like the other two.

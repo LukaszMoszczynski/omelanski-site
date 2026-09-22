@@ -1,6 +1,8 @@
-/* Values copied from the design's THEMES object (design/Omelanski Redesign.dc.html). */
+/* Based on the design's THEMES object (design/Omelanski Redesign.dc.html), warmed up at the
+   client's request: the white is broken towards cream and the greys carry the same warmth. */
 :root {
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-brand: Barlow, 'Arial Narrow', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --ease: cubic-bezier(.22, .61, .36, 1);
   --gutter: 18px;
@@ -16,61 +18,61 @@
 :root,
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0c1723;
-  --surf: #12253d;
-  --surf-hi: #173254;
-  --ink: #f2f6fb;
+  --bg: #101a22;
+  --surf: #172533;
+  --surf-hi: #1f3145;
+  --ink: #f7f3ec;
   --on-accent: #ffffff;
-  --wash: rgba(242, 246, 251, .05);
-  --wash-a: rgba(242, 246, 251, .1);
-  --line: rgba(242, 246, 251, .14);
-  --line2: rgba(242, 246, 251, .3);
-  --dim: rgba(242, 246, 251, .6);
-  --mid: rgba(242, 246, 251, .72);
-  --body: rgba(242, 246, 251, .85);
+  --wash: rgba(247, 243, 236, .06);
+  --wash-a: rgba(247, 243, 236, .11);
+  --line: rgba(247, 243, 236, .16);
+  --line2: rgba(247, 243, 236, .32);
+  --dim: rgba(247, 243, 236, .64);
+  --mid: rgba(247, 243, 236, .76);
+  --body: rgba(247, 243, 236, .88);
   --shadow: rgba(0, 0, 0, .7);
   --accent-text: #8ab6f0;
-  --logo-grey: rgba(242, 246, 251, .6);
+  --logo-grey: rgba(247, 243, 236, .62);
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
     color-scheme: light;
-    --bg: #ffffff;
-    --surf: #f1f4f9;
-    --surf-hi: #e6ecf5;
+    --bg: #f6f0e6;
+    --surf: #efe7d9;
+    --surf-hi: #e5dbc8;
     --ink: #12253d;
     --on-accent: #ffffff;
-    --wash: rgba(18, 37, 61, .05);
-    --wash-a: rgba(18, 37, 61, .1);
-    --line: rgba(18, 37, 61, .15);
-    --line2: rgba(18, 37, 61, .3);
-    --dim: rgba(18, 37, 61, .74);
-    --mid: rgba(18, 37, 61, .82);
-    --body: rgba(18, 37, 61, .9);
-    --shadow: rgba(18, 37, 61, .2);
+    --wash: rgba(74, 54, 28, .06);
+    --wash-a: rgba(74, 54, 28, .11);
+    --line: rgba(74, 54, 28, .18);
+    --line2: rgba(74, 54, 28, .34);
+    --dim: rgba(28, 38, 52, .76);
+    --mid: rgba(24, 36, 52, .84);
+    --body: rgba(20, 34, 52, .92);
+    --shadow: rgba(74, 54, 28, .22);
     --accent-text: #1e4c96;
-    --logo-grey: #818181;
+    --logo-grey: #7d756a;
   }
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --bg: #ffffff;
-  --surf: #f1f4f9;
-  --surf-hi: #e6ecf5;
+  --bg: #f6f0e6;
+  --surf: #efe7d9;
+  --surf-hi: #e5dbc8;
   --ink: #12253d;
   --on-accent: #ffffff;
-  --wash: rgba(18, 37, 61, .05);
-  --wash-a: rgba(18, 37, 61, .1);
-  --line: rgba(18, 37, 61, .15);
-  --line2: rgba(18, 37, 61, .3);
-  --dim: rgba(18, 37, 61, .74);
-  --mid: rgba(18, 37, 61, .82);
-  --body: rgba(18, 37, 61, .9);
-  --shadow: rgba(18, 37, 61, .2);
+  --wash: rgba(74, 54, 28, .06);
+  --wash-a: rgba(74, 54, 28, .11);
+  --line: rgba(74, 54, 28, .18);
+  --line2: rgba(74, 54, 28, .34);
+  --dim: rgba(28, 38, 52, .76);
+  --mid: rgba(24, 36, 52, .84);
+  --body: rgba(20, 34, 52, .92);
+  --shadow: rgba(74, 54, 28, .22);
   --accent-text: #1e4c96;
-  --logo-grey: #818181;
+  --logo-grey: #7d756a;
 }
 
 @media (min-width: 900px) {

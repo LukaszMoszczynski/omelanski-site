@@ -1,20 +1,22 @@
 ---
-import '@fontsource/ibm-plex-sans/latin-400.css';
-import '@fontsource/ibm-plex-sans/latin-500.css';
-import '@fontsource/ibm-plex-sans/latin-600.css';
-import '@fontsource/ibm-plex-sans/latin-700.css';
-import '@fontsource/ibm-plex-sans/latin-ext-400.css';
-import '@fontsource/ibm-plex-sans/latin-ext-500.css';
-import '@fontsource/ibm-plex-sans/latin-ext-600.css';
-import '@fontsource/ibm-plex-sans/latin-ext-700.css';
+import '@fontsource/source-serif-4/latin-400.css';
+import '@fontsource/source-serif-4/latin-500.css';
+import '@fontsource/source-serif-4/latin-600.css';
+import '@fontsource/source-serif-4/latin-ext-400.css';
+import '@fontsource/source-serif-4/latin-ext-500.css';
+import '@fontsource/source-serif-4/latin-ext-600.css';
 import '@fontsource/jetbrains-mono/latin-500.css';
 import '@fontsource/jetbrains-mono/latin-700.css';
 import '@fontsource/jetbrains-mono/latin-ext-500.css';
 import '@fontsource/jetbrains-mono/latin-ext-700.css';
-import plexLatin400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url';
-import plexLatin600 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2?url';
-import plexLatinExt400 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-ext-400-normal.woff2?url';
-import plexLatinExt600 from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-ext-600-normal.woff2?url';
+// Barlow is the logo's own typeface: used only for the wordmark, so the brand
+// keeps its look whatever font the rest of the site uses.
+import '@fontsource/barlow/latin-600.css';
+import '@fontsource/barlow/latin-ext-600.css';
+import serifLatin400 from '@fontsource/source-serif-4/files/source-serif-4-latin-400-normal.woff2?url';
+import serifLatin600 from '@fontsource/source-serif-4/files/source-serif-4-latin-600-normal.woff2?url';
+import serifLatinExt400 from '@fontsource/source-serif-4/files/source-serif-4-latin-ext-400-normal.woff2?url';
+import serifLatinExt600 from '@fontsource/source-serif-4/files/source-serif-4-latin-ext-600-normal.woff2?url';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
@@ -52,10 +54,10 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
     <link rel="icon" href={url('/favicon-32.png')} sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
-    <link rel="preload" href={plexLatin400} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={plexLatin600} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={plexLatinExt400} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={plexLatinExt600} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifLatin600} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifLatinExt400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifLatinExt600} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pl_PL" />

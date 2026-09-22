@@ -13,17 +13,31 @@
 
 <script>
   class BackToTop extends HTMLElement {
+    // Set while the footer is on screen: the button would otherwise sit on top of
+    // the footer links, which is where a mouse goes next.
+    private atEnd = false;
+
+    private observer?: IntersectionObserver;
+
     private onScroll = () => {
       // Appears once a screenful (or 400px, whichever is smaller) has been scrolled,
       // so it also shows up on shorter desktop pages.
       const past = window.scrollY > Math.min(window.innerHeight, 400);
-      this.classList.toggle('is-visible', past);
+      this.classList.toggle('is-visible', past && !this.atEnd);
     };
 
     connectedCallback() {
       const button = this.querySelector('button');
       if (!button) return;
       this.hidden = false;
+      const footer = document.querySelector('footer');
+      if (footer) {
+        this.observer = new IntersectionObserver((entries) => {
+          this.atEnd = entries.some((e) => e.isIntersecting);
+          this.onScroll();
+        });
+        this.observer.observe(footer);
+      }
       this.onScroll();
       window.addEventListener('scroll', this.onScroll, { passive: true });
       button.addEventListener('click', () => {
@@ -36,6 +50,7 @@
 
     disconnectedCallback() {
       window.removeEventListener('scroll', this.onScroll);
+      this.observer?.disconnect();
     }
   }
   if (!customElements.get('back-to-top')) customElements.define('back-to-top', BackToTop);

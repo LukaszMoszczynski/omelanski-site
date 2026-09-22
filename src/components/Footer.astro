@@ -1,4 +1,5 @@
 ---
+import Brand from './Brand.astro';
 import { NAV } from '../data/pages';
 import { BUSINESS } from '../data/site';
 import { url } from '../lib/url';
@@ -6,6 +7,11 @@ import { url } from '../lib/url';
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
+  <div class="wrap footer__brand">
+    <a class="footer__brand-link" href={url('/')} aria-label={BUSINESS.shortName}>
+      <Brand stacked />
+    </a>
+  </div>
   <div class="wrap footer__inner">
     <p>Copyright {year} {BUSINESS.shortName}</p>
     <nav aria-label="Stopka">
@@ -18,6 +24,8 @@ const year = new Date().getFullYear();
 
 <style>
   .footer { background: var(--bg); border-top: 1px solid var(--line); color: var(--dim); font-size: 12.5px; }
+  .footer__brand { padding-top: 26px; }
+  .footer__brand-link { display: inline-block; text-decoration: none; }
   .footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; padding-block: 18px; }
   .footer ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 20px; }
   .footer a { position: relative; display: inline-flex; align-items: center; min-height: 24px; color: var(--dim); text-decoration: none; transition: color .2s ease; }

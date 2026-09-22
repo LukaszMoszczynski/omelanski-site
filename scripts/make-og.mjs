@@ -11,13 +11,13 @@ mkdirSync(tmp);
 const hero = readFileSync('src/assets/hero.jpg').toString('base64');
 const logo = readFileSync('design/logo.svg', 'utf8').replace('#2d2d2d', '#12253d');
 const barlowCss = pathToFileURL(resolve('node_modules/@fontsource/barlow/600.css')).href;
-const plexCss = pathToFileURL(resolve('node_modules/@fontsource/ibm-plex-sans/600.css')).href;
+const serifCss = pathToFileURL(resolve('node_modules/@fontsource/source-serif-4/600.css')).href;
 
 const og = `<!doctype html><html><head><meta charset="utf-8">
-<link rel="stylesheet" href="${barlowCss}"><link rel="stylesheet" href="${plexCss}">
+<link rel="stylesheet" href="${barlowCss}"><link rel="stylesheet" href="${serifCss}">
 <style>
-  body { margin: 0; width: 1200px; height: 630px; display: grid; grid-template-columns: 520px 1fr; font-family: 'IBM Plex Sans'; }
-  .l { background: #fff; display: grid; place-items: center; padding: 60px; }
+  body { margin: 0; width: 1200px; height: 630px; display: grid; grid-template-columns: 520px 1fr; font-family: 'Source Serif 4'; }
+  .l { background: #f6f0e6; display: grid; place-items: center; padding: 60px; }
   .l svg { width: 360px; height: auto; }
   .r { position: relative; background: url(data:image/jpeg;base64,${hero}) 50% 55% / cover; }
   .r::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,23,35,.55), rgba(12,23,35,.1)); }

@@ -50,3 +50,20 @@ test('Kontakt offers call, e-mail, fax, after-hours numbers and map link', async
   await expect(page.getByRole('link', { name: 'Pogotowie gazowe: 992' })).toHaveAttribute('href', 'tel:992');
   await expect(page.getByRole('link', { name: /Pokaż na mapie Google/ })).toHaveAttribute('href', /google\.com\/maps/);
 });
+
+test('legal acts link straight to the PDF text', async ({ page, request }) => {
+  await page.goto('akty-prawne/');
+  const pdfs = page.getByRole('link', { name: /Pobierz PDF/ });
+  await expect(pdfs).toHaveCount(2);
+  for (const link of await pdfs.all()) {
+    const href = (await link.getAttribute('href'))!;
+    expect(href).toMatch(/^\/akty\/[a-z0-9-]+\.pdf$/);
+    // The link names the file type and its weight, so nobody clicks blind.
+    await expect(link).toHaveText(/Pobierz PDF \(\d+ kB\)/);
+    const res = await request.get(href);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('application/pdf');
+  }
+  // The official source stays one click away for every act.
+  await expect(page.getByRole('link', { name: /Otwórz w Dz.U./ })).toHaveCount(3);
+});

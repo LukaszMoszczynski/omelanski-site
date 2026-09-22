@@ -5,9 +5,11 @@ import PageIntro from '../components/PageIntro.astro';
 import { ACTS } from '../data/acts';
 import { PAGES } from '../data/pages';
 import { EKARTOTEKA_URL } from '../data/site';
+import { publicFileSize } from '../lib/files';
+import { url } from '../lib/url';
 ---
 <BaseLayout page={PAGES.acts}>
-  <PageIntro eyebrow="Podstawa prawna" title="Akty prawne" lead="Przepisy, na których opiera się administrowanie Wspólnotą Mieszkaniową. Każda pozycja prowadzi do aktualnego tekstu w Dzienniku Ustaw." />
+  <PageIntro eyebrow="Podstawa prawna" title="Akty prawne" lead="Przepisy, na których opiera się administrowanie Wspólnotą Mieszkaniową. Tekst aktu pobierzesz jako PDF, a pełną, aktualną wersję otworzysz w Dzienniku Ustaw." />
   <div class="wrap acts">
     <ul class="acts__grid" role="list">
       {ACTS.map((act) => (
@@ -16,10 +18,18 @@ import { EKARTOTEKA_URL } from '../data/site';
           <h2>{act.title}</h2>
           <p class="act__cite">{act.citation}</p>
           <p class="act__foot">
+            {act.pdf ? (
+              <a class="act__pdf" href={url(act.pdf)}>
+                Pobierz PDF
+                <span class="act__size"> ({publicFileSize(act.pdf)})</span>
+                <span class="visually-hidden"> – {act.title}, plik PDF</span>
+              </a>
+            ) : (
+              <span class="act__note">tekst w Dz.U.</span>
+            )}
             <ExternalLink href={act.href} class="act__link">
               Otwórz w Dz.U. <span aria-hidden="true">↗</span><span class="visually-hidden"> – {act.title}</span>
             </ExternalLink>
-            <span class="act__note">tekst jednolity</span>
           </p>
         </li>
       ))}
@@ -46,6 +56,16 @@ import { EKARTOTEKA_URL } from '../data/site';
   .act__foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; }
   :global(.act__link) { display: inline-flex; align-items: center; min-height: 24px; font-weight: 600; color: var(--accent-text); }
   .act__note { color: var(--dim); }
+  .act__pdf {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    font-weight: 600;
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .act__size { margin-left: 5px; font: 500 11.5px var(--font-mono); color: var(--dim); text-decoration: none; }
   .cta { display: grid; gap: 14px; margin-top: 22px; padding: 22px 18px 26px; background: var(--surf); border: 1px solid var(--line); border-radius: 3px; }
   .cta h2 { margin-bottom: 5px; font-size: 15.5px; letter-spacing: 0; }
   .cta p { font-size: 13.5px; line-height: 1.55; color: var(--mid); }

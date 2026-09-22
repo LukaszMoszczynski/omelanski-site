@@ -47,6 +47,7 @@ test.describe('without JavaScript', () => {
   test('CSS follows the OS scheme', async ({ page }) => {
     await page.goto('');
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bg).toBe('rgb(255, 255, 255)');
+    // The light theme is a warm off-white now, not pure white.
+    expect(bg).toBe('rgb(246, 240, 230)');
   });
 });

@@ -40,9 +40,10 @@ test('tabs follow the WAI-ARIA pattern', async ({ page }) => {
 
 test('tabs re-initialise after client-side navigation', async ({ page }) => {
   await page.goto('');
-  await page.getByRole('contentinfo').getByRole('link', { name: 'Kontakt' }).click();
+  const footerNav = page.getByRole('navigation', { name: 'Stopka' });
+  await footerNav.getByRole('link', { name: 'Kontakt' }).click();
   await expect(page).toHaveURL(/\/kontakt\/$/);
-  await page.getByRole('contentinfo').getByRole('link', { name: 'Strona główna' }).click();
+  await footerNav.getByRole('link', { name: 'Strona główna' }).click();
   await page.getByRole('tab', { name: 'Administracja' }).click();
   await expect(page.getByRole('tabpanel', { name: 'Administracja' })).toBeVisible();
 });
@@ -61,4 +62,36 @@ test.describe('without JavaScript', () => {
       await expect(page.getByRole('heading', { level: 3, name: head })).toBeVisible();
     }
   });
+});
+
+test('the photo sits beside the headline, tiles below', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'one column on a phone');
+  await page.goto('');
+  const photo = page.getByRole('img', { name: /Kamieniu Pomorskim/ });
+  const heading = page.getByRole('heading', { level: 1 });
+  const tiles = page.getByRole('link', { name: /Zobacz swoje rozliczenia/ });
+  const [p, t, k] = await Promise.all([photo.boundingBox(), heading.boundingBox(), tiles.boundingBox()]);
+  // Side by side: the photo starts to the right of the headline and shares its row.
+  expect(p!.x).toBeGreaterThan(t!.x + t!.width - 1);
+  expect(p!.y).toBeLessThan(t!.y + t!.height);
+  // The quick tiles moved under both.
+  expect(k!.y).toBeGreaterThan(p!.y + p!.height - 1);
+});
+
+test('the photo is a generous picture, not a thin band', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'desktop widths only');
+  // The client complained that on a monitor the photo was cropped to a strip.
+  for (const width of [1280, 1800]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('');
+    const box = (await page.getByRole('img', { name: /Kamieniu Pomorskim/ }).boundingBox())!;
+    expect(box.height).toBeGreaterThan(400);
+    expect(box.width / box.height).toBeLessThan(2.2);
+  }
+});
+test('the brand shows the logo wording the way the printed logo does', async ({ page }) => {
+  await page.goto('');
+  const brand = page.getByRole('banner').getByRole('link', { name: /Radosław Omelański/ }).first();
+  await expect(brand).toContainText('Zarządzanie Nieruchomościami');
+  await expect(brand).toContainText('Radosław Omelański');
 });
