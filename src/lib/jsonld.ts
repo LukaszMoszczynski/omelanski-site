@@ -17,7 +17,6 @@ export function businessJsonLd(abs: Abs): Record<string, unknown> {
     description:
       'Administrowanie, zarządzanie i rozliczanie Wspólnot Mieszkaniowych oraz Spółdzielni Mieszkaniowych w powiecie kamieńskim i gryfickim.',
     telephone: e164(CONTACT.phone),
-    faxNumber: e164(CONTACT.phoneFax),
     email: CONTACT.email,
     taxID: BUSINESS.nip,
     identifier: { '@type': 'PropertyValue', propertyID: 'REGON', value: BUSINESS.regon },

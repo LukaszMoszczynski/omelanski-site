@@ -11,7 +11,7 @@ describe('businessJsonLd', () => {
     expect(data.name).toBe('Radosław Omelański – Zarządzanie Nieruchomościami');
     expect(data.url).toBe('https://example.pl/');
     expect(data.telephone).toBe('+48518629878');
-    expect(data.faxNumber).toBe('+48913217878');
+    expect(data).not.toHaveProperty('faxNumber');
     expect(data.email).toBe('biuro@omelanski.com');
     expect(data.taxID).toBe('9860145783');
     expect(data.logo).toBe('https://example.pl/apple-touch-icon.png');

@@ -1,0 +1,26 @@
+# Old domain omelanska.com -> new site https://omelanski.com
+# Upload as ".htaccess" into the document root of omelanska.com (Plesk: httpdocs/).
+# Back up the existing .htaccess there first and keep any lines it needs.
+#
+# Only omelanska.com and www.omelanska.com are redirected. The host check below
+# keeps ekartoteka.omelanska.com (and any other subdomain) working as it is,
+# even if it shares this folder.
+
+RewriteEngine On
+
+# Old pages -> matching new pages
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanska\.com$ [NC]
+RewriteRule ^3-akty-prawne\.html$ https://omelanski.com/akty-prawne/ [R=301,L,NC]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanska\.com$ [NC]
+RewriteRule ^4-oferta\.html$ https://omelanski.com/oferta/ [R=301,L,NC]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanska\.com$ [NC]
+RewriteRule ^k-kontakt\.html$ https://omelanski.com/kontakt/ [R=301,L,NC]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanska\.com$ [NC]
+RewriteRule ^38-rodo\.html$ https://omelanski.com/rodo/ [R=301,L,NC]
+
+# Everything else (home, 2-o-nas.html, old files) -> new home page
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanska\.com$ [NC]
+RewriteRule ^ https://omelanski.com/ [R=301,L]

@@ -25,8 +25,8 @@ import { telHref } from '../lib/phone';
           </a>
         </li>
         <li>
-          <a class="card" href={telHref(CONTACT.phoneFax)}>
-            <span><span class="card__label">Telefon / fax</span><span class="card__value">{CONTACT.phoneFax}</span></span>
+          <a class="card" href={telHref(CONTACT.landline)}>
+            <span><span class="card__label">Telefon stacjonarny</span><span class="card__value">{CONTACT.landline}</span></span>
             <span class="card__hint">w godzinach pracy biura</span>
           </a>
         </li>
@@ -46,7 +46,7 @@ import { telHref } from '../lib/phone';
       <h2 id="office-title">Dane biura</h2>
       <dl class="facts">
         <div><dt>Adres</dt><dd>{BUSINESS.street}<br />{BUSINESS.postalCode} {BUSINESS.city}</dd></div>
-        <div><dt>Telefon</dt><dd>telefon/fax: {CONTACT.phoneFax}<br />tel.: {CONTACT.phone}</dd></div>
+        <div><dt>Telefon</dt><dd>tel. stacjonarny: {CONTACT.landline}<br />tel.: {CONTACT.phone}</dd></div>
         <div><dt>E-mail</dt><dd><a class="link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>
         <div><dt>Godziny otwarcia</dt><dd>{CONTACT.hoursDays}<br /><strong>{CONTACT.hoursTime}</strong></dd></div>
       </dl>

@@ -42,7 +42,7 @@ test('RODO table of contents jumps to sections', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 2, name: 'Pliki cookies' })).toBeInViewport();
 });
 
-test('Kontakt offers call, e-mail, fax, after-hours numbers and map link', async ({ page }) => {
+test('Kontakt offers call, e-mail, landline, after-hours numbers and map link', async ({ page }) => {
   await page.goto('kontakt/');
   await expect(page.getByRole('link', { name: /Zadzwoń/ }).first()).toHaveAttribute('href', 'tel:+48518629878');
   await expect(page.getByRole('link', { name: /Napisz/ }).first()).toHaveAttribute('href', 'mailto:biuro@omelanski.com');

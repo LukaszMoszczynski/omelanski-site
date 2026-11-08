@@ -13,7 +13,7 @@ export const BUSINESS = {
 
 export const CONTACT = {
   phone: '518 629 878',
-  phoneFax: '91 32 17 878',
+  landline: '91 32 17 878',
   email: 'biuro@omelanski.com',
   hoursShort: 'pon.–pt. 8.00–16.00',
   hoursDays: 'od poniedziałku do piątku',
