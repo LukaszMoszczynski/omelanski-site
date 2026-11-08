@@ -1,0 +1,9 @@
+# omelanski.com -> https://omelanski.pl (ta sama ścieżka, 301)
+#
+# Potrzebne TYLKO, jeśli omelanski.com dostanie w Plesku własny katalog (httpdocs).
+# Jeśli omelanski.com jest aliasem domeny omelanski.pl (zalecane), ten plik nie jest
+# potrzebny: ta sama reguła jest już w .htaccess strony (katalog strona/).
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?omelanski\.com$ [NC]
+RewriteRule ^ https://omelanski.pl%{REQUEST_URI} [R=301,L]
