@@ -1,20 +1,20 @@
-// Builds the site as if hosted at https://omelanski.com/pl/ and verifies links resolve.
+// Builds the site as if hosted at https://omelanski.pl/pl/ and verifies links resolve.
 import { execSync } from 'node:child_process';
 import { readFileSync, rmSync } from 'node:fs';
 
 const out = '.base-test/pl';
 rmSync('.base-test', { recursive: true, force: true });
-const env = { ...process.env, SITE_URL: 'https://omelanski.com', BASE_PATH: '/pl' };
+const env = { ...process.env, SITE_URL: 'https://omelanski.pl', BASE_PATH: '/pl' };
 execSync(`npx astro build --outDir ${out}`, { stdio: 'inherit', env });
 execSync(`node scripts/postbuild.mjs ${out}`, { stdio: 'inherit', env });
 
 const html = readFileSync(`${out}/oferta/index.html`, 'utf8');
 const checks = [
-  ['canonical', html.includes('<link rel="canonical" href="https://omelanski.com/pl/oferta/"')],
+  ['canonical', html.includes('<link rel="canonical" href="https://omelanski.pl/pl/oferta/"')],
   ['nav link', html.includes('href="/pl/kontakt/"')],
   ['no double slash', !/href="\/pl\/\//.test(html)],
   ['htaccess 404', readFileSync(`${out}/.htaccess`, 'utf8').includes('ErrorDocument 404 /pl/404.html')],
-  ['llms absolute urls', readFileSync(`${out}/llms.txt`, 'utf8').includes('https://omelanski.com/pl/oferta/')],
+  ['llms absolute urls', readFileSync(`${out}/llms.txt`, 'utf8').includes('https://omelanski.pl/pl/oferta/')],
   [
     'nav aria-current on base path',
     /href="\/pl\/oferta\/"\s+aria-current="page"|aria-current="page"\s+href="\/pl\/oferta\/"/.test(html),

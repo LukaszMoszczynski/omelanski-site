@@ -17,14 +17,14 @@ test('robots.txt allows crawlers and points at the sitemap', async ({ request })
   expect(body).toContain('Allow: /');
   expect(body).toContain('User-agent: GPTBot');
   expect(body).toContain('User-agent: ClaudeBot');
-  expect(body).toContain('Sitemap: https://omelanski.com/sitemap-index.xml');
+  expect(body).toContain('Sitemap: https://omelanski.pl/sitemap-index.xml');
 });
 
 test('sitemap lists the five pages and not 404', async ({ request }) => {
   const res = await request.get('sitemap-0.xml');
   const xml = await res.text();
   for (const path of ['', 'akty-prawne/', 'oferta/', 'rodo/', 'kontakt/']) {
-    expect(xml).toContain(`<loc>https://omelanski.com/${path}</loc>`);
+    expect(xml).toContain(`<loc>https://omelanski.pl/${path}</loc>`);
   }
   expect(xml).not.toContain('404');
 });
@@ -34,6 +34,8 @@ test('build writes .htaccess files', () => {
   expect(root).toContain('ErrorDocument 404 /404.html');
   expect(root).toContain('text/javascript');
   expect(root).toContain('nosniff');
+  expect(root).toContain(String.raw`RewriteCond %{HTTP_HOST} ^(omelanski\.com|www\.omelanski\.com|www\.omelanski\.pl)$ [NC]`);
+  expect(root).toContain('RewriteRule ^ https://omelanski.pl%{REQUEST_URI} [R=301,L]');
   const assets = readFileSync('dist/_astro/.htaccess', 'utf8');
   expect(assets).toContain('immutable');
 });
@@ -41,11 +43,11 @@ test('build writes .htaccess files', () => {
 for (const route of ROUTES) {
   test(`head metadata: /${route.path}`, async ({ page }) => {
     await page.goto(route.path);
-    const canonical = `https://omelanski.com/${route.path}`;
+    const canonical = `https://omelanski.pl/${route.path}`;
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{50,}/);
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanski.com/og.jpg');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanski.pl/og.jpg');
     await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', /.+/);
     const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();

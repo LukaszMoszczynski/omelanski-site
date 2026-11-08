@@ -12,7 +12,7 @@ describe('businessJsonLd', () => {
     expect(data.url).toBe('https://example.pl/');
     expect(data.telephone).toBe('+48518629878');
     expect(data).not.toHaveProperty('faxNumber');
-    expect(data.email).toBe('biuro@omelanski.com');
+    expect(data.email).toBe('biuro@omelanski.pl');
     expect(data.taxID).toBe('9860145783');
     expect(data.logo).toBe('https://example.pl/apple-touch-icon.png');
     expect(data.sameAs).toBeUndefined();

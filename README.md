@@ -33,37 +33,33 @@ The generated `.htaccess` files are Apache-only. On nginx or another server they
 
 ## Domain
 
-The site is built for **https://omelanski.com** (served from the domain root). Canonical links, the sitemap, `robots.txt`, `llms.txt`, structured data and the social-share image all take their address from `site` in `astro.config.mjs`.
+The site is built for **https://omelanski.pl** (served from the domain root). Canonical links, the sitemap, `robots.txt`, `llms.txt`, structured data and the social-share image all take their address from `site` in `astro.config.mjs`. The e-mail address is `biuro@omelanski.pl`.
 
-The e-mail address is `biuro@omelanski.com`. E-kartoteka still links to `ekartoteka.omelanska.com`, because `ekartoteka.omelanski.com` has no DNS record yet — once that subdomain works, change `EKARTOTEKA_URL` in `src/data/site.ts`.
+| Address | What happens |
+|---|---|
+| `omelanski.pl` | The site. |
+| `www.omelanski.pl`, `omelanski.com`, `www.omelanski.com` | 301 to the same path on `https://omelanski.pl`. The rule is written into `dist/.htaccess` by `scripts/postbuild.mjs`, so attach these domains to the **same** OVH hosting folder (Multisite, with SSL) as omelanski.pl. |
+| `omelanska.com`, `www.omelanska.com` (old site, Plesk server) | 301 to the matching new page — upload `deploy/omelanska.com.htaccess` as `.htaccess` into the old domain's `httpdocs/`. Only after omelanski.pl is live. |
+| `ekartoteka.omelanska.com` | Stays where it is. The redirect above checks the host, so the subdomain is not touched. |
 
-### Switching over from omelanska.com
-
-Once omelanski.com serves the new site, redirect the old domain permanently so search rankings and bookmarks carry over. In the old domain's root `.htaccess`:
-
-```apache
-RewriteEngine On
-RewriteRule ^(.*)$ https://omelanski.com/$1 [R=301,L]
-```
-
-Then add omelanski.com to Google Search Console and submit `https://omelanski.com/sitemap-index.xml`.
+After launch add omelanski.pl to Google Search Console and submit `https://omelanski.pl/sitemap-index.xml`.
 
 ### Serving from a sub-folder instead (optional)
 
 Edit `astro.config.mjs`:
 
 ```js
-const SITE = process.env.SITE_URL ?? 'https://omelanski.com';
+const SITE = process.env.SITE_URL ?? 'https://omelanski.pl';
 const BASE = process.env.BASE_PATH ?? '/pl';
 ```
 
 Build and upload `dist/` into the `/pl` folder. Then:
 
-- Add `Sitemap: https://omelanski.com/pl/sitemap-index.xml` to the **root** `robots.txt` of the new domain (crawlers only read `/robots.txt`).
+- Add `Sitemap: https://omelanski.pl/pl/sitemap-index.xml` to the **root** `robots.txt` of the new domain (crawlers only read `/robots.txt`).
 - Redirect the old domain permanently, e.g. in the old domain's root `.htaccess`:
   ```apache
   RewriteEngine On
-  RewriteRule ^(.*)$ https://omelanski.com/pl/$1 [R=301,L]
+  RewriteRule ^(.*)$ https://omelanski.pl/pl/$1 [R=301,L]
   ```
 - Submit the new sitemap in Google Search Console.
 - With a `/pl` base, `llms.txt` and `llms-full.txt` are served at `/pl/llms.txt` and `/pl/llms-full.txt`. If you want them reachable at the domain root as well, copy them there too.
@@ -86,7 +82,7 @@ The preview build differs from the production build only through `PREVIEW=1`:
 - every page gets `<meta name="robots" content="noindex">` and no canonical link,
 - `robots.txt` answers `Disallow: /`.
 
-So the preview stays out of search results and never competes with omelanski.com. Content, styles and
+So the preview stays out of search results and never competes with omelanski.pl. Content, styles and
 behaviour are identical. Pages ignores `.htaccess`, so the custom 404 page and the caching rules only
 take effect on the real server.
 

@@ -14,13 +14,13 @@ export const BUSINESS = {
 export const CONTACT = {
   phone: '518 629 878',
   landline: '91 32 17 878',
-  email: 'biuro@omelanski.com',
+  email: 'biuro@omelanski.pl',
   hoursShort: 'pon.–pt. 8.00–16.00',
   hoursDays: 'od poniedziałku do piątku',
   hoursTime: '8.00 – 16.00',
 } as const;
 
-// Stays on the old domain until ekartoteka.omelanski.com is set up (no DNS record yet).
+// Stays on the old domain (omelanska.com) — the e-kartoteka is not moving.
 export const EKARTOTEKA_URL = 'https://ekartoteka.omelanska.com/';
 
 export const MAPS_URL =
