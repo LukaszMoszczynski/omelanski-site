@@ -326,3 +326,32 @@ test('page headings are as wide as their text, so the wipe crosses the words', a
   });
   expect(width - textWidth).toBeLessThan(4);
 });
+
+test('on a page change the heading comes first, the text below it after', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'the header nav is desktop-only');
+  await page.goto('kontakt/');
+  await page.waitForSelector('html.motion-ready');
+  await page.waitForTimeout(1200);
+  await page.evaluate(() => {
+    (window as any).__order = [];
+    const started = performance.now();
+    const sample = () => {
+      const heading = document.querySelector('main h1');
+      if (heading && heading.textContent === 'Oferta') {
+        const clip = getComputedStyle(heading).clipPath.match(/inset\(\S+ ([\d.]+)%/);
+        const shown = clip ? 100 - Number(clip[1]) : 100;
+        const below = Math.max(...Array.from(document.querySelectorAll('.intro__subtitle, .intro__lead')).map((element) => Number(getComputedStyle(element).opacity)));
+        (window as any).__order.push([shown, below]);
+      }
+      if (performance.now() - started < 1500) requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+    document.querySelector<HTMLAnchorElement>('header nav a[href="/oferta/"]')!.click();
+  });
+  await page.waitForTimeout(1600);
+  const order: Array<[number, number]> = await page.evaluate(() => (window as any).__order);
+  // Whenever the text below has started to show, at least half of the heading is already there.
+  for (const [shown, below] of order) {
+    if (below > 0.05) expect(shown, `heading ${shown}% while text below at ${below}`).toBeGreaterThanOrEqual(50);
+  }
+});

@@ -26,11 +26,13 @@ registerMotion(() => {
   const rest = Array.from(text).filter((element) => !headings.includes(element) && !labels.includes(element));
   if (labels.length) timeline.fromTo(labels, { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, 0);
   if (headings.length) {
+    // Starts uncovering at once (a slow start left the text below showing first).
     timeline.fromTo(headings, { clipPath: 'inset(-15% 100% -15% 0%)' }, {
-      clipPath: 'inset(-15% 0% -15% 0%)', duration: 0.75, ease: 'power3.inOut', clearProps: 'clipPath,transform,opacity',
-    }, 0.05);
+      clipPath: 'inset(-15% 0% -15% 0%)', duration: 0.7, ease: 'power2.out', clearProps: 'clipPath,transform,opacity',
+    }, 0);
   }
-  if (rest.length) timeline.fromTo(rest, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.05 }, 0.25);
+  // The text below follows once the heading is mostly there.
+  if (rest.length) timeline.fromTo(rest, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.06 }, headings.length ? 0.3 : 0.1);
   if (tiles.length) {
     timeline.fromTo(tiles, { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.07 }, 0.05);
   }
