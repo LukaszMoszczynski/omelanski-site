@@ -28,8 +28,8 @@ const { current } = Astro.props;
 </mobile-menu>
 
 <script>
-  import { gsap } from 'gsap';
-  import { EASE_IN, EASE_OUT, motionEnabled } from '../scripts/motion';
+  // GSAP is optional here: the menu must open and close even if it never loads.
+  import { EASE_IN, EASE_OUT, gsapIfLoaded, loadGsap } from '../scripts/motion-state';
 
   // An overlay under the header rather than a modal <dialog>: the burger must stay visible
   // and clickable so its three bars can morph into the cross. The page below the header is
@@ -62,6 +62,7 @@ const { current } = Astro.props;
       this.label = this.querySelector<HTMLElement>('[data-label]');
       if (!this.button || !this.sheet) return;
       this.initialised = true;
+      void loadGsap();
 
       this.button.addEventListener('click', () => (this.isOpen ? this.close() : this.open()));
       this.sheet.addEventListener('click', (event) => {
@@ -92,7 +93,8 @@ const { current } = Astro.props;
       this.hideOutside();
       document.documentElement.classList.add('is-locked');
       this.sheet.querySelector<HTMLElement>('a')?.focus();
-      if (motionEnabled()) {
+      const gsap = gsapIfLoaded();
+      if (gsap) {
         // The sheet slides up, then the links follow one after another.
         const items = this.sheet.querySelectorAll('a');
         gsap.killTweensOf([this.sheet, ...items]);
@@ -111,13 +113,14 @@ const { current } = Astro.props;
       if (this.label) this.label.textContent = 'Menu';
       this.unlock();
       if (returnFocus) this.button.focus();
-      const items = sheet.querySelectorAll('a');
-      gsap.killTweensOf([sheet, ...items]);
-      gsap.set(items, { clearProps: 'transform,opacity' });
-      if (!motionEnabled()) {
+      const gsap = gsapIfLoaded();
+      if (!gsap) {
         sheet.hidden = true;
         return;
       }
+      const items = sheet.querySelectorAll('a');
+      gsap.killTweensOf([sheet, ...items]);
+      gsap.set(items, { clearProps: 'transform,opacity' });
       // Let it slide back down before it is taken out of the layout.
       let finished = false;
       const done = () => {

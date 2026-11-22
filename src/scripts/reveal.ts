@@ -2,7 +2,8 @@
 // batches one after another. Elements opt in with data-reveal.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { EASE_OUT, registerMotion } from './motion';
+import { registerMotion } from './motion';
+import { EASE_OUT } from './motion-state';
 
 registerMotion(() => {
   const items = gsap.utils.toArray<HTMLElement>('[data-reveal]');

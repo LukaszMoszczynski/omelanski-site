@@ -90,12 +90,23 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
             if (!root.classList.contains('motion-ready')) root.classList.remove('motion');
           }, 2000);
         }
+        // Astro restores the scroll position itself (also after a reload): keep that instant
+        // until the page has loaded (see astro:page-load below).
+        root.classList.add('is-swapping');
         document.addEventListener('astro:before-swap', function (event) {
           event.newDocument.documentElement.dataset.theme = root.dataset.theme;
           // Astro copies the new page's <html> attributes, so the motion state is carried over.
           if (root.classList.contains('motion-ready')) event.newDocument.documentElement.classList.add('motion');
+          // Restoring the scroll position (Back) or jumping to an anchor on the new page must be
+          // instant: with smooth scrolling it would glide from the top and could be cut short.
+          event.newDocument.documentElement.classList.add('is-swapping');
           var meta = event.newDocument.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', root.dataset.theme === 'dark' ? '#101a22' : '#f6f0e6');
+        });
+        document.addEventListener('astro:page-load', function () {
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () { root.classList.remove('is-swapping'); });
+          });
         });
       })();
     </script>

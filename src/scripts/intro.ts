@@ -2,7 +2,8 @@
 //   "0" the photograph (home only), "1" heading text, "2" the home tiles.
 // Every element has started by 0.4 s and the whole sequence ends by about 0.9 s.
 import { gsap } from 'gsap';
-import { EASE_OUT, registerMotion } from './motion';
+import { registerMotion } from './motion';
+import { EASE_OUT } from './motion-state';
 
 registerMotion(() => {
   const photo = document.querySelector('[data-intro="0"]');

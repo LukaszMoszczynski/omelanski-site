@@ -61,8 +61,8 @@ test.describe('back to top', () => {
 test.describe('in-page anchors', () => {
   test('RODO table of contents scrolls smoothly', async ({ page }) => {
     await page.goto('rodo/');
-    const behaviour = await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior);
-    expect(behaviour).toBe('smooth');
+    // Instant for a moment while the page loads (scroll restore), smooth right after.
+    await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), { timeout: 1000 }).toBe('smooth');
   });
 
   test.describe('with reduced motion', () => {

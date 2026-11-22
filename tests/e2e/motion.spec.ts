@@ -237,3 +237,90 @@ test.describe('page changes', () => {
     expect(await page.evaluate(() => window.__motionTriggerCount!())).toBe(fresh);
   });
 });
+
+test.describe('regressions from the final review', () => {
+  test('clicking a PDF on /akty-prawne/ leaves the page visible', async ({ page }) => {
+    await page.goto('akty-prawne/');
+    await page.waitForSelector('html.motion-ready');
+    const download = page.waitForEvent('download').catch(() => null);
+    await page.locator('a.act__pdf').first().click();
+    await download;
+    await page.waitForTimeout(600);
+    await expect(page).toHaveURL(/\/akty-prawne\/$/);
+    expect(await page.locator('main').evaluate((main) => getComputedStyle(main).opacity)).toBe('1');
+  });
+
+  test('back restores the scroll position', async ({ page }) => {
+    await page.goto('');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => window.scrollTo(0, 1500));
+    await page.waitForTimeout(200);
+    const before = await page.evaluate(() => window.scrollY);
+    expect(before).toBeGreaterThan(1000);
+    // Clicked from script: Playwright's own click would first scroll to the footer link.
+    await page.evaluate(() => document.querySelector<HTMLAnchorElement>('footer a[href="/kontakt/"]')!.click());
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kontakt');
+    await page.goBack();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(ROUTES[0].h1);
+    await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 1500 }).toBeGreaterThan(before - 10);
+  });
+
+  test('a page change to /rodo/#cookies lands on that section, visible', async ({ page }) => {
+    await page.goto('');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => {
+      const link = document.createElement('a');
+      link.href = '/rodo/#cookies';
+      link.textContent = 'cookies';
+      document.querySelector('main')!.prepend(link);
+      link.click();
+    });
+    const heading = page.getByRole('heading', { level: 2, name: 'Pliki cookies' });
+    await expect(heading).toBeInViewport({ timeout: 3000 });
+    await expect.poll(() => heading.evaluate((element) => getComputedStyle(element.closest('[data-reveal]')!).opacity), { timeout: 1500 }).toBe('1');
+  });
+
+  test('reload keeps the scroll position', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await page.waitForTimeout(200);
+    await page.reload();
+    await page.waitForSelector('html.motion-ready');
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(850);
+  });
+
+  test('if GSAP never loads, the phone menu still opens', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'mobile menu only');
+    await page.route('**/_astro/*.js', async (route) => {
+      const response = await route.fetch();
+      const body = await response.text();
+      if (body.includes('registerPlugin')) return route.abort();
+      return route.fulfill({ response, body });
+    });
+    await page.goto('');
+    await page.getByRole('button', { name: 'Menu', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Menu' })).toBeHidden();
+  });
+
+  test('a failing animation setup on a later page cannot hide its content', async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = Document.prototype.querySelectorAll;
+      Document.prototype.querySelectorAll = function (this: Document, selector: string) {
+        if ((window as any).__breakReveal && selector === '[data-reveal]') throw new Error('broken setup');
+        return original.call(this, selector);
+      } as typeof original;
+    });
+    await page.goto('');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => { (window as any).__breakReveal = true; });
+    page.on('pageerror', () => { /* the broken setup is the point of this test */ });
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Kontakt' }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kontakt');
+    await expect.poll(() => page.getByRole('heading', { level: 1 }).evaluate((element) => getComputedStyle(element).opacity), { timeout: 1500 }).toBe('1');
+    await expect.poll(() => page.locator('#fast-title').evaluate((element) => getComputedStyle(element).opacity), { timeout: 1500 }).toBe('1');
+  });
+});

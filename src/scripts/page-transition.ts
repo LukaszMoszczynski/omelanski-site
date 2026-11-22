@@ -3,7 +3,7 @@
 // opening sequence (intro.ts). The browser's default crossfade is turned off in CSS.
 import { gsap } from 'gsap';
 import type { TransitionBeforePreparationEvent } from 'astro:transitions/client';
-import { EASE_IN, motionEnabled } from './motion';
+import { EASE_IN, motionEnabled } from './motion-state';
 
 document.addEventListener('astro:before-preparation', (event) => {
   if (!motionEnabled()) return;
@@ -12,8 +12,26 @@ document.addEventListener('astro:before-preparation', (event) => {
   if (!main) return;
   const load = preparation.loader;
   preparation.loader = async () => {
-    await Promise.all([load(), gsap.to(main, { opacity: 0, y: -8, duration: 0.2, ease: EASE_IN })]);
+    try {
+      await Promise.all([load(), gsap.to(main, { opacity: 0, y: -8, duration: 0.2, ease: EASE_IN })]);
+    } finally {
+      // Astro gives up on a client-side change for a PDF or other non-page response
+      // (it hands it to the browser) and for a failed fetch: the old page stays, so
+      // it must not stay faded out.
+      if (preparation.defaultPrevented || preparation.signal.aborted) {
+        gsap.killTweensOf(main);
+        gsap.set(main, { clearProps: 'opacity,transform' });
+      }
+    }
   };
+});
+
+// Coming back from a PDF or another site can restore this page from the browser's
+// back/forward cache exactly as it was left, i.e. mid-fade.
+window.addEventListener('pageshow', (event) => {
+  if (!event.persisted) return;
+  const main = document.querySelector('main');
+  if (main) gsap.set(main, { clearProps: 'opacity,transform' });
 });
 
 // Back/forward can swap without the fade-out above finishing; make sure nothing on the

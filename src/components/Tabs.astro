@@ -30,8 +30,8 @@ const { label, groups } = Astro.props;
 </tabs-widget>
 
 <script>
-  import { gsap } from 'gsap';
-  import { EASE_OUT, motionEnabled } from '../scripts/motion';
+  // GSAP is optional here: without it the highlight simply jumps to the selected tab.
+  import { EASE_OUT, gsapIfLoaded, loadGsap } from '../scripts/motion-state';
 
   class TabsWidget extends HTMLElement {
     private tabs: HTMLButtonElement[] = [];
@@ -62,6 +62,7 @@ const { label, groups } = Astro.props;
       // Tabs wrap differently at other widths: keep the highlight on the selected tab.
       this.resizeObserver = new ResizeObserver(() => this.placeIndicator(false));
       this.resizeObserver.observe(list);
+      void loadGsap().then(() => this.placeIndicator(false));
       list.addEventListener('click', (event) => {
         const tab = (event.target as Element).closest<HTMLButtonElement>('[role="tab"]');
         if (tab) this.select(this.tabs.indexOf(tab), false);
@@ -78,8 +79,15 @@ const { label, groups } = Astro.props;
       const tab = this.tabs[this.current];
       if (!this.indicator || !tab) return;
       const box = { x: tab.offsetLeft, y: tab.offsetTop, width: tab.offsetWidth, height: tab.offsetHeight };
+      const gsap = gsapIfLoaded();
+      if (!gsap) {
+        this.indicator.style.transform = `translate(${box.x}px, ${box.y}px)`;
+        this.indicator.style.width = `${box.width}px`;
+        this.indicator.style.height = `${box.height}px`;
+        return;
+      }
       gsap.killTweensOf(this.indicator);
-      if (animate && motionEnabled()) gsap.to(this.indicator, { ...box, duration: 0.35, ease: EASE_OUT });
+      if (animate) gsap.to(this.indicator, { ...box, duration: 0.35, ease: EASE_OUT });
       else gsap.set(this.indicator, box);
     }
 
@@ -112,11 +120,14 @@ const { label, groups } = Astro.props;
         // `inert` + aria-hidden keep it out of the tab order and the accessibility tree.
         panel.toggleAttribute('inert', !active);
         panel.setAttribute('aria-hidden', String(!active));
-        gsap.killTweensOf(panel);
-        if (active && animate && changed && motionEnabled()) {
-          gsap.fromTo(panel, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: EASE_OUT, clearProps: 'transform,opacity' });
-        } else {
-          gsap.set(panel, { clearProps: 'transform,opacity' });
+        const gsap = gsapIfLoaded();
+        if (gsap) {
+          gsap.killTweensOf(panel);
+          if (active && animate && changed) {
+            gsap.fromTo(panel, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: EASE_OUT, clearProps: 'transform,opacity' });
+          } else {
+            gsap.set(panel, { clearProps: 'transform,opacity' });
+          }
         }
       });
       if (focus) this.tabs[index].focus();

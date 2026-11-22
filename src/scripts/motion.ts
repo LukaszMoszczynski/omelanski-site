@@ -11,10 +11,25 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { motionEnabled } from './motion-state';
+
+export { EASE_IN, EASE_OUT, motionEnabled } from './motion-state';
+
 gsap.registerPlugin(ScrollTrigger);
 
-export const EASE_OUT = 'power3.out';
-export const EASE_IN = 'power2.in';
+// A refresh can scroll the window back to a stale cached position (e.g. 0 after Astro
+// restored the position on Back, jumped to an anchor, or the browser restored it on
+// reload). Keep wherever the page really is.
+let keptScroll: [number, number] | null = null;
+ScrollTrigger.addEventListener('refreshInit', () => {
+  keptScroll = [window.scrollX, window.scrollY];
+});
+ScrollTrigger.addEventListener('refresh', () => {
+  if (keptScroll && (window.scrollX !== keptScroll[0] || window.scrollY !== keptScroll[1])) {
+    window.scrollTo(keptScroll[0], keptScroll[1]);
+  }
+  keptScroll = null;
+});
 
 type Setup = () => void;
 const setups: Setup[] = [];
@@ -25,15 +40,21 @@ export function registerMotion(setup: Setup): void {
   setups.push(setup);
 }
 
-export function motionEnabled(): boolean {
-  return document.documentElement.classList.contains('motion');
-}
-
 function start() {
   const root = document.documentElement;
   // Already running for this page (the first load starts before astro:page-load).
   if (context || !motionEnabled()) return;
-  context = gsap.context(() => setups.forEach((setup) => setup()));
+  // One failing setup must not keep the page hidden: each runs on its own, and
+  // motion-ready (which lifts the CSS hiding) is added whatever happens.
+  context = gsap.context(() => {
+    for (const setup of setups) {
+      try {
+        setup();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  });
   root.classList.add('motion-ready');
   ScrollTrigger.refresh();
 }

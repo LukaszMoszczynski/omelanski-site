@@ -10,6 +10,9 @@ html {
   scroll-padding-bottom: 88px;
 }
 
+/* Set for a moment while Astro swaps in a new page, so its scroll restore is instant. */
+html.is-swapping { scroll-behavior: auto; }
+
 /* Set while the mobile menu is open so the page behind cannot scroll. */
 html.is-locked, html.is-locked body { overflow: hidden; }
 html.is-locked body { overscroll-behavior: none; }

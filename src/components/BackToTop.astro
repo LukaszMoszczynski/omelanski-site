@@ -12,8 +12,8 @@
 </back-to-top>
 
 <script>
-  import { gsap } from 'gsap';
-  import { EASE_IN, EASE_OUT, motionEnabled } from '../scripts/motion';
+  // GSAP is optional here: without it the button just appears and disappears.
+  import { EASE_IN, EASE_OUT, gsapIfLoaded, loadGsap } from '../scripts/motion-state';
 
   const HIDDEN = { autoAlpha: 0, scale: 0.8, y: 8 };
 
@@ -34,7 +34,8 @@
       this.shown = visible;
       this.classList.toggle('is-visible', visible);
       // With motion on, GSAP owns the look (inline styles win over the CSS states).
-      if (!motionEnabled()) return;
+      const gsap = gsapIfLoaded();
+      if (!gsap) return;
       gsap.killTweensOf(this);
       if (visible) gsap.to(this, { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: EASE_OUT });
       else gsap.to(this, { ...HIDDEN, duration: 0.2, ease: EASE_IN });
@@ -44,7 +45,9 @@
       const button = this.querySelector('button');
       if (!button) return;
       this.hidden = false;
-      if (motionEnabled()) gsap.set(this, HIDDEN);
+      void loadGsap().then((gsap) => {
+        if (gsap && !this.shown) gsap.set(this, HIDDEN);
+      });
       const footer = document.querySelector('footer');
       if (footer) {
         this.observer = new IntersectionObserver((entries) => {
