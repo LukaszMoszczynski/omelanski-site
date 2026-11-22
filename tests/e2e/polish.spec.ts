@@ -162,3 +162,16 @@ test('the hero photo is requested early, at high priority', async ({ page }) => 
     expect(priority).toBe('high');
   }
 });
+
+test('every E-kartoteka link opens in a new tab and says so', async ({ page }) => {
+  for (const path of ['', 'akty-prawne/']) {
+    await page.goto(path);
+    const links = page.locator('a[href^="https://ekartoteka."]');
+    expect(await links.count(), `/${path}`).toBeGreaterThan(0);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute('target', '_blank');
+      await expect(link).toHaveAttribute('rel', /noopener/);
+      expect(await link.evaluate((element) => element.textContent ?? '')).toContain('otwiera się w nowej karcie');
+    }
+  }
+});

@@ -28,7 +28,7 @@ const heroBackground = [
 ].join("; ");
 
 const tiles = [
-  { n: '01', title: 'Zobacz swoje rozliczenia', desc: 'E-kartoteka — saldo, opłaty, media', href: EKARTOTEKA_URL, primary: true },
+  { n: '01', title: 'Zobacz swoje rozliczenia', desc: 'E-kartoteka — saldo, opłaty, media', href: EKARTOTEKA_URL, primary: true, external: true },
   { n: '02', title: 'Zgłoś awarię lub usterkę', desc: `${CONTACT.phone} albo ${CONTACT.email}`, href: url('/kontakt/') },
   { n: '03', title: 'Akty prawne', desc: 'Ustawy i uchwały wspólnot', href: url('/akty-prawne/') },
   { n: '04', title: 'Oferta dla Wspólnoty', desc: 'Zakres i warunki współpracy', href: url('/oferta/') },
@@ -54,11 +54,12 @@ const tiles = [
       <ul class="tiles" role="list">
         {tiles.map((t, index) => (
           <li data-intro="2" style={`--i: ${index}`}>
-            <a class:list={['tile', { 'tile--primary': t.primary }]} href={t.href}>
+            <a class:list={['tile', { 'tile--primary': t.primary }]} href={t.href} target={t.external ? '_blank' : undefined} rel={t.external ? 'noopener' : undefined}>
               <span class="tile__n" aria-hidden="true">{t.n}</span>
               <span class="tile__title">{t.title}</span>
               <span class="tile__desc">{t.desc}</span>
               <span class="tile__arrow" aria-hidden="true">→</span>
+              {t.external && <span class="visually-hidden"> (otwiera się w nowej karcie)</span>}
             </a>
           </li>
         ))}

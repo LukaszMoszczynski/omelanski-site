@@ -22,7 +22,7 @@ const current = Astro.url.pathname;
           ))}
         </ul>
       </nav>
-      <a class="btn btn--primary desktop-only" href={EKARTOTEKA_URL}>E-kartoteka</a>
+      <a class="btn btn--primary desktop-only" href={EKARTOTEKA_URL} target="_blank" rel="noopener">E-kartoteka<span class="visually-hidden"> (otwiera się w nowej karcie)</span></a>
       <MobileMenu current={current} />
     </div>
   </div>

@@ -7,7 +7,7 @@ test('Akty prawne lists acts linking to Dz.U. in a new tab', async ({ page }) =>
   await expect(link).toHaveAttribute('href', 'https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU19940850388');
   await expect(link).toHaveAttribute('target', '_blank');
   await expect(link).toContainText('otwiera się w nowej karcie');
-  await expect(page.getByRole('link', { name: 'Przejdź do E-kartoteki' })).toHaveAttribute('href', 'https://ekartoteka.omelanska.com/');
+  await expect(page.getByRole('link', { name: /^Przejdź do E-kartoteki/ })).toHaveAttribute('href', 'https://ekartoteka.omelanska.com/');
 });
 
 test('Oferta shows four duty sections and contact CTAs', async ({ page }) => {
