@@ -53,3 +53,62 @@ test.describe('safety', () => {
     for (const opacity of await markedOpacities(page)) expect(opacity).toBe('1');
   });
 });
+
+/** Waits until every element matching the selector is fully shown and not shifted. */
+async function expectSettled(page: Page, selector: string, timeout: number) {
+  await expect.poll(() => page.evaluate((sel) =>
+    Array.from(document.querySelectorAll(sel)).every((element) => {
+      const style = getComputedStyle(element);
+      return style.opacity === '1' && (style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)');
+    }), selector), { timeout }).toBe(true);
+}
+
+test.describe('opening sequence', () => {
+  for (const route of ROUTES) {
+    test(`/${route.path} ends fully visible within 1.2 s`, async ({ page }) => {
+      await page.goto(route.path);
+      expect(await page.locator('[data-intro]').count()).toBeGreaterThan(2);
+      await expectSettled(page, '[data-intro]', 1200);
+    });
+  }
+
+  test('the home page plays it: the heading starts hidden and rises', async ({ page }) => {
+    await page.goto('', { waitUntil: 'commit' });
+    await page.waitForSelector('html.motion-ready');
+    const start = await page.locator('h1').evaluate((element) => Number(getComputedStyle(element).opacity));
+    expect(start).toBeLessThan(1);
+    await expectSettled(page, '[data-intro]', 1200);
+  });
+
+  test('does not wait for the photo: text is in place while the image still loads', async ({ page }) => {
+    await page.route("**/_astro/hero.*", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await route.continue();
+    });
+    await page.goto('', { waitUntil: 'domcontentloaded' });
+    await expectSettled(page, '[data-intro="1"], [data-intro="2"]', 1200);
+  });
+
+  test('a home tile works when clicked straight after load', async ({ page }) => {
+    await page.goto('', { waitUntil: 'domcontentloaded' });
+    await page.getByRole('link', { name: /Akty prawne/ }).first().click();
+    await expect(page).toHaveURL(/\/akty-prawne\/$/);
+  });
+
+  test('the phone link is on top and clickable straight after load', async ({ page }) => {
+    await page.goto('kontakt/', { waitUntil: 'domcontentloaded' });
+    const onTop = await page.locator('a[href^="tel:"]').first().evaluate((link) => {
+      const box = link.getBoundingClientRect();
+      const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+      return hit === link || link.contains(hit);
+    });
+    expect(onTop).toBe(true);
+  });
+
+  test('switching theme during the intro ends visible in the new theme', async ({ page }) => {
+    await page.goto('', { waitUntil: 'domcontentloaded' });
+    await page.getByRole('button', { name: 'Jasny motyw' }).click();
+    await expectSettled(page, '[data-intro]', 1500);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+});

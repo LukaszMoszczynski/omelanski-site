@@ -115,6 +115,7 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
     <BackToTop />
     <script>
       import '../scripts/motion';
+      import '../scripts/intro';
       // After client-side navigation move focus to the new page's h1.
       // ClientRouter's built-in announcer reads the new title.
       // `astro:after-swap` only fires on client navigation, so the initial load is never affected

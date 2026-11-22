@@ -36,19 +36,20 @@ const tiles = [
 ---
 <BaseLayout page={PAGES.home}>
   <section class="hero" style={heroBackground}>
+    <span class="hero__photo" data-intro="0" aria-hidden="true"></span>
     <div class="wrap hero__grid">
       <div class="hero__copy">
-        <p class="eyebrow">{HERO.eyebrow}</p>
-        <h1 tabindex="-1">{HERO.title}</h1>
-        <p class="hero__lead">{HERO.lead}</p>
-        <p class="hero__cta desktop-only">
+        <p class="eyebrow" data-intro="1">{HERO.eyebrow}</p>
+        <h1 tabindex="-1" data-intro="1">{HERO.title}</h1>
+        <p class="hero__lead" data-intro="1">{HERO.lead}</p>
+        <p class="hero__cta desktop-only" data-intro="1">
           <a class="btn btn--soft" href={url('/oferta/')}>Zobacz ofertę</a>
           <a class="btn btn--ghost" href={url('/kontakt/')}>Zgłoś awarię</a>
         </p>
       </div>
       <ul class="tiles" role="list">
         {tiles.map((t) => (
-          <li>
+          <li data-intro="2">
             <a class:list={['tile', { 'tile--primary': t.primary }]} href={t.href}>
               <span class="tile__n" aria-hidden="true">{t.n}</span>
               <span class="tile__title">{t.title}</span>
@@ -118,6 +119,14 @@ const tiles = [
   .hero {
     position: relative;
     isolation: isolate;
+    overflow: hidden;
+  }
+  /* The photograph sits on its own layer so the opening sequence can let it settle
+     (a slight zoom-out) without moving the text. */
+  .hero__photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
     background-image: var(--hero-sm);
     background-image: var(--hero-sm-set);
     background-size: cover;
@@ -202,6 +211,8 @@ const tiles = [
       max-width: 1440px;
       margin-inline: auto;
       border-radius: 4px;
+    }
+    .hero__photo {
       background-image: var(--hero-lg);
       background-image: var(--hero-lg-set);
     }

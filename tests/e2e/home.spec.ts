@@ -66,7 +66,8 @@ test.describe('without JavaScript', () => {
 test('the photo carries the opening block', async ({ page }) => {
   await page.goto('');
   const hero = page.locator('section.hero');
-  const bg = await hero.evaluate((el) => getComputedStyle(el).backgroundImage);
+  // On its own layer, so the opening sequence can move it without moving the text.
+  const bg = await hero.locator('.hero__photo').evaluate((el) => getComputedStyle(el).backgroundImage);
   // A generated image, not the original file: Astro re-encodes it.
   expect(bg).toMatch(/_astro\/hero\..*\.(avif|webp)/);
   // A veil over the photo is what keeps the white text readable.

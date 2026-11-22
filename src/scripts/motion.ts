@@ -31,8 +31,8 @@ export function motionEnabled(): boolean {
 
 function start() {
   const root = document.documentElement;
-  if (!motionEnabled()) return;
-  context?.revert();
+  // Already running for this page (the first load starts before astro:page-load).
+  if (context || !motionEnabled()) return;
   context = gsap.context(() => setups.forEach((setup) => setup()));
   root.classList.add('motion-ready');
   ScrollTrigger.refresh();
@@ -44,6 +44,11 @@ function stop() {
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 }
 
+// astro:page-load waits for the window load event, i.e. for the hero photo, which would
+// keep the text hidden on a slow connection. The first page starts once its scripts have
+// registered (they all run before DOMContentLoaded); later pages start on astro:page-load.
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+else queueMicrotask(start);
 document.addEventListener('astro:page-load', start);
 document.addEventListener('astro:before-swap', stop);
 

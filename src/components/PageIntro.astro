@@ -4,10 +4,10 @@ const { eyebrow, title, lead, subtitle } = Astro.props;
 ---
 <section class="intro">
   <div class="wrap">
-    <p class="eyebrow">{eyebrow}</p>
-    <h1 tabindex="-1">{title}</h1>
-    {subtitle && <p class="intro__subtitle">{subtitle}</p>}
-    <p class="intro__lead">{lead}<slot name="lead-end" /></p>
+    <p class="eyebrow" data-intro="1">{eyebrow}</p>
+    <h1 tabindex="-1" data-intro="1">{title}</h1>
+    {subtitle && <p class="intro__subtitle" data-intro="1">{subtitle}</p>}
+    <p class="intro__lead" data-intro="1">{lead}<slot name="lead-end" /></p>
     <slot />
   </div>
 </section>
