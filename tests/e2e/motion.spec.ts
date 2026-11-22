@@ -167,3 +167,73 @@ test.describe('scroll reveals', () => {
     await expect.poll(() => heading.evaluate((element) => getComputedStyle(element.closest('[data-reveal]') ?? element).opacity), { timeout: 1500 }).toBe('1');
   });
 });
+
+test.describe('page changes', () => {
+  test('the old page fades out before the new one comes in', async ({ page }) => {
+    await page.goto('');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => {
+      const main = document.querySelector('main')!;
+      (window as any).__minOpacity = 1;
+      const sample = () => {
+        if (!main.isConnected) return;
+        (window as any).__minOpacity = Math.min((window as any).__minOpacity, Number(getComputedStyle(main).opacity));
+        requestAnimationFrame(sample);
+      };
+      sample();
+    });
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Kontakt' }).click();
+    await expect(page).toHaveURL(/\/kontakt\/$/);
+    expect(await page.evaluate(() => (window as any).__minOpacity)).toBeLessThan(0.5);
+  });
+
+  test('the browser crossfade is off, GSAP does the change', async ({ page }) => {
+    await page.goto('');
+    const ruleOutsideMedia = await page.evaluate(() => Array.from(document.styleSheets).some((sheet) => {
+      try {
+        return Array.from(sheet.cssRules).some((rule) => rule instanceof CSSStyleRule
+          && rule.selectorText.includes('::view-transition-old(root)') && rule.style.animationName === 'none');
+      } catch { return false; }
+    }));
+    expect(ruleOutsideMedia).toBe(true);
+  });
+
+  test('client navigation ends with visible content, focus on h1 and no errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto('');
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Kontakt' }).click();
+    await expect(page).toHaveURL(/\/kontakt\/$/);
+    await expectSettled(page, 'main, [data-intro]', 1500);
+    await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+    expect(errors).toEqual([]);
+  });
+
+  test('back and forward leave content visible', async ({ page }) => {
+    await page.goto('');
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Oferta' }).click();
+    await expect(page).toHaveURL(/\/oferta\/$/);
+    await expectSettled(page, 'main, [data-intro]', 1500);
+    // On back/forward the address changes before the page is fetched and swapped in,
+    // so wait for the new heading, then give the opening sequence its usual time.
+    await page.goBack();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(ROUTES[0].h1);
+    await expectSettled(page, 'main, [data-intro]', 1200);
+    await page.goForward();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Oferta');
+    await expectSettled(page, 'main, [data-intro]', 1200);
+  });
+
+  test('clicking a link mid-intro does not leave the next page hidden or leak triggers', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.waitForSelector('html.motion-ready');
+    const fresh = await page.evaluate(() => window.__motionTriggerCount!());
+
+    await page.goto('', { waitUntil: 'domcontentloaded' });
+    await page.getByRole('contentinfo').getByRole('link', { name: /RODO/ }).click();
+    await expect(page).toHaveURL(/\/rodo\/$/);
+    await expectSettled(page, 'main, [data-intro]', 1500);
+    expect(await page.evaluate(() => window.__motionTriggerCount!())).toBe(fresh);
+  });
+});

@@ -99,6 +99,10 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
    module starts; from then on GSAP owns their state. Printing always shows them. */
 html.motion:not(.motion-ready) [data-intro],
 html.motion:not(.motion-ready) [data-reveal] { opacity: 0; }
+/* Page changes are animated by GSAP (src/scripts/page-transition.ts), not the browser's crossfade. */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; }
+
 @media print {
   [data-intro], [data-reveal] { opacity: 1 !important; transform: none !important; visibility: visible !important; }
 }
