@@ -18,6 +18,7 @@
       button.addEventListener('click', () => {
         const next = root.dataset.theme === 'light' ? 'dark' : 'light';
         root.dataset.theme = next;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#101a22' : '#f6f0e6');
         try { localStorage.setItem('theme', next); } catch { /* storage unavailable */ }
         sync();
       });

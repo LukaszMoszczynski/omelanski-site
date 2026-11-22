@@ -48,8 +48,7 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
     <title>{title}</title>
     <meta name="description" content={page.description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#0c1723" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#f6f0e6" />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={url('/favicon-32.png')} sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
@@ -77,12 +76,14 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
         var root = document.documentElement;
         var theme = null;
         try { theme = localStorage.getItem('theme'); } catch (e) {}
-        if (theme !== 'light' && theme !== 'dark') {
-          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        }
+        // Light unless the visitor picked dark; the OS preference is not consulted.
+        if (theme !== 'dark') theme = 'light';
         root.dataset.theme = theme;
+        if (theme === 'dark') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#101a22');
         document.addEventListener('astro:before-swap', function (event) {
           event.newDocument.documentElement.dataset.theme = root.dataset.theme;
+          var meta = event.newDocument.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', root.dataset.theme === 'dark' ? '#101a22' : '#f6f0e6');
         });
       })();
     </script>
