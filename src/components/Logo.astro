@@ -13,23 +13,23 @@ const { class: className } = Astro.props;
     </g>
   </defs>
 
-  <path class="logo__grey" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z" />
-  <path class="logo__accent" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z" />
-  <path class="logo__grey" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z" />
+  <path class="logo__house logo__grey" style="--d: 0s" pathLength="1" d="M0 57.5V15.5L20.25 0L40.5 15.5V57.5Z" />
+  <path class="logo__house logo__accent" style="--d: .15s" pathLength="1" d="M47 57.5V15.5L67.4 0L87.75 15.5V57.5Z" />
+  <path class="logo__house logo__grey" style="--d: .3s" pathLength="1" d="M94.25 57.5V15.5L114.5 0L134.75 15.5V57.5Z" />
   <g class="logo__win">
     <use href="#logo-windows" />
     <use href="#logo-windows" x="47" />
     <use href="#logo-windows" x="94.25" />
   </g>
 
-  <text x="19.5" y="79.5" font-size="15" textLength="95.5" lengthAdjust="spacingAndGlyphs">ZARZĄDZANIE</text>
-  <text x="0.5" y="97" font-size="15" textLength="134" lengthAdjust="spacingAndGlyphs">NIERUCHOMOŚCIAMI</text>
+  <text class="logo__tag" style="--d: .95s" x="19.5" y="79.5" font-size="15" textLength="95.5" lengthAdjust="spacingAndGlyphs">ZARZĄDZANIE</text>
+  <text class="logo__tag" style="--d: 1.05s" x="0.5" y="97" font-size="15" textLength="134" lengthAdjust="spacingAndGlyphs">NIERUCHOMOŚCIAMI</text>
 
-  <rect class="logo__grey" x="0" y="103.75" width="40.5" height="6.25" />
-  <rect class="logo__accent" x="47" y="103.75" width="40.75" height="6.25" />
-  <rect class="logo__grey" x="94.25" y="103.75" width="40.5" height="6.25" />
+  <rect class="logo__bar logo__grey" style="--d: 1.15s" x="0" y="103.75" width="40.5" height="6.25" />
+  <rect class="logo__bar logo__accent" style="--d: 1.25s" x="47" y="103.75" width="40.75" height="6.25" />
+  <rect class="logo__bar logo__grey" style="--d: 1.35s" x="94.25" y="103.75" width="40.5" height="6.25" />
 
-  <text x="0.5" y="127.2" font-size="15.5" textLength="134" lengthAdjust="spacingAndGlyphs">Radosław Omelański</text>
+  <text class="logo__name" style="--d: 1.4s" x="0.5" y="127.2" font-size="15.5" textLength="134" lengthAdjust="spacingAndGlyphs">Radosław Omelański</text>
 </svg>
 
 <style>
@@ -39,4 +39,47 @@ const { class: className } = Astro.props;
   .logo__win { fill: #fff; }
   /* The only thing the theme touches: black lettering would vanish on the dark background. */
   .logo text { font-family: var(--font-brand); font-weight: 600; fill: var(--logo-text); }
+
+  /* Drawing: each house's outline is traced, the house fills and the outline fades away,
+     then the windows, the tagline, the colour bars and the name follow (about 1.7 s).
+     The header logo draws on the first visit (CSS only, no script to wait for); the footer
+     logo is held back (.is-waiting) and drawn (.is-drawing) when it scrolls into view
+     (src/scripts/logo.ts). Without motion none of this applies and the logo is static. */
+  .logo__house { stroke-width: 0; stroke-dasharray: 1; }
+  .logo__house.logo__grey { stroke: #818181; }
+  .logo__house.logo__accent { stroke: #009fe3; }
+  .logo__win { transform-box: view-box; }
+  .logo__bar { transform-box: fill-box; transform-origin: left center; }
+
+  /* Held back until it is drawn: the same look as the first frame of the drawing. */
+  .logo.is-waiting .logo__house { fill-opacity: 0; }
+  .logo.is-waiting .logo__win,
+  .logo.is-waiting .logo__tag,
+  .logo.is-waiting .logo__name { opacity: 0; }
+  .logo.is-waiting .logo__bar { transform: scaleX(0); }
+
+  :global(html.motion:not(.is-returning)) :global(header) .logo .logo__house,
+  .logo.is-drawing .logo__house {
+    stroke-width: 1.4;
+    animation:
+      logo-trace .8s cubic-bezier(.65, 0, .35, 1) var(--d) both,
+      logo-fill .45s ease-out calc(var(--d) + .55s) both,
+      logo-outline-out .35s ease-out calc(var(--d) + .9s) both;
+  }
+  :global(html.motion:not(.is-returning)) :global(header) .logo .logo__win,
+  .logo.is-drawing .logo__win { animation: logo-appear .4s ease-out .85s both; }
+  :global(html.motion:not(.is-returning)) :global(header) .logo :is(.logo__tag, .logo__name),
+  .logo.is-drawing :is(.logo__tag, .logo__name) { animation: logo-appear .45s ease-out var(--d) both; }
+  :global(html.motion:not(.is-returning)) :global(header) .logo .logo__bar,
+  .logo.is-drawing .logo__bar { animation: logo-bar .35s cubic-bezier(.22, 1, .36, 1) var(--d) both; }
+
+  @keyframes logo-trace { from { stroke-dashoffset: 1; fill-opacity: 0; } to { stroke-dashoffset: 0; fill-opacity: 0; } }
+  @keyframes logo-fill { from { fill-opacity: 0; } to { fill-opacity: 1; } }
+  @keyframes logo-outline-out { from { stroke-opacity: 1; } to { stroke-opacity: 0; } }
+  @keyframes logo-appear { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes logo-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  @media print {
+    .logo * { animation: none !important; opacity: 1 !important; fill-opacity: 1 !important; stroke-width: 0 !important; transform: none !important; }
+  }
 </style>
