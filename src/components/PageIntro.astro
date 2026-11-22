@@ -16,7 +16,7 @@ const { eyebrow, title, lead, subtitle } = Astro.props;
   .intro { position: relative; padding-block: 26px 20px; }
   /* The line under the heading draws itself on every page view (CSS, new element each time). */
   .intro::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--line); transform-origin: left; }
-  :global(html.motion) .intro::after { animation: line-draw 1s var(--ease-out) .2s both; }
+  :global(html.motion) .intro::after { animation: line-draw var(--dur-draw-intro) var(--ease-draw) .2s both; }
   .eyebrow { margin-bottom: 12px; }
   h1 { font-size: 30px; line-height: 1.12; letter-spacing: -.03em; margin-bottom: 12px; }
   .intro__subtitle { font-size: 15px; font-weight: 600; line-height: 1.35; margin-bottom: 12px; }

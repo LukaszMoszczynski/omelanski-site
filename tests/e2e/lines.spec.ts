@@ -27,10 +27,10 @@ test('Oferta lines wait below the fold and draw when scrolled to, one after anot
   const list = lastDutyList(page);
   expect(Math.max(...(await lineScales(list)))).toBeLessThan(0.05);
   await list.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(250);
+  await page.waitForTimeout(700);
   const midway = await lineScales(list);
   expect(midway[0]).toBeGreaterThan(midway[midway.length - 1]);
-  await expect.poll(async () => Math.min(...(await lineScales(list))), { timeout: 2500, intervals: [100] }).toBe(1);
+  await expect.poll(async () => Math.min(...(await lineScales(list))), { timeout: 4000, intervals: [100] }).toBe(1);
 });
 
 test('the divider between Oferta sections draws too', async ({ page }) => {
@@ -40,7 +40,7 @@ test('the divider between Oferta sections draws too', async ({ page }) => {
   const divider = () => section.evaluate((element) => new DOMMatrix(getComputedStyle(element, '::after').transform).a);
   expect(await divider()).toBeLessThan(0.05);
   await section.scrollIntoViewIfNeeded();
-  await expect.poll(divider, { timeout: 2500, intervals: [100] }).toBe(1);
+  await expect.poll(divider, { timeout: 4000, intervals: [100] }).toBe(1);
 });
 
 test('switching tabs draws the lines again', async ({ page }) => {
@@ -52,7 +52,7 @@ test('switching tabs draws the lines again', async ({ page }) => {
   const list = page.locator('[role="tabpanel"]:not([inert]) .num-list');
   await page.waitForTimeout(120);
   expect(Math.min(...(await lineScales(list)))).toBeLessThan(0.9);
-  await expect.poll(async () => Math.min(...(await lineScales(list))), { timeout: 2500, intervals: [100] }).toBe(1);
+  await expect.poll(async () => Math.min(...(await lineScales(list))), { timeout: 4000, intervals: [100] }).toBe(1);
 });
 
 test('the line under the page heading draws itself', async ({ page }) => {
@@ -128,4 +128,18 @@ test('home tabs keep their top lines', async ({ page }) => {
   await page.goto('');
   const first = page.locator('[role="tabpanel"]').first().locator('.num-list li').first();
   expect(await first.evaluate((item) => getComputedStyle(item, '::before').display)).not.toBe('none');
+});
+
+test('lines draw slowly enough to be seen', async ({ page }) => {
+  await page.goto('oferta/');
+  await page.waitForSelector('html.motion-ready');
+  const list = lastDutyList(page);
+  await list.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(600);
+  const scales = await lineScales(list);
+  // 0.6 s in: the first line is on its way, the last one has hardly started.
+  expect(scales[0]).toBeGreaterThan(0.05);
+  expect(scales[0]).toBeLessThan(0.95);
+  expect(scales[scales.length - 1]).toBeLessThan(0.5);
+  await expect.poll(async () => Math.min(...(await lineScales(list))), { timeout: 4000, intervals: [100] }).toBe(1);
 });

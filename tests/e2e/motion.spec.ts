@@ -88,7 +88,9 @@ test.describe('opening sequence', () => {
       await route.continue();
     });
     await page.goto('', { waitUntil: 'domcontentloaded' });
-    await expectSettled(page, '[data-intro="1"], [data-intro="2"]', 1200);
+    // The photo is held back 3 s: settling well before that proves the text does not wait
+    // for it (2 s leaves room for a busy machine running the whole suite).
+    await expectSettled(page, '[data-intro="1"], [data-intro="2"]', 2000);
   });
 
   test('a home tile works when clicked straight after load', async ({ page }) => {

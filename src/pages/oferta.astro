@@ -48,7 +48,7 @@ import { telHref } from '../lib/phone';
     height: 1px;
     background: var(--line);
     transform-origin: left;
-    transition: transform var(--dur-draw-long) var(--ease-out) var(--draw-delay);
+    transition: transform var(--dur-draw-long) var(--ease-draw) var(--draw-delay);
   }
   .duty:has(:global(.lines-waiting))::after { transform: scaleX(0); transition: none; }
   @media print { .duty::after { transform: none !important; } }

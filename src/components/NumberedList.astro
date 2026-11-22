@@ -23,7 +23,7 @@ const { items, columns = 2 } = Astro.props;
     height: 1px;
     background: var(--line);
     transform-origin: left;
-    transition: transform var(--dur-draw) var(--ease-out) calc(var(--i, 0) * var(--draw-step));
+    transition: transform var(--dur-draw) var(--ease-draw) calc(var(--i, 0) * var(--draw-step));
   }
   :global(.lines-waiting) .num-list li::before { transform: scaleX(0); transition: none; }
   @media print { .num-list li::before { transform: none !important; } }
