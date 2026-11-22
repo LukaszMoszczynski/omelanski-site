@@ -141,7 +141,7 @@ const { label, groups } = Astro.props;
     font: 600 12.5px var(--font-sans);
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color .22s ease, color .22s ease, transform .22s var(--ease);
+    transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
   }
   .tabs__list button { position: relative; }
   .tabs__list button:hover:not([aria-selected='true']) { transform: translateY(-2px); }

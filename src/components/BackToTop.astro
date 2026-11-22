@@ -12,7 +12,13 @@
 </back-to-top>
 
 <script>
+  import { gsap } from 'gsap';
+  import { EASE_IN, EASE_OUT, motionEnabled } from '../scripts/motion';
+
+  const HIDDEN = { autoAlpha: 0, scale: 0.8, y: 8 };
+
   class BackToTop extends HTMLElement {
+    private shown = false;
     // Set while the footer is on screen: the button would otherwise sit on top of
     // the footer links, which is where a mouse goes next.
     private atEnd = false;
@@ -23,13 +29,22 @@
       // Appears once a screenful (or 400px, whichever is smaller) has been scrolled,
       // so it also shows up on shorter desktop pages.
       const past = window.scrollY > Math.min(window.innerHeight, 400);
-      this.classList.toggle('is-visible', past && !this.atEnd);
+      const visible = past && !this.atEnd;
+      if (visible === this.shown) return;
+      this.shown = visible;
+      this.classList.toggle('is-visible', visible);
+      // With motion on, GSAP owns the look (inline styles win over the CSS states).
+      if (!motionEnabled()) return;
+      gsap.killTweensOf(this);
+      if (visible) gsap.to(this, { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: EASE_OUT });
+      else gsap.to(this, { ...HIDDEN, duration: 0.2, ease: EASE_IN });
     };
 
     connectedCallback() {
       const button = this.querySelector('button');
       if (!button) return;
       this.hidden = false;
+      if (motionEnabled()) gsap.set(this, HIDDEN);
       const footer = document.querySelector('footer');
       if (footer) {
         this.observer = new IntersectionObserver((entries) => {
@@ -66,8 +81,10 @@
     visibility: hidden;
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity .22s ease, transform .22s var(--ease), visibility .22s;
+    transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out), visibility var(--dur-fast);
   }
+  /* With motion on, GSAP animates the button in and out instead of this transition. */
+  :global(html.motion) .to-top { transition: none; }
   .to-top[hidden] { display: none; }
   .to-top.is-visible { visibility: visible; opacity: 1; transform: none; }
   button {
@@ -81,7 +98,7 @@
     border-radius: 50%;
     box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .5);
     cursor: pointer;
-    transition: background-color .2s ease, border-color .2s ease, transform .2s var(--ease);
+    transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
   }
   button:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translateY(-2px); }
   svg { width: 22px; height: 22px; fill: currentColor; }

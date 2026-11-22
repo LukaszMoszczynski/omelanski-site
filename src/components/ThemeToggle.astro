@@ -50,9 +50,9 @@
     height: calc(100% - 4px);
     background: var(--accent);
     border-radius: 16px;
-    transition: transform .28s var(--ease);
+    transition: transform var(--dur) var(--ease-out);
   }
-  .toggle__label { position: relative; padding: 3px 9px; color: var(--dim); transition: color .24s ease; }
+  .toggle__label { position: relative; padding: 3px 9px; color: var(--dim); transition: color var(--dur) ease; }
   .toggle__label--dark { color: var(--on-accent); }
   :global([data-theme='light']) .toggle__knob { transform: translateX(100%); }
   :global([data-theme='light']) .toggle__label--dark { color: var(--dim); }

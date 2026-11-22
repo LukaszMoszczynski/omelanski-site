@@ -123,3 +123,68 @@ test.describe('every page', () => {
     });
   }
 });
+
+test.describe('back to top: motion', () => {
+  test('scales in and ends fully shown', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.waitForSelector('html.motion-ready');
+    await page.evaluate(() => {
+      const host = document.querySelector('back-to-top') as HTMLElement;
+      (window as any).__minScale = 1;
+      const sample = () => {
+        const matrix = new DOMMatrix(getComputedStyle(host).transform);
+        (window as any).__minScale = Math.min((window as any).__minScale, matrix.a);
+        requestAnimationFrame(sample);
+      };
+      sample();
+    });
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight + 300));
+    const host = page.locator('back-to-top');
+    await expect.poll(() => host.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return style.opacity === '1' && new DOMMatrix(style.transform).a === 1 && style.visibility === 'visible';
+    }), { timeout: 1500, intervals: [50] }).toBe(true);
+    expect(await page.evaluate(() => (window as any).__minScale)).toBeLessThan(0.95);
+  });
+
+  test('steps aside at the bottom so footer links stay clickable', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.evaluate(() => window.scrollTo(0, window.innerHeight + 300));
+    await expect(page.getByRole('button', { name: 'Do góry' })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(page.getByRole('button', { name: 'Do góry' })).toBeHidden();
+    const blocked = await page.evaluate(() => Array.from(document.querySelectorAll('footer a')).filter((link) => {
+      const box = link.getBoundingClientRect();
+      if (box.bottom < 0 || box.top > innerHeight || box.width === 0) return false;
+      const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+      return !(hit === link || link.contains(hit));
+    }).length);
+    expect(blocked).toBe(0);
+  });
+});
+
+test('hover and transition timings use the shared variables', async ({ page }) => {
+  await page.goto('');
+  const literal = await page.evaluate(() => {
+    const found: string[] = [];
+    const visit = (rules: CSSRuleList) => {
+      for (const rule of Array.from(rules)) {
+        if (rule instanceof CSSMediaRule) {
+          if (!rule.conditionText.includes('prefers-reduced-motion')) visit(rule.cssRules);
+        } else if (rule instanceof CSSStyleRule) {
+          for (const property of ['transition', 'transition-duration']) {
+            const value = rule.style.getPropertyValue(property);
+            // Zero (transition: none) is not a timing; anything else must come from a variable.
+            const nonZero = (value.match(/(?:^|[\s,])(\d*\.?\d+)m?s\b/g) ?? []).some((time) => parseFloat(time.trim().replace(/^,/, '')) > 0);
+            if (nonZero) found.push(`${rule.selectorText} { ${property}: ${value} }`);
+          }
+        }
+      }
+    };
+    for (const sheet of Array.from(document.styleSheets)) {
+      try { visit(sheet.cssRules); } catch { /* cross-origin */ }
+    }
+    return found;
+  });
+  expect(literal).toEqual([]);
+});

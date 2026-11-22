@@ -7,7 +7,9 @@ import { EASE_OUT, registerMotion } from './motion';
 registerMotion(() => {
   const items = gsap.utils.toArray<HTMLElement>('[data-reveal]');
   if (!items.length) return;
-  gsap.set(items, { opacity: 0, y: 18 });
+  // A CSS transition on transform (hover lift on cards) would smooth every GSAP frame
+  // and make the slide lag, so it is off until the element has arrived.
+  gsap.set(items, { opacity: 0, y: 18, transition: 'none' });
   ScrollTrigger.batch(items, {
     start: 'top 92%',
     once: true,
@@ -16,7 +18,7 @@ registerMotion(() => {
       // once: show those straight away so the target isn't kept waiting behind them.
       const passed = batch.filter((element) => element.getBoundingClientRect().bottom <= 0);
       const onScreen = batch.filter((element) => !passed.includes(element));
-      if (passed.length) gsap.set(passed, { clearProps: 'transform,opacity' });
+      if (passed.length) gsap.set(passed, { clearProps: 'transform,opacity,transition' });
       if (onScreen.length) {
         gsap.to(onScreen, {
           opacity: 1,
@@ -25,7 +27,7 @@ registerMotion(() => {
           // One after another, but a batch never takes more than 0.3 s to get going.
           stagger: Math.min(0.06, 0.3 / onScreen.length),
           ease: EASE_OUT,
-          clearProps: 'transform,opacity',
+          clearProps: 'transform,opacity,transition',
         });
       }
     },

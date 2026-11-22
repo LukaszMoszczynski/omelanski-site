@@ -183,7 +183,7 @@ const { current } = Astro.props;
     width: 20px;
     height: 2px;
     background: var(--ink);
-    transition: transform .3s var(--ease), opacity .2s ease;
+    transition: transform var(--dur) var(--ease-out), opacity var(--dur-fast) ease;
   }
   .burger__bars span:nth-child(1) { top: 0; }
   .burger__bars span:nth-child(2) { top: 6px; }

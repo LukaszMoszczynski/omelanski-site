@@ -51,11 +51,11 @@ const cookiesN = String(RODO.length + 1).padStart(2, '0');
   .rodo__side { padding: 18px var(--gutter); background: var(--surf); border-bottom: 1px solid var(--line); }
   .rodo__toc-title { margin-bottom: 10px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
   .toc { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; }
-  .toc a { display: flex; align-items: baseline; gap: 7px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 2px; color: var(--mid); font-size: 12.5px; font-weight: 600; text-decoration: none; transition: background-color .22s ease, color .22s ease, transform .24s var(--ease); }
+  .toc a { display: flex; align-items: baseline; gap: 7px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 2px; color: var(--mid); font-size: 12.5px; font-weight: 600; text-decoration: none; transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur) var(--ease-out); }
   .toc a:hover { color: var(--ink); background: var(--wash); }
   .toc__n { font: 500 10px var(--font-mono); color: var(--accent-text); }
   .rodo__body { padding: 8px var(--gutter) 28px; }
-  .clause { padding: 18px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; transition: background-color .24s ease, border-color .24s ease; }
+  .clause { padding: 18px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; transition: background-color var(--dur) ease, border-color var(--dur) ease; }
   .clause:target { background: var(--wash); }
   .clause h2 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; }
   .clause__n { font: 500 10.5px var(--font-mono); color: var(--accent-text); }
