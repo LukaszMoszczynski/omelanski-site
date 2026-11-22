@@ -16,15 +16,17 @@ const serifCss = pathToFileURL(resolve('node_modules/@fontsource/source-serif-4/
 const og = `<!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="${barlowCss}"><link rel="stylesheet" href="${serifCss}">
 <style>
-  body { margin: 0; width: 1200px; height: 630px; display: grid; grid-template-columns: 520px 1fr; font-family: 'Source Serif 4'; }
-  .l { background: #f6f0e6; display: grid; place-items: center; padding: 60px; }
-  .l svg { width: 360px; height: auto; }
-  .r { position: relative; background: url(data:image/jpeg;base64,${hero}) 50% 55% / cover; }
-  .r::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,23,35,.55), rgba(12,23,35,.1)); }
-  .t { position: absolute; left: 48px; bottom: 48px; right: 48px; z-index: 1; color: #fff; font-size: 40px; font-weight: 600; line-height: 1.15; letter-spacing: -.02em; }
+  /* Everything that matters sits in the middle 630×630: WhatsApp, Messenger and others
+     crop the preview to a square from the centre; Facebook/LinkedIn show the full width. */
+  body { margin: 0; width: 1200px; height: 630px; position: relative; font-family: 'Source Serif 4';
+    background: url(data:image/jpeg;base64,${hero}) 50% 55% / cover; }
+  body::before { content: ''; position: absolute; inset: 0; background: rgba(12,23,35,.25); }
+  .card { position: absolute; top: 0; bottom: 0; left: 345px; width: 510px; background: #f6f0e6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; box-shadow: 0 0 60px rgba(12,23,35,.35); }
+  .card svg { width: 360px; height: auto; }
+  .t { color: #12253d; font-size: 25px; font-weight: 600; line-height: 1.25; text-align: center; letter-spacing: -.01em; }
 </style></head><body>
-  <div class="l">${logo}</div>
-  <div class="r"><div class="t">Administrowanie i rozliczanie Wspólnot Mieszkaniowych</div></div>
+  <div class="card">${logo}<div class="t">Administrowanie i rozliczanie<br>Wspólnot Mieszkaniowych</div></div>
 </body></html>`;
 
 const icon = (size) => `<!doctype html><html><body style="margin:0;background:transparent">

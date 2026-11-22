@@ -37,7 +37,7 @@ const { page, noindex: noindexProp = false } = Astro.props;
 const noindex = noindexProp || isPreview;
 const title = fullTitle(page);
 const canonical = absoluteUrl(page.path);
-const ogImage = absoluteUrl('/og.jpg');
+const ogImage = absoluteUrl('/og.jpg?v=2');
 const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
 ---
 <!doctype html>
