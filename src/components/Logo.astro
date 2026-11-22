@@ -2,10 +2,21 @@
 // The company logo exactly as drawn in design/logo.svg: three houses, the two
 // tagline lines, the colour bar and the name. Inlined rather than <img> so the
 // Barlow webfont applies; nothing about it is rebuilt in HTML or CSS.
-interface Props { class?: string }
-const { class: className } = Astro.props;
+interface Props {
+  class?: string;
+  /** A second copy shown for its looks (e.g. the large one on the home page): hidden from screen readers. */
+  decorative?: boolean;
+  /** Draws itself when it scrolls into view (src/scripts/logo.ts). The footer logo always does. */
+  drawOnView?: boolean;
+}
+const { class: className, decorative = false, drawOnView = false } = Astro.props;
 ---
-<svg class:list={['logo', className]} viewBox="0 0 135 128" role="img" aria-label="Zarządzanie Nieruchomościami – Radosław Omelański">
+<svg
+  class:list={['logo', className]}
+  viewBox="0 0 135 128"
+  data-draw-on-view={drawOnView ? '' : undefined}
+  {...(decorative ? { 'aria-hidden': 'true', focusable: 'false' } : { role: 'img', 'aria-label': 'Zarządzanie Nieruchomościami – Radosław Omelański' })}
+>
   <defs>
     <g id="logo-windows">
       <rect x="6" y="22.75" width="5.5" height="5.5" /><rect x="17.75" y="22.75" width="5.5" height="5.5" /><rect x="29.5" y="22.75" width="5.5" height="5.5" />

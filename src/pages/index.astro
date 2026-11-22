@@ -1,6 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/Logo.astro';
 import MapLink from '../components/MapLink.astro';
 import PhoneGrid from '../components/PhoneGrid.astro';
 import Tabs from '../components/Tabs.astro';
@@ -72,6 +73,7 @@ const tiles = [
       <div data-reveal>
         <p class="eyebrow">{ABOUT.eyebrow}</p>
         <h2 id="about-title">Doświadczenie<br class="desktop-only" /> i kontakt z&nbsp;mieszkańcami</h2>
+        <Logo class="about__logo" decorative drawOnView />
       </div>
       <div class="about__text" data-reveal>
         {ABOUT.paragraphs.map((p) => <p>{p}</p>)}
@@ -210,6 +212,8 @@ const tiles = [
   .office a { color: inherit; }
   .office .link { color: var(--accent-text); }
   .office strong { color: var(--ink); }
+  .about :global(.about__logo) { width: 160px; margin-block: 26px 30px; }
+  @media (min-width: 900px) { .about :global(.about__logo) { width: 220px; margin-block: 40px 0; } }
   .office__label { margin-bottom: 7px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
 
   @media (min-width: 900px) {

@@ -75,3 +75,18 @@ test('printing shows the whole logo even before it was drawn', async ({ page }) 
   await page.emulateMedia({ media: 'print' });
   expect(await finished(page.locator('footer svg.logo'))).toBe(true);
 });
+
+test('the home page has a large logo in "O nas" that draws when scrolled to', async ({ page }, testInfo) => {
+  await page.goto('');
+  await page.waitForSelector('html.motion-ready');
+  const logo = page.locator('section.about svg.logo');
+  await expect(logo).toHaveCount(1);
+  await expect(logo).toHaveAttribute('aria-hidden', 'true');
+  const width = (await logo.boundingBox())!.width;
+  expect(width).toBeGreaterThanOrEqual(testInfo.project.name === 'desktop' ? 200 : 150);
+  // Waiting below the fold, or already drawing if it is on screen at load.
+  await expect(logo).toHaveClass(/is-waiting|is-drawing/);
+  await logo.scrollIntoViewIfNeeded();
+  await expect(logo).toHaveClass(/is-drawing/);
+  await expect.poll(() => finished(logo), { timeout: 2500, intervals: [100] }).toBe(true);
+});
