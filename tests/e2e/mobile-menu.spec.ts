@@ -78,3 +78,39 @@ test('menu marks the current page', async ({ page }) => {
     page.getByRole('navigation', { name: 'Menu mobilne' }).getByRole('link', { name: 'RODO' }),
   ).toHaveAttribute('aria-current', 'page');
 });
+
+test.describe('motion', () => {
+  const linkOpacities = (page: import('@playwright/test').Page) => page.evaluate(() =>
+    Array.from(document.querySelectorAll('#mobile-menu a')).map((link) => Number(getComputedStyle(link).opacity)));
+
+  test('links come in one after another and end fully visible', async ({ page }) => {
+    await page.goto('');
+    await page.waitForSelector('html.motion-ready');
+    await page.getByRole('button', { name: 'Menu', exact: true }).click();
+    const first = await linkOpacities(page);
+    // The last link (E-kartoteka) is still on its way in right after the click.
+    expect(first[first.length - 1]).toBeLessThan(1);
+    await expect.poll(async () => (await linkOpacities(page)).every((opacity) => opacity === 1), { timeout: 1000, intervals: [50] }).toBe(true);
+  });
+
+  test('turning to desktop width mid-close ends closed and unlocked', async ({ page }) => {
+    await page.goto('');
+    await page.getByRole('button', { name: 'Menu', exact: true }).click();
+    await page.getByRole('button', { name: 'Zamknij menu' }).click();
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(page.locator('#mobile-menu')).toBeHidden();
+    await expect(page.locator('html')).not.toHaveClass(/is-locked/);
+    await expect(page.locator('main')).not.toHaveAttribute('inert');
+  });
+
+  test.describe('reduced motion', () => {
+    test.use({ reducedMotion: 'reduce' });
+    test('opens and closes instantly with everything visible', async ({ page }) => {
+      await page.goto('');
+      await page.getByRole('button', { name: 'Menu', exact: true }).click();
+      expect((await linkOpacities(page)).every((opacity) => opacity === 1)).toBe(true);
+      await page.getByRole('button', { name: 'Zamknij menu' }).click();
+      expect(await page.locator('#mobile-menu').isHidden()).toBe(true);
+    });
+  });
+});
