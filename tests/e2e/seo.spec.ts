@@ -47,7 +47,7 @@ for (const route of ROUTES) {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.{50,}/);
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanski.pl/og.jpg?v=2');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://omelanski.pl/og.jpg');
     await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute('content', 'image/jpeg');
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', /.+/);
     const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();

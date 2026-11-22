@@ -35,12 +35,13 @@ const numbers = EMERGENCY.filter((e) => e.topBar);
   .topbar__label { margin-right: 6px; color: var(--accent-text); letter-spacing: .06em; text-transform: uppercase; }
   .topbar__num { display: inline-flex; align-items: center; min-height: 24px; min-width: 24px; padding-inline: 3px; color: var(--dim); text-decoration: none; }
   /* Underline the number only — never the separator dot, which is a ::before on the link. */
-  .topbar__num:hover { color: var(--ink); }
-  .topbar__num:hover span { text-decoration: underline; }
+  /* Hover: the text darkens and a thin accent line draws in from the left (leaving to the right). */
+  .topbar__num span, .topbar__contact a { padding-bottom: 1px; background: linear-gradient(var(--accent), var(--accent)) 100% 100% / 0% 1px no-repeat; transition: background-size var(--dur) var(--ease-out), color var(--dur-fast) ease; }
+  .topbar__num:hover, .topbar__contact a:hover { color: var(--ink); }
+  .topbar__num:hover span, .topbar__contact a:hover { background-size: 100% 1px; background-position: 0 100%; }
   .topbar__num + .topbar__num::before { content: '·' / ''; margin-right: 6px; color: var(--dim); }
   .topbar__contact { display: flex; gap: 22px; margin-left: auto; font-size: 12.5px; }
   .topbar__contact a { color: inherit; text-decoration: none; }
-  .topbar__contact a:hover { text-decoration: underline; }
   .topbar :global(.toggle) { margin-left: auto; }
   @keyframes pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
   @media (min-width: 900px) {
