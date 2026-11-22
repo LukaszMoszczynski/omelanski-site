@@ -11,6 +11,13 @@ registerMotion(() => {
   // A CSS transition on transform (hover lift on cards) would smooth every GSAP frame
   // and make the slide lag, so it is off until the element has arrived.
   gsap.set(items, { opacity: 0, y: 18, transition: 'none' });
+  // Lines inside a block (numbered lists) wait undrawn until the block arrives.
+  const withLines = items.filter((item) => item.querySelector('.num-list'));
+  withLines.forEach((item) => item.classList.add('lines-waiting'));
+  const drawLines = (elements: Element[]) => {
+    // Next frame, so the undrawn state is painted first and the lines visibly draw.
+    requestAnimationFrame(() => elements.forEach((element) => element.classList.remove('lines-waiting')));
+  };
   // After a page change, what is already on screen fades in where it is: sliding up there,
   // right after the old page faded out, reads as a bounce. Below the fold they still slide.
   if (document.documentElement.classList.contains('is-returning')) {
@@ -26,6 +33,7 @@ registerMotion(() => {
       const passed = batch.filter((element) => element.getBoundingClientRect().bottom <= 0);
       const onScreen = batch.filter((element) => !passed.includes(element));
       if (passed.length) gsap.set(passed, { clearProps: 'transform,opacity,transition' });
+      drawLines(batch);
       if (onScreen.length) {
         gsap.to(onScreen, {
           opacity: 1,

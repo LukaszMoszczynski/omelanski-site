@@ -39,7 +39,19 @@ import { telHref } from '../lib/phone';
 </BaseLayout>
 
 <style>
-  .duty { padding-block: 22px; border-bottom: 1px solid var(--line); }
+  .duty { position: relative; padding-block: 22px; }
+  /* The divider under each section draws itself with the section's lines. */
+  .duty::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left;
+    transition: transform var(--dur-draw-long) var(--ease-out) var(--draw-delay);
+  }
+  .duty:has(:global(.lines-waiting))::after { transform: scaleX(0); transition: none; }
+  @media print { .duty::after { transform: none !important; } }
   .duty__grid { display: grid; gap: 14px; }
   .duty__n { margin-bottom: 8px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; color: var(--accent-text); }
   .duty h2 { font-size: 19px; line-height: 1.25; }

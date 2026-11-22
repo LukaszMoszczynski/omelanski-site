@@ -4,7 +4,7 @@ const { items, columns = 2 } = Astro.props;
 ---
 <ol role="list" class:list={['num-list', { 'num-list--two': columns === 2 }]}>
   {items.map((text, i) => (
-    <li>
+    <li style={`--i: ${i}`}>
       <span class="num-list__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
       <span>{text}</span>
     </li>
@@ -13,7 +13,20 @@ const { items, columns = 2 } = Astro.props;
 
 <style>
   .num-list { list-style: none; display: grid; }
-  .num-list li { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.5; color: var(--body); }
+  .num-list li { position: relative; display: flex; gap: 12px; padding: 11px 0; font-size: 14px; line-height: 1.5; color: var(--body); }
+  /* The separator is a drawn line rather than a border, so it can draw itself from the left
+     when its section arrives (.lines-waiting is set by src/scripts/reveal.ts and Tabs). */
+  .num-list li::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left;
+    transition: transform var(--dur-draw) var(--ease-out) calc(var(--i, 0) * var(--draw-step));
+  }
+  :global(.lines-waiting) .num-list li::before { transform: scaleX(0); transition: none; }
+  @media print { .num-list li::before { transform: none !important; } }
   .num-list__n { flex: none; padding-top: 3px; font: 500 10.5px var(--font-mono); color: var(--accent-text); }
   @media (min-width: 900px) {
     /* Equal rows so the two columns line up even with different text lengths. */

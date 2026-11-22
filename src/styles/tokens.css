@@ -10,6 +10,11 @@
   --dur: .32s;
   --dur-press: .08s;
   --dur-slow: .5s;
+  /* Lines that draw themselves: one line, the gap between lines, a section divider. */
+  --dur-draw: .9s;
+  --draw-step: .07s;
+  --dur-draw-long: 1.1s;
+  --draw-delay: .15s;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
   --gutter: 18px;
   --max: 1280px;

@@ -31,7 +31,21 @@ ul, ol { margin: 0; padding: 0; }
 img { display: block; max-width: 100%; height: auto; }
 
 a { color: var(--accent-text); text-underline-offset: 3px; }
-.link { text-decoration: underline; }
+/* Text links: a thin accent underline at rest (so a link never relies on colour alone);
+   on hover a light band grows up from it behind the words. */
+.link {
+  color: var(--accent-text);
+  text-decoration: none;
+  padding-bottom: 1px;
+  background-image: linear-gradient(var(--accent-wash), var(--accent-wash)), linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%, 0 100%;
+  background-size: 100% 0%, 100% 1px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size var(--dur) var(--ease-out), color var(--dur-fast) ease;
+}
+.link:hover, .link:focus-visible { color: var(--ink); background-size: 100% 100%, 100% 1px; }
 
 :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 [tabindex='-1']:focus { outline: none; }
@@ -125,6 +139,7 @@ html.motion.is-returning:not(.motion-ready) [data-intro] { opacity: 0; }
 /* Page headings are only as wide as their text, so the wipe on a page change (intro.ts)
    travels across the words, not across the empty width of the column. */
 h1[data-intro] { width: fit-content; max-width: 100%; }
+@keyframes line-draw { from { transform: scaleX(0); } }
 @keyframes intro-photo { from { opacity: 0; transform: scale(1.08); } }
 @keyframes intro-rise { from { opacity: 0; transform: translateY(16px); } }
 html.motion:not(.is-returning) [data-intro='0'] { animation: intro-photo .9s var(--ease-out) both; }

@@ -123,6 +123,11 @@ const { label, groups } = Astro.props;
         const gsap = gsapIfLoaded();
         if (gsap) {
           gsap.killTweensOf(panel);
+          if (active && animate && changed) {
+            // Draw the separators again for the newly shown duties.
+            panel.classList.add('lines-waiting');
+            requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.remove('lines-waiting')));
+          }
           const parts = panel.querySelectorAll('h3, li');
           gsap.killTweensOf(parts);
           if (active && animate && changed) {
