@@ -100,6 +100,8 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
           // Restoring the scroll position (Back) or jumping to an anchor on the new page must be
           // instant: with smooth scrolling it would glide from the top and could be cut short.
           event.newDocument.documentElement.classList.add('is-swapping');
+          // Not the first page any more: the CSS opening sequence stays off (intro.ts fades in).
+          event.newDocument.documentElement.classList.add('is-returning');
           var meta = event.newDocument.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', root.dataset.theme === 'dark' ? '#101a22' : '#f6f0e6');
         });

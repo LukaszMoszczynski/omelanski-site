@@ -11,7 +11,8 @@ export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: 'always',
-  build: { format: 'directory' },
+  // The CSS is small, so it goes into each page: no stylesheet request blocks the first paint.
+  build: { format: 'directory', inlineStylesheets: 'always' },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [sitemap()],
 });

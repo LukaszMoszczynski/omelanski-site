@@ -127,8 +127,10 @@ const { label, groups } = Astro.props;
           gsap.killTweensOf(parts);
           if (active && animate && changed) {
             // The heading, then the duties one after another.
-            gsap.fromTo(parts, { opacity: 0, y: 10 }, {
-              opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: EASE_OUT, clearProps: 'transform,opacity',
+            // One after another, but the whole entrance stays around a second.
+            const each = Math.min(0.08, 0.45 / Math.max(1, parts.length - 1));
+            gsap.fromTo(parts, { opacity: 0, y: 18 }, {
+              opacity: 1, y: 0, duration: 0.6, stagger: each, ease: EASE_OUT, clearProps: 'transform,opacity',
             });
           } else {
             gsap.set(parts, { clearProps: 'transform,opacity' });

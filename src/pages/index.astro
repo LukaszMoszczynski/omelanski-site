@@ -35,21 +35,25 @@ const tiles = [
 ];
 ---
 <BaseLayout page={PAGES.home}>
+  <!-- The photo is the largest thing on screen but a CSS background, which the browser
+       fetches late and with low priority: ask for the right file early. -->
+  <link slot="head" rel="preload" as="image" type="image/avif" href={smallAvif.src} media="(max-width: 899.98px)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" type="image/avif" href={wideAvif.src} media="(min-width: 900px)" fetchpriority="high" />
   <section class="hero" style={heroBackground}>
     <span class="hero__photo" data-intro="0" aria-hidden="true"></span>
     <div class="wrap hero__grid">
       <div class="hero__copy">
-        <p class="eyebrow" data-intro="1">{HERO.eyebrow}</p>
-        <h1 tabindex="-1" data-intro="1">{HERO.title}</h1>
-        <p class="hero__lead" data-intro="1">{HERO.lead}</p>
-        <p class="hero__cta desktop-only" data-intro="1">
+        <p class="eyebrow" data-intro="1" style="--i: 0">{HERO.eyebrow}</p>
+        <h1 tabindex="-1" data-intro="1" style="--i: 1">{HERO.title}</h1>
+        <p class="hero__lead" data-intro="1" style="--i: 2">{HERO.lead}</p>
+        <p class="hero__cta desktop-only" data-intro="1" style="--i: 3">
           <a class="btn btn--soft" href={url('/oferta/')}>Zobacz ofertę</a>
           <a class="btn btn--ghost" href={url('/kontakt/')}>Zgłoś awarię</a>
         </p>
       </div>
       <ul class="tiles" role="list">
-        {tiles.map((t) => (
-          <li data-intro="2">
+        {tiles.map((t, index) => (
+          <li data-intro="2" style={`--i: ${index}`}>
             <a class:list={['tile', { 'tile--primary': t.primary }]} href={t.href}>
               <span class="tile__n" aria-hidden="true">{t.n}</span>
               <span class="tile__title">{t.title}</span>

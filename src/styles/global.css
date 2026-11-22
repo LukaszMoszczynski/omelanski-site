@@ -67,20 +67,20 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
   overflow: hidden;
   transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) ease, background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur) ease;
 }
-/* Hover: a fill sweeps in from the left under the label, and the button lifts a little. */
+/* Hover: a fill with a slanted leading edge sweeps across under the label. The button
+   itself never moves, so the text stays perfectly still. */
 .btn::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 0 -24px;
   z-index: -1;
   background: var(--btn-fill, var(--accent-wash));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur) var(--ease-out);
+  transform: translateX(-102%) skewX(-18deg);
+  transition: transform var(--dur-slow) var(--ease-out);
 }
-.btn:hover::before { transform: scaleX(1); }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .5); }
-.btn:active { transform: translateY(0) scale(.98); box-shadow: none; transition-duration: var(--dur-press); }
+.btn:hover::before { transform: translateX(0) skewX(-18deg); }
+.btn:hover { box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .5); }
+.btn:active::before { filter: brightness(.94); }
 .btn--primary { --btn-fill: rgba(0, 0, 0, .2); background: var(--accent); color: var(--on-accent); }
 .btn--primary:hover { color: var(--on-accent); }
 .btn--soft { background: var(--wash); border-color: var(--line); color: var(--ink); }
@@ -116,8 +116,17 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
 
 /* Motion (src/scripts/motion.ts). Marked elements wait hidden only until the motion
    module starts; from then on GSAP owns their state. Printing always shows them. */
-html.motion:not(.motion-ready) [data-intro],
-html.motion:not(.motion-ready) [data-reveal] { opacity: 0; }
+html.motion:not(.motion-ready) [data-reveal],
+html.motion.is-returning:not(.motion-ready) [data-intro] { opacity: 0; }
+
+/* The opening sequence of the first page runs on CSS, so it starts with the first paint
+   instead of waiting for the animation script. Every element has started by 0.4 s and
+   it ends by about 0.9 s. After a page change, intro.ts plays a short fade instead. */
+@keyframes intro-photo { from { opacity: 0; transform: scale(1.08); } }
+@keyframes intro-rise { from { opacity: 0; transform: translateY(16px); } }
+html.motion:not(.is-returning) [data-intro='0'] { animation: intro-photo .9s var(--ease-out) both; }
+html.motion:not(.is-returning) [data-intro='1'] { animation: intro-rise .5s var(--ease-out) both; animation-delay: calc(.1s + var(--i, 0) * .08s); }
+html.motion:not(.is-returning) [data-intro='2'] { animation: intro-rise .5s var(--ease-out) both; animation-delay: calc(.25s + var(--i, 0) * .05s); }
 /* Page changes are animated by GSAP (src/scripts/page-transition.ts), not the browser's crossfade. */
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; }
