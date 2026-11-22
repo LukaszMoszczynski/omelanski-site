@@ -127,9 +127,9 @@ test.describe('round 2', () => {
     await expect.poll(() => page.locator('h1').evaluate((element) => getComputedStyle(element).opacity), { timeout: 1200, intervals: [50] }).toBe('1');
   });
 
-  test('no stylesheet blocks the first paint', async ({ page }) => {
+  test('only the shared, cached stylesheet blocks the first paint', async ({ page }) => {
     await page.goto('');
-    expect(await page.locator('link[rel="stylesheet"]').count()).toBe(0);
+    expect(await page.locator('link[rel="stylesheet"]').count()).toBeLessThanOrEqual(1);
   });
 
   test('the footer logo link is named by what it shows', async ({ page }) => {
@@ -233,6 +233,12 @@ test.describe('page changes without bounce', () => {
         (window as any).__frames.push({
           heading: heading.textContent,
           headingOpacity: Number(getComputedStyle(heading).opacity),
+          // How much of the heading is uncovered (the wipe): 0 = hidden, 100 = whole.
+          headingShown: (() => {
+            const clip = getComputedStyle(heading).clipPath;
+            const match = clip.match(/inset\(\S+ ([\d.]+)%/);
+            return match ? 100 - Number(match[1]) : 100;
+          })(),
           headingShift: new DOMMatrix(getComputedStyle(heading).transform).f,
           mainShift: new DOMMatrix(getComputedStyle(main).transform).f,
           cardShift: Math.max(0, ...onScreen.map((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).f))),
@@ -243,7 +249,7 @@ test.describe('page changes without bounce', () => {
       document.querySelector<HTMLAnchorElement>(`header nav a[href="${href}"]`)!.click();
     }, linkHref);
     await page.waitForTimeout(1500);
-    return page.evaluate(() => (window as any).__frames) as Promise<Array<{ heading: string; headingOpacity: number; headingShift: number; mainShift: number; cardShift: number }>>;
+    return page.evaluate(() => (window as any).__frames) as Promise<Array<{ heading: string; headingOpacity: number; headingShown: number; headingShift: number; mainShift: number; cardShift: number }>>;
   }
 
   test('nothing moves up and down when changing pages', async ({ page }, testInfo) => {
@@ -260,7 +266,63 @@ test.describe('page changes without bounce', () => {
     for (let attempt = 0; attempt < 3; attempt++) {
       const frames = await traceChange(page, 'oferta/', '/kontakt/');
       const first = frames.find((frame) => frame.heading === 'Kontakt')!;
-      expect(first.headingOpacity).toBeLessThan(0.5);
+      // Either still transparent or still mostly covered by the wipe: never fully shown at once.
+      expect(first.headingOpacity < 0.5 || first.headingShown < 50).toBe(true);
     }
   });
+});
+
+test('the font definitions stay in place across a page change (no font blink)', async ({ page }) => {
+  await page.goto('');
+  await page.waitForSelector('html.motion-ready');
+  const marked = await page.evaluate(() => {
+    const sheet = Array.from(document.querySelectorAll<HTMLElement>('head style, head link[rel="stylesheet"]')).find((element) => {
+      const rules = (element as HTMLStyleElement | HTMLLinkElement).sheet?.cssRules;
+      return rules && Array.from(rules).some((rule) => rule instanceof CSSFontFaceRule);
+    });
+    if (!sheet) return false;
+    sheet.dataset.fontMarker = 'kept';
+    return true;
+  });
+  expect(marked).toBe(true);
+  await page.evaluate(() => document.querySelector<HTMLAnchorElement>('footer a[href="/kontakt/"]')!.click());
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kontakt');
+  await expect(page.locator('head [data-font-marker="kept"]')).toHaveCount(1);
+});
+
+test('a page heading wipes in after a page change, without moving up or down', async ({ page }) => {
+  await page.goto('');
+  await page.waitForSelector('html.motion-ready');
+  await page.waitForTimeout(1200);
+  await page.evaluate(() => {
+    (window as any).__clips = [];
+    const started = performance.now();
+    const sample = () => {
+      const heading = document.querySelector('main h1');
+      if (heading && heading.textContent === 'Kontakt') {
+        const style = getComputedStyle(heading);
+        (window as any).__clips.push([style.clipPath, new DOMMatrix(style.transform).f]);
+      }
+      if (performance.now() - started < 1500) requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+    document.querySelector<HTMLAnchorElement>('footer a[href="/kontakt/"]')!.click();
+  });
+  await page.waitForTimeout(1600);
+  const clips: Array<[string, number]> = await page.evaluate(() => (window as any).__clips);
+  expect(clips.some(([clip]) => /inset\(-?[\d.]+(px|%)? [1-9]/.test(clip))).toBe(true);
+  expect(clips.every(([, shift]) => Math.abs(shift) < 0.5)).toBe(true);
+  expect(clips[clips.length - 1][0]).toBe('none');
+});
+
+test('page headings are as wide as their text, so the wipe crosses the words', async ({ page }) => {
+  await page.goto('kontakt/');
+  const heading = page.locator('main h1');
+  const width = await heading.evaluate((element) => element.getBoundingClientRect().width);
+  const textWidth = await heading.evaluate((element) => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return range.getBoundingClientRect().width;
+  });
+  expect(width - textWidth).toBeLessThan(4);
 });

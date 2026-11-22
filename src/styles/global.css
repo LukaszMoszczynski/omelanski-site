@@ -122,6 +122,9 @@ html.motion.is-returning:not(.motion-ready) [data-intro] { opacity: 0; }
 /* The opening sequence of the first page runs on CSS, so it starts with the first paint
    instead of waiting for the animation script. Every element has started by 0.4 s and
    it ends by about 0.9 s. After a page change, intro.ts plays a short fade instead. */
+/* Page headings are only as wide as their text, so the wipe on a page change (intro.ts)
+   travels across the words, not across the empty width of the column. */
+h1[data-intro] { width: fit-content; max-width: 100%; }
 @keyframes intro-photo { from { opacity: 0; transform: scale(1.08); } }
 @keyframes intro-rise { from { opacity: 0; transform: translateY(16px); } }
 html.motion:not(.is-returning) [data-intro='0'] { animation: intro-photo .9s var(--ease-out) both; }

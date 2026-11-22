@@ -19,7 +19,18 @@ registerMotion(() => {
   // travel (which, after the old page faded out, read as a bounce): the text fades in and
   // the cards follow one after another, growing slightly into place, done within a second.
   if (photo) gsap.set(photo, { clearProps: 'transform,opacity' });
-  if (text.length) timeline.fromTo(text, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.05 }, 0);
+  // Headings uncover from left to right and the small label above them slides in from
+  // the left: an entrance you can see, still with no up-and-down travel.
+  const headings = Array.from(text).filter((element) => element.matches('h1'));
+  const labels = Array.from(text).filter((element) => element.matches('.eyebrow'));
+  const rest = Array.from(text).filter((element) => !headings.includes(element) && !labels.includes(element));
+  if (labels.length) timeline.fromTo(labels, { x: -16, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5 }, 0);
+  if (headings.length) {
+    timeline.fromTo(headings, { clipPath: 'inset(-15% 100% -15% 0%)' }, {
+      clipPath: 'inset(-15% 0% -15% 0%)', duration: 0.75, ease: 'power3.inOut', clearProps: 'clipPath,transform,opacity',
+    }, 0.05);
+  }
+  if (rest.length) timeline.fromTo(rest, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.05 }, 0.25);
   if (tiles.length) {
     timeline.fromTo(tiles, { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.07 }, 0.05);
   }

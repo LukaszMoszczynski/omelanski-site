@@ -11,8 +11,12 @@ export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: 'always',
-  // The CSS is small, so it goes into each page: no stylesheet request blocks the first paint.
-  build: { format: 'directory', inlineStylesheets: 'always' },
+  // Page-specific CSS (small) goes into the page. The shared stylesheet, which carries the
+  // fonts, stays a cached file: Astro keeps it across page changes, so the fonts never
+  // blink (a per-page inline block would be swapped, fonts included, on every change).
+  build: { format: 'directory', inlineStylesheets: 'auto' },
+  // Only stylesheets get the higher limit; fonts and images keep the default.
+  vite: { build: { assetsInlineLimit: (filePath, content) => (filePath.endsWith(".css") ? content.length < 12 * 1024 : undefined) } },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [sitemap()],
 });
