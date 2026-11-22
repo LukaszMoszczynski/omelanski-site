@@ -15,7 +15,7 @@ const cookiesN = String(RODO.length + 1).padStart(2, '0');
       <div class="rodo__sticky">
         <nav aria-labelledby="toc-title">
           <p id="toc-title" class="rodo__toc-title">Spis treści</p>
-          <ol role="list" class="toc">
+          <ol role="list" class="toc" data-reveal>
             {RODO.map((r) => (
               <li><a href={`#${r.id}`}><span class="toc__n" aria-hidden="true">{r.n}</span>{r.title}</a></li>
             ))}

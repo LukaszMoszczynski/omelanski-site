@@ -80,8 +80,20 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
         if (theme !== 'dark') theme = 'light';
         root.dataset.theme = theme;
         if (theme === 'dark') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#101a22');
+        // Motion (src/scripts/motion.ts): marked elements are hidden by CSS until the
+        // module starts. Reduced motion never gets the class; a module that never
+        // starts loses it after 2 s, so content can't stay hidden.
+        var motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (motion) {
+          root.classList.add('motion');
+          window.setTimeout(function () {
+            if (!root.classList.contains('motion-ready')) root.classList.remove('motion');
+          }, 2000);
+        }
         document.addEventListener('astro:before-swap', function (event) {
           event.newDocument.documentElement.dataset.theme = root.dataset.theme;
+          // Astro copies the new page's <html> attributes, so the motion state is carried over.
+          if (root.classList.contains('motion-ready')) event.newDocument.documentElement.classList.add('motion');
           var meta = event.newDocument.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', root.dataset.theme === 'dark' ? '#101a22' : '#f6f0e6');
         });
@@ -102,6 +114,7 @@ const breadcrumb = noindex ? null : breadcrumbJsonLd(absoluteUrl, page);
     <Footer />
     <BackToTop />
     <script>
+      import '../scripts/motion';
       // After client-side navigation move focus to the new page's h1.
       // ClientRouter's built-in announcer reads the new title.
       // `astro:after-swap` only fires on client navigation, so the initial load is never affected

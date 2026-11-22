@@ -95,6 +95,14 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
 @media (max-width: 899.98px) { .desktop-only { display: none !important; } }
 @media (min-width: 900px) { .mobile-only { display: none !important; } }
 
+/* Motion (src/scripts/motion.ts). Marked elements wait hidden only until the motion
+   module starts; from then on GSAP owns their state. Printing always shows them. */
+html.motion:not(.motion-ready) [data-intro],
+html.motion:not(.motion-ready) [data-reveal] { opacity: 0; }
+@media print {
+  [data-intro], [data-reveal] { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;

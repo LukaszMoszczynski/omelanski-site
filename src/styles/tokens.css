@@ -5,6 +5,10 @@
   --font-brand: Barlow, 'Arial Narrow', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --ease: cubic-bezier(.22, .61, .36, 1);
+  /* Shared timings for hovers and small CSS transitions. */
+  --dur-fast: .2s;
+  --dur: .32s;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
   --gutter: 18px;
   --max: 1280px;
   --bp: 900px;
