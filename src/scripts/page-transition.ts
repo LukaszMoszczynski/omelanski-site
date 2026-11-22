@@ -1,4 +1,5 @@
-// Page changes: the old content lifts and fades out while the next page is fetched
+// Page changes: the old content fades out (in place: any movement here plus the new
+// page's entrance reads as a bounce) while the next page is fetched
 // (the two run together, so this adds no waiting), then the new page plays its own
 // opening sequence (intro.ts). The browser's default crossfade is turned off in CSS.
 import { gsap } from 'gsap';
@@ -13,7 +14,7 @@ document.addEventListener('astro:before-preparation', (event) => {
   const load = preparation.loader;
   preparation.loader = async () => {
     try {
-      await Promise.all([load(), gsap.to(main, { opacity: 0, y: -8, duration: 0.2, ease: EASE_IN })]);
+      await Promise.all([load(), gsap.to(main, { opacity: 0, duration: 0.2, ease: EASE_IN })]);
     } finally {
       // Astro gives up on a client-side change for a PDF or other non-page response
       // (it hands it to the browser) and for a failed fetch: the old page stays, so

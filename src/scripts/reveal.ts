@@ -11,6 +11,12 @@ registerMotion(() => {
   // A CSS transition on transform (hover lift on cards) would smooth every GSAP frame
   // and make the slide lag, so it is off until the element has arrived.
   gsap.set(items, { opacity: 0, y: 18, transition: 'none' });
+  // After a page change, what is already on screen fades in where it is: sliding up there,
+  // right after the old page faded out, reads as a bounce. Below the fold they still slide.
+  if (document.documentElement.classList.contains('is-returning')) {
+    const onScreen = items.filter((item) => item.getBoundingClientRect().top < window.innerHeight);
+    gsap.set(onScreen, { y: 0 });
+  }
   ScrollTrigger.batch(items, {
     start: 'top 92%',
     once: true,

@@ -15,11 +15,12 @@ registerMotion(() => {
   const tiles = document.querySelectorAll('[data-intro="2"]');
   const timeline = gsap.timeline({ defaults: { ease: EASE_OUT, clearProps: 'transform,opacity' } });
 
-  // Starts at once (no hidden pause, which read as a jump): the text rises gently and the
-  // cards follow one after another with a slight grow, clear but done within a second.
+  // Starts at once (no hidden pause, which read as a jump) and without any up-and-down
+  // travel (which, after the old page faded out, read as a bounce): the text fades in and
+  // the cards follow one after another, growing slightly into place, done within a second.
   if (photo) gsap.set(photo, { clearProps: 'transform,opacity' });
-  if (text.length) timeline.fromTo(text, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05 }, 0);
+  if (text.length) timeline.fromTo(text, { opacity: 0 }, { opacity: 1, duration: 0.45, stagger: 0.05 }, 0);
   if (tiles.length) {
-    timeline.fromTo(tiles, { y: 18, scale: 0.96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, stagger: 0.07 }, 0.05);
+    timeline.fromTo(tiles, { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, stagger: 0.07 }, 0.05);
   }
 });

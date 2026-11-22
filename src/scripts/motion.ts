@@ -71,6 +71,10 @@ function stop() {
 // no matter which component's script loaded this module first. Later pages start on
 // astro:page-load, which is also the backstop if DOMContentLoaded has already passed.
 if (document.readyState !== 'complete') document.addEventListener('DOMContentLoaded', start, { once: true });
+// After a page change, start inside the swap itself (astro:after-swap runs before the
+// browser draws the new page), so no frame shows it before its animations are set up.
+// astro:page-load (after the page's scripts ran) stays as the backstop.
+document.addEventListener('astro:after-swap', start);
 document.addEventListener('astro:page-load', start);
 document.addEventListener('astro:before-swap', stop);
 

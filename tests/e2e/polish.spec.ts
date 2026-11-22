@@ -191,7 +191,7 @@ test('returning home: the cards come in visibly, one after another, without a hi
       const tiles = document.querySelectorAll('.tiles li');
       if (tiles.length) {
         (window as any).__tiles.push([performance.now() - started, ...Array.from(tiles).map((tile) => Number(getComputedStyle(tile).opacity))]);
-        (window as any).__travel = Math.max((window as any).__travel ?? 0, ...Array.from(tiles).map((tile) => new DOMMatrix(getComputedStyle(tile).transform).f));
+        (window as any).__smallest = Math.min((window as any).__smallest ?? 1, ...Array.from(tiles).map((tile) => new DOMMatrix(getComputedStyle(tile).transform).a));
       }
       if (performance.now() - started < 1500) requestAnimationFrame(sample);
     };
@@ -200,8 +200,8 @@ test('returning home: the cards come in visibly, one after another, without a hi
   });
   await page.waitForTimeout(1600);
   const frames: number[][] = await page.evaluate(() => (window as any).__tiles);
-  // The cards travel far enough to be seen arriving (not a 6 px nudge).
-  expect(await page.evaluate(() => (window as any).__travel)).toBeGreaterThanOrEqual(14);
+  // The cards visibly grow into place (no up-and-down travel, which reads as a bounce).
+  expect(await page.evaluate(() => (window as any).__smallest)).toBeLessThanOrEqual(0.97);
   const first = frames[0][0];
   // Visible movement: the last card is still clearly on its way in 150 ms after the cards appear.
   const at150 = frames.find((frame) => frame[0] - first >= 150)!;
@@ -213,4 +213,54 @@ test('returning home: the cards come in visibly, one after another, without a hi
   expect(frames[frames.length - 1].slice(1).every((opacity) => opacity === 1)).toBe(true);
   const settledAt = frames.find((frame) => frame.slice(1).every((opacity) => opacity === 1))![0] - first;
   expect(settledAt).toBeLessThan(1000);
+});
+
+test.describe('page changes without bounce', () => {
+  async function traceChange(page: import('@playwright/test').Page, from: string, linkHref: string) {
+    await page.goto(from);
+    await page.waitForSelector('html.motion-ready');
+    await page.waitForTimeout(1500);
+    await page.evaluate((href) => {
+      (window as any).__frames = [];
+      const started = performance.now();
+      const sample = () => {
+        const main = document.querySelector('main')!;
+        const heading = document.querySelector('main h1')!;
+        const onScreen = Array.from(document.querySelectorAll('main [data-reveal]')).filter((element) => {
+          const box = element.getBoundingClientRect();
+          return box.top < innerHeight && box.bottom > 0;
+        });
+        (window as any).__frames.push({
+          heading: heading.textContent,
+          headingOpacity: Number(getComputedStyle(heading).opacity),
+          headingShift: new DOMMatrix(getComputedStyle(heading).transform).f,
+          mainShift: new DOMMatrix(getComputedStyle(main).transform).f,
+          cardShift: Math.max(0, ...onScreen.map((element) => Math.abs(new DOMMatrix(getComputedStyle(element).transform).f))),
+        });
+        if (performance.now() - started < 1400) requestAnimationFrame(sample);
+      };
+      requestAnimationFrame(sample);
+      document.querySelector<HTMLAnchorElement>(`header nav a[href="${href}"]`)!.click();
+    }, linkHref);
+    await page.waitForTimeout(1500);
+    return page.evaluate(() => (window as any).__frames) as Promise<Array<{ heading: string; headingOpacity: number; headingShift: number; mainShift: number; cardShift: number }>>;
+  }
+
+  test('nothing moves up and down when changing pages', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'the header nav is desktop-only');
+    const frames = await traceChange(page, 'oferta/', '/kontakt/');
+    expect(Math.max(...frames.map((frame) => Math.abs(frame.mainShift)))).toBeLessThan(0.5);
+    expect(Math.max(...frames.map((frame) => Math.abs(frame.headingShift)))).toBeLessThan(0.5);
+    const arrived = frames.filter((frame) => frame.heading === 'Kontakt');
+    expect(Math.max(...arrived.map((frame) => frame.cardShift))).toBeLessThan(0.5);
+  });
+
+  test('the new page never flashes in before it fades in', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'the header nav is desktop-only');
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const frames = await traceChange(page, 'oferta/', '/kontakt/');
+      const first = frames.find((frame) => frame.heading === 'Kontakt')!;
+      expect(first.headingOpacity).toBeLessThan(0.5);
+    }
+  });
 });
