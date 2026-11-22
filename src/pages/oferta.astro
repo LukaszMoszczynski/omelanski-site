@@ -64,6 +64,9 @@ import { telHref } from '../lib/phone';
   @media (min-width: 900px) {
     .duty { padding-block: 36px; }
     .duty__grid { grid-template-columns: .55fr 1.45fr; gap: 44px; }
+    /* The section divider already sits right above the first row of the two columns,
+       so that row draws no line of its own (on phones it separates heading and list). */
+    .duty :global(.num-list li:nth-child(-n + 2)::before) { display: none; }
     .duty__n { margin-bottom: 10px; font-size: 11px; }
     .duty h2 { font-size: 24px; line-height: 1.2; }
     .talk { padding-block: 38px; }

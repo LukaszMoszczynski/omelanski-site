@@ -2,7 +2,9 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 
 /** Horizontal scale of each separator line drawn in front of the list items (1 = fully drawn). */
 function lineScales(list: Locator) {
-  return list.locator('li').evaluateAll((items) => items.map((item) => new DOMMatrix(getComputedStyle(item, '::before').transform).a));
+  return list.locator('li').evaluateAll((items) => items
+    .filter((item) => getComputedStyle(item, '::before').display !== 'none')
+    .map((item) => new DOMMatrix(getComputedStyle(item, '::before').transform).a));
 }
 
 const lastDutyList = (page: Page) => page.locator('section.duty .num-list').last();
@@ -106,4 +108,24 @@ test.describe('text links', () => {
     await link.hover();
     await expect.poll(band, { timeout: 1000 }).toBe('100% 100%');
   });
+});
+
+test('Oferta: no second line above the first row on desktop, kept on phones', async ({ page }, testInfo) => {
+  await page.goto('oferta/');
+  const hasLine = (index: number) => page.locator('section.duty').first().locator('.num-list li').nth(index)
+    .evaluate((item) => getComputedStyle(item, '::before').display !== 'none');
+  if (testInfo.project.name === 'desktop') {
+    expect(await hasLine(0)).toBe(false);
+    expect(await hasLine(1)).toBe(false);
+    expect(await hasLine(2)).toBe(true);
+  } else {
+    expect(await hasLine(0)).toBe(true);
+    expect(await hasLine(1)).toBe(true);
+  }
+});
+
+test('home tabs keep their top lines', async ({ page }) => {
+  await page.goto('');
+  const first = page.locator('[role="tabpanel"]').first().locator('.num-list li').first();
+  expect(await first.evaluate((item) => getComputedStyle(item, '::before').display)).not.toBe('none');
 });
