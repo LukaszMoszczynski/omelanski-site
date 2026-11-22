@@ -29,7 +29,8 @@ test('returning to the home page plays a short version, not the whole opening', 
   await page.waitForFunction(() => document.querySelector('.tiles'));
   const started = Date.now();
   await expect.poll(() => settled(page, '[data-intro]'), { timeout: 1000, intervals: [25] }).toBe(true);
-  expect(Date.now() - started).toBeLessThan(650);
+  // The entrance on return is meant to be seen, but done within a second.
+  expect(Date.now() - started).toBeLessThan(1000);
 });
 
 test.describe('tabs', () => {
@@ -174,4 +175,42 @@ test('every E-kartoteka link opens in a new tab and says so', async ({ page }) =
       expect(await link.evaluate((element) => element.textContent ?? '')).toContain('otwiera się w nowej karcie');
     }
   }
+});
+
+test('returning home: the cards come in visibly, one after another, without a hidden pause', async ({ page }) => {
+  await page.goto('');
+  await page.waitForSelector('html.motion-ready');
+  await page.waitForTimeout(1200);
+  await page.evaluate(() => document.querySelector<HTMLAnchorElement>('footer a[href="/kontakt/"]')!.click());
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kontakt');
+  await page.waitForTimeout(800);
+  await page.evaluate(() => {
+    (window as any).__tiles = [];
+    const started = performance.now();
+    const sample = () => {
+      const tiles = document.querySelectorAll('.tiles li');
+      if (tiles.length) {
+        (window as any).__tiles.push([performance.now() - started, ...Array.from(tiles).map((tile) => Number(getComputedStyle(tile).opacity))]);
+        (window as any).__travel = Math.max((window as any).__travel ?? 0, ...Array.from(tiles).map((tile) => new DOMMatrix(getComputedStyle(tile).transform).f));
+      }
+      if (performance.now() - started < 1500) requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+    document.querySelector<HTMLAnchorElement>('footer a[href="/"]')!.click();
+  });
+  await page.waitForTimeout(1600);
+  const frames: number[][] = await page.evaluate(() => (window as any).__tiles);
+  // The cards travel far enough to be seen arriving (not a 6 px nudge).
+  expect(await page.evaluate(() => (window as any).__travel)).toBeGreaterThanOrEqual(14);
+  const first = frames[0][0];
+  // Visible movement: the last card is still clearly on its way in 150 ms after the cards appear.
+  const at150 = frames.find((frame) => frame[0] - first >= 150)!;
+  expect(at150[4]).toBeLessThan(0.7);
+  // No hidden pause: the first card is already appearing within 120 ms.
+  const at120 = frames.find((frame) => frame[0] - first >= 120)!;
+  expect(at120[1]).toBeGreaterThan(0.1);
+  // And everything has arrived within a second.
+  expect(frames[frames.length - 1].slice(1).every((opacity) => opacity === 1)).toBe(true);
+  const settledAt = frames.find((frame) => frame.slice(1).every((opacity) => opacity === 1))![0] - first;
+  expect(settledAt).toBeLessThan(1000);
 });

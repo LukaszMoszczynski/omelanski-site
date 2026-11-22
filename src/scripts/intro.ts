@@ -2,7 +2,7 @@
 //   "0" the photograph (home only), "1" heading text, "2" the home tiles.
 // The first page plays the full sequence: every element has started by 0.4 s and it ends
 // by about 0.9 s. After a page change (e.g. back to the home page) only a short, gentle
-// fade plays, so returning never looks like the page is being built again.
+// entrance plays that starts at once, so returning never looks like the page is being built again.
 import { gsap } from 'gsap';
 import { registerMotion } from './motion';
 import { EASE_OUT } from './motion-state';
@@ -15,7 +15,11 @@ registerMotion(() => {
   const tiles = document.querySelectorAll('[data-intro="2"]');
   const timeline = gsap.timeline({ defaults: { ease: EASE_OUT, clearProps: 'transform,opacity' } });
 
-  const all = [...text, ...tiles];
+  // Starts at once (no hidden pause, which read as a jump): the text rises gently and the
+  // cards follow one after another with a slight grow, clear but done within a second.
   if (photo) gsap.set(photo, { clearProps: 'transform,opacity' });
-  if (all.length) timeline.fromTo(all, { y: 6, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, stagger: 0.02 }, 0);
+  if (text.length) timeline.fromTo(text, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05 }, 0);
+  if (tiles.length) {
+    timeline.fromTo(tiles, { y: 18, scale: 0.96, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.6, stagger: 0.07 }, 0.05);
+  }
 });
