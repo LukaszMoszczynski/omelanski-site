@@ -4,7 +4,7 @@ import { telHref } from '../lib/phone';
 ---
 <ul class="phones" role="list">
   {EMERGENCY.map((e) => (
-    <li class:list={{ 'desktop-only': !e.mobileGrid }}>
+    <li class:list={{ 'desktop-only': !e.mobileGrid }} data-reveal>
       <a class="phone" href={telHref(e.number)} aria-label={`${e.label}: ${e.number}`}>
         <span class="phone__label">{e.label}</span>
         <span class:list={['phone__num', { 'phone__num--hl': e.highlight }]}>{e.number}</span>

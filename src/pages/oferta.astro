@@ -13,7 +13,7 @@ import { telHref } from '../lib/phone';
   </PageIntro>
   {DUTIES.map((group, i) => (
     <section class="duty" aria-labelledby={`offer-${group.id}`}>
-      <div class="wrap duty__grid">
+      <div class="wrap duty__grid" data-reveal>
         <div>
           <p class="duty__n">0{i + 1} — {group.label}</p>
           <h2 id={`offer-${group.id}`}>{group.head}</h2>
@@ -23,7 +23,7 @@ import { telHref } from '../lib/phone';
     </section>
   ))}
   <section class="talk" aria-labelledby="talk-title">
-    <div class="wrap talk__inner">
+    <div class="wrap talk__inner" data-reveal>
       <div>
         <h2 id="talk-title">Rozmowa o współpracy</h2>
         <p>Przygotujemy ofertę dla Twojej Wspólnoty po zapoznaniu się z budynkiem i dokumentacją.</p>

@@ -58,6 +58,8 @@ test.describe('safety', () => {
 async function expectSettled(page: Page, selector: string, timeout: number) {
   await expect.poll(() => page.evaluate((sel) =>
     Array.from(document.querySelectorAll(sel)).every((element) => {
+      // Not rendered at this width (e.g. desktop-only): nothing to see, nothing to check.
+      if (element.getClientRects().length === 0) return true;
       const style = getComputedStyle(element);
       return style.opacity === '1' && (style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)');
     }), selector), { timeout }).toBe(true);
@@ -110,5 +112,58 @@ test.describe('opening sequence', () => {
     await page.getByRole('button', { name: 'Jasny motyw' }).click();
     await expectSettled(page, '[data-intro]', 1500);
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+});
+
+test.describe('scroll reveals', () => {
+  for (const route of ROUTES) {
+    test(`/${route.path}: scrolling to the bottom reveals everything`, async ({ page }) => {
+      await page.goto(route.path);
+      expect(await page.locator('[data-reveal]').count()).toBeGreaterThan(1);
+      const height = await page.evaluate(() => document.documentElement.scrollHeight);
+      const step = await page.evaluate(() => Math.round(innerHeight * 0.8));
+      for (let top = 0; top <= height; top += step) {
+        await page.evaluate((y) => window.scrollTo(0, y), top);
+        await page.waitForTimeout(100);
+      }
+      await expectSettled(page, '[data-reveal]', 2000);
+    });
+  }
+
+  test('elements start hidden below the fold and reveal when reached', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.waitForSelector('html.motion-ready');
+    const last = page.locator('[data-reveal]').last();
+    const offscreen = await last.evaluate((element) => element.getBoundingClientRect().top > innerHeight);
+    expect(offscreen).toBe(true);
+    expect(Number(await last.evaluate((element) => getComputedStyle(element).opacity))).toBeLessThan(1);
+    await last.scrollIntoViewIfNeeded();
+    await expect.poll(() => last.evaluate((element) => getComputedStyle(element).opacity), { timeout: 1500 }).toBe('1');
+  });
+
+  test('jumping to the bottom at once still reveals what is on screen', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await page.waitForTimeout(800);
+    const hidden = await page.evaluate(() => Array.from(document.querySelectorAll('[data-reveal]')).filter((element) => {
+      const box = element.getBoundingClientRect();
+      return box.bottom > 0 && box.top < innerHeight && getComputedStyle(element).opacity !== '1';
+    }).length);
+    expect(hidden).toBe(0);
+  });
+
+  test('arriving on /rodo/#cookies shows that section', async ({ page }) => {
+    await page.goto('rodo/#cookies');
+    const heading = page.getByRole('heading', { level: 2, name: 'Pliki cookies' });
+    await expect(heading).toBeInViewport();
+    await expect.poll(() => heading.evaluate((element) => getComputedStyle(element.closest('[data-reveal]') ?? element).opacity), { timeout: 1000 }).toBe('1');
+  });
+
+  test('the table of contents jump shows the target', async ({ page }) => {
+    await page.goto('rodo/');
+    await page.getByRole('navigation', { name: 'Spis treści' }).getByRole('link', { name: /Pliki cookies/ }).click();
+    const heading = page.getByRole('heading', { level: 2, name: 'Pliki cookies' });
+    await expect(heading).toBeInViewport();
+    await expect.poll(() => heading.evaluate((element) => getComputedStyle(element.closest('[data-reveal]') ?? element).opacity), { timeout: 1500 }).toBe('1');
   });
 });

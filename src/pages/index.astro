@@ -64,11 +64,11 @@ const tiles = [
 
   <section class="about" aria-labelledby="about-title">
     <div class="wrap two-col">
-      <div>
+      <div data-reveal>
         <p class="eyebrow">{ABOUT.eyebrow}</p>
-        <h2 id="about-title" data-reveal>Doświadczenie<br class="desktop-only" /> i kontakt z&nbsp;mieszkańcami</h2>
+        <h2 id="about-title">Doświadczenie<br class="desktop-only" /> i kontakt z&nbsp;mieszkańcami</h2>
       </div>
-      <div class="about__text">
+      <div class="about__text" data-reveal>
         {ABOUT.paragraphs.map((p) => <p>{p}</p>)}
       </div>
     </div>
@@ -76,7 +76,7 @@ const tiles = [
 
   <section class="duties" aria-labelledby="duties-title">
     <div class="wrap">
-      <div class="duties__head">
+      <div class="duties__head" data-reveal>
         <h2 id="duties-title">Zakres obowiązków</h2>
         <p class="duties__note desktop-only">{DUTIES_NOTE}</p>
       </div>
@@ -87,12 +87,12 @@ const tiles = [
   <section class="info">
     <div class="wrap info__grid">
       <section class="info__phones" aria-labelledby="phones-title">
-        <h2 id="phones-title">Ważne telefony</h2>
+        <h2 id="phones-title" data-reveal>Ważne telefony</h2>
         <PhoneGrid />
       </section>
       <section class="info__office" aria-labelledby="office-title">
-        <h2 id="office-title">Biuro</h2>
-        <div class="office">
+        <h2 id="office-title" data-reveal>Biuro</h2>
+        <div class="office" data-reveal>
           <div>
             <p class="office__label">Kontakt</p>
             <p>

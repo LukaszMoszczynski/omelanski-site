@@ -5,7 +5,7 @@ import NumberedList from './NumberedList.astro';
 interface Props { label: string; groups: DutyGroup[] }
 const { label, groups } = Astro.props;
 ---
-<tabs-widget class="tabs">
+<tabs-widget class="tabs" data-reveal>
   <div class="tabs__list" role="tablist" aria-label={label} hidden>
     {groups.map((g, i) => (
       <button

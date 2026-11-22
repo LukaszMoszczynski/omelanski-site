@@ -10,31 +10,31 @@ import { telHref } from '../lib/phone';
   <PageIntro eyebrow="Biuro w Kamieniu Pomorskim" title="Kontakt" lead="Sprawy bieżące najszybciej załatwimy telefonicznie w godzinach pracy biura. Awarie po godzinach — bezpośrednio do właściwego pogotowia." />
   <div class="contact">
     <section class="contact__main" aria-labelledby="fast-title">
-      <h2 id="fast-title">Najszybszy kontakt</h2>
+      <h2 id="fast-title" data-reveal>Najszybszy kontakt</h2>
       <ul class="cards" role="list">
-        <li>
+        <li data-reveal>
           <a class="card card--primary" href={telHref(CONTACT.phone)}>
             <span><span class="card__label">Telefon</span><span class="card__value">{CONTACT.phone}</span></span>
             <span class="card__action">Zadzwoń <span aria-hidden="true">→</span></span>
           </a>
         </li>
-        <li>
+        <li data-reveal>
           <a class="card" href={`mailto:${CONTACT.email}`}>
             <span><span class="card__label">E-mail</span><span class="card__value">{CONTACT.email}</span></span>
             <span class="card__action card__action--accent">Napisz <span aria-hidden="true">→</span></span>
           </a>
         </li>
-        <li>
+        <li data-reveal>
           <a class="card" href={telHref(CONTACT.landline)}>
             <span><span class="card__label">Telefon stacjonarny</span><span class="card__value">{CONTACT.landline}</span></span>
             <span class="card__hint">w godzinach pracy biura</span>
           </a>
         </li>
       </ul>
-      <h2 class="after__title" id="after-title">Awaria po godzinach pracy biura</h2>
+      <h2 class="after__title" id="after-title" data-reveal>Awaria po godzinach pracy biura</h2>
       <ul class="after" role="list" aria-labelledby="after-title">
         {AFTER_HOURS.map((a) => (
-          <li>
+          <li data-reveal>
             <a href={telHref(a.number)} aria-label={`${a.label}: ${a.number}`}>
               <span>{a.label}</span><span class="after__num">{a.number}</span>
             </a>
@@ -44,7 +44,7 @@ import { telHref } from '../lib/phone';
     </section>
     <section class="contact__office" aria-labelledby="office-title">
       <h2 id="office-title" data-reveal>Dane biura</h2>
-      <dl class="facts">
+      <dl class="facts" data-reveal>
         <div><dt>Adres</dt><dd>{BUSINESS.street}<br />{BUSINESS.postalCode} {BUSINESS.city}</dd></div>
         <div><dt>Telefon</dt><dd>tel. stacjonarny: {CONTACT.landline}<br />tel.: {CONTACT.phone}</dd></div>
         <div><dt>E-mail</dt><dd><a class="link" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>

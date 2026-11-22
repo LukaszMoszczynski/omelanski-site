@@ -13,7 +13,7 @@ import { url } from '../lib/url';
   <div class="wrap acts">
     <ul class="acts__grid" role="list">
       {ACTS.map((act) => (
-        <li class="act">
+        <li class="act" data-reveal>
           <p class="act__meta"><span class="act__kind">{act.kind}</span><span>Dz.U.</span></p>
           <h2>{act.title}</h2>
           <p class="act__cite">{act.citation}</p>
@@ -34,7 +34,7 @@ import { url } from '../lib/url';
         </li>
       ))}
     </ul>
-    <section class="cta" aria-labelledby="cta-title">
+    <section class="cta" aria-labelledby="cta-title" data-reveal>
       <div>
         <h2 id="cta-title">Uchwały i regulaminy Twojej Wspólnoty</h2>
         <p>Dokumenty wewnętrzne są dostępne po zalogowaniu do E-kartoteki.</p>
