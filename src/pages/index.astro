@@ -144,10 +144,11 @@ const tiles = [
   .hero h1 { color: var(--hero-ink); }
   .hero__lead { color: var(--hero-lead); }
   /* Both buttons sit on the photograph, so they ignore the theme and stay cream-on-dark. */
-  .hero .btn--soft { background: rgba(251, 247, 240, .95); border-color: transparent; color: #12253d; }
-  .hero .btn--soft:hover { background: #fff; }
-  .hero .btn--ghost { color: var(--hero-ink); border-color: rgba(251, 247, 240, .55); }
-  .hero .btn--ghost:hover { border-color: var(--hero-ink); color: var(--hero-ink); }
+  /* Over the photo: the light button fills blue, the outlined one fills light. */
+  .hero .btn--soft { --btn-fill: var(--accent); background: rgba(251, 247, 240, .95); border-color: transparent; color: #12253d; }
+  .hero .btn--soft:hover { color: #ffffff; }
+  .hero .btn--ghost { --btn-fill: rgba(251, 247, 240, .95); color: var(--hero-ink); border-color: rgba(251, 247, 240, .55); }
+  .hero .btn--ghost:hover { border-color: transparent; color: #12253d; }
 
   .hero__grid { display: grid; }
   .hero__copy { padding-block: 28px 22px; }

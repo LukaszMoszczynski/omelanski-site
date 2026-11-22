@@ -19,10 +19,10 @@ import { url } from '../lib/url';
           <p class="act__cite">{act.citation}</p>
           <p class="act__foot">
             {act.pdf ? (
-              <a class="act__pdf" href={url(act.pdf)}>
+              <a class="act__pdf" href={url(act.pdf)} target="_blank" rel="noopener">
                 Pobierz PDF
                 <span class="act__size"> ({publicFileSize(act.pdf)})</span>
-                <span class="visually-hidden"> – {act.title}, plik PDF</span>
+                <span class="visually-hidden"> – {act.title}, plik PDF (otwiera się w nowej karcie)</span>
               </a>
             ) : (
               <span class="act__note">tekst w Dz.U.</span>

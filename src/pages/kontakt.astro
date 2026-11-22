@@ -15,19 +15,19 @@ import { telHref } from '../lib/phone';
         <li data-reveal>
           <a class="card card--primary" href={telHref(CONTACT.phone)}>
             <span><span class="card__label">Telefon</span><span class="card__value">{CONTACT.phone}</span></span>
-            <span class="card__action">Zadzwoń <span aria-hidden="true">→</span></span>
+            <span class="card__action">Zadzwoń <span class="card__arrow" aria-hidden="true">→</span></span>
           </a>
         </li>
         <li data-reveal>
           <a class="card" href={`mailto:${CONTACT.email}`}>
             <span><span class="card__label">E-mail</span><span class="card__value">{CONTACT.email}</span></span>
-            <span class="card__action card__action--accent">Napisz <span aria-hidden="true">→</span></span>
+            <span class="card__action card__action--accent">Napisz <span class="card__arrow" aria-hidden="true">→</span></span>
           </a>
         </li>
         <li data-reveal>
           <a class="card" href={telHref(CONTACT.landline)}>
             <span><span class="card__label">Telefon stacjonarny</span><span class="card__value">{CONTACT.landline}</span></span>
-            <span class="card__hint">w godzinach pracy biura</span>
+            <span class="card__hint">w godzinach pracy biura <span class="card__arrow" aria-hidden="true">→</span></span>
           </a>
         </li>
       </ul>
@@ -61,9 +61,21 @@ import { telHref } from '../lib/phone';
   h2 { margin-bottom: 16px; font-size: 20px; }
   .cards { list-style: none; display: grid; gap: 9px; margin-bottom: 26px; }
   .card { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 18px; background: var(--surf); border: 1px solid var(--line); border-radius: 3px; color: var(--ink); text-decoration: none; transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease; }
-  .card:hover { border-color: var(--accent-border); }
+  /* Hover: the card lifts onto a soft shadow, a blue bar grows on its left edge and the
+     arrow moves on, so it's clear the whole card is the link. */
+  .card { position: relative; isolation: isolate; overflow: hidden; }
+  .card::before { content: ''; position: absolute; inset: 0 auto 0 0; z-index: -1; width: 3px; background: var(--accent); transform: scaleY(0); transition: transform var(--dur) var(--ease-out); }
+  .card:hover { border-color: var(--accent-border); transform: translateY(-3px); box-shadow: 0 14px 30px -18px var(--shadow); }
+  .card:hover::before { transform: scaleY(1); }
+  .card:hover .card__label { color: var(--accent-text); }
+  .card:active { transform: translateY(-1px); transition-duration: var(--dur-press); }
+  .card__arrow { display: inline-block; transition: transform var(--dur) var(--ease-out); }
+  .card:hover .card__arrow { transform: translateX(5px); }
+  .card--primary::before { inset: 0; width: auto; background: rgba(0, 0, 0, .18); transform: scaleX(0); transform-origin: left; }
+  .card--primary:hover::before { transform: scaleX(1); }
+  .card--primary:hover .card__label { color: var(--on-accent); }
   .card--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .card__label { display: block; margin-bottom: 5px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .card__label { display: block; margin-bottom: 5px; font: 500 10.5px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dim); transition: color var(--dur-fast) ease; }
   .card--primary .card__label { color: var(--on-accent); opacity: .85; }
   .card__value { font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
   .card__action { flex: none; font-size: 14px; font-weight: 600; }
@@ -73,9 +85,14 @@ import { telHref } from '../lib/phone';
   .after { list-style: none; font-size: 15px; line-height: 1.7; color: var(--body); }
   .after li { border-top: 1px solid var(--line); }
   .after li:last-child { border-bottom: 1px solid var(--line); }
-  .after a { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; color: inherit; text-decoration: none; }
-  .after a:hover .after__num { text-decoration: underline; }
-  .after__num { font: 500 14px var(--font-mono); color: var(--accent-text); }
+  /* Hover: a light band sweeps in behind the row, the name steps right, the number turns bold. */
+  .after a { position: relative; isolation: isolate; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 13px 0; color: inherit; text-decoration: none; }
+  .after a::before { content: ''; position: absolute; inset: 0 -10px; z-index: -1; border-radius: 2px; background: var(--accent-wash); transform: scaleX(0); transform-origin: left; transition: transform var(--dur) var(--ease-out); }
+  .after a:hover::before { transform: scaleX(1); }
+  .after a > span:first-child { transition: transform var(--dur) var(--ease-out), color var(--dur-fast) ease; }
+  .after a:hover > span:first-child { color: var(--ink); transform: translateX(8px); }
+  .after__num { font: 500 14px var(--font-mono); color: var(--accent-text); transition: transform var(--dur) var(--ease-out); }
+  .after a:hover .after__num { font-weight: 700; transform: translateX(-8px); }
   .facts { display: grid; gap: 2px; margin: 0 0 18px; font-size: 14.5px; line-height: 1.75; color: var(--body); }
   .facts div { padding: 13px 0; border-top: 1px solid var(--line); }
   .facts div:last-child { border-bottom: 1px solid var(--line); }
@@ -88,8 +105,7 @@ import { telHref } from '../lib/phone';
     .contact__office { padding: 38px var(--gutter) 44px 40px; border-top: 0; }
     h2 { margin-bottom: 22px; font-size: 22px; }
     .card { padding: 20px 22px; }
-    .card:hover { transform: translateY(-2px); }
-    .card--primary:hover { box-shadow: 0 10px 26px -10px rgba(0, 0, 0, .45); }
+    .card--primary:hover { box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .5); }
     .card__label { font-size: 11px; }
     .card__value { font-size: 19px; }
     .facts { font-size: 15px; }

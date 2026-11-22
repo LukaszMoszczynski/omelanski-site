@@ -123,10 +123,15 @@ const { label, groups } = Astro.props;
         const gsap = gsapIfLoaded();
         if (gsap) {
           gsap.killTweensOf(panel);
+          const parts = panel.querySelectorAll('h3, li');
+          gsap.killTweensOf(parts);
           if (active && animate && changed) {
-            gsap.fromTo(panel, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: EASE_OUT, clearProps: 'transform,opacity' });
+            // The heading, then the duties one after another.
+            gsap.fromTo(parts, { opacity: 0, y: 10 }, {
+              opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: EASE_OUT, clearProps: 'transform,opacity',
+            });
           } else {
-            gsap.set(panel, { clearProps: 'transform,opacity' });
+            gsap.set(parts, { clearProps: 'transform,opacity' });
           }
         }
       });
@@ -155,7 +160,8 @@ const { label, groups } = Astro.props;
     transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
   }
   .tabs__list button { position: relative; }
-  .tabs__list button:hover:not([aria-selected='true']) { transform: translateY(-2px); }
+  .tabs__list button:hover:not([aria-selected='true']) { background: var(--wash-a); color: var(--ink); transform: translateY(-2px); }
+  .tabs__list button:active:not([aria-selected='true']) { transform: translateY(0) scale(.97); }
   /* The selected tab shows the highlight behind it instead of its own background. */
   .tabs__list button[aria-selected='true'] { background: transparent; color: var(--on-accent); }
   /* Without JS every panel is readable, one after another. */

@@ -8,6 +8,7 @@
   /* Shared timings for hovers and small CSS transitions. */
   --dur-fast: .2s;
   --dur: .32s;
+  --dur-press: .08s;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
   --gutter: 18px;
   --max: 1280px;

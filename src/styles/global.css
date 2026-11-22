@@ -62,13 +62,29 @@ a { color: var(--accent-text); text-underline-offset: 3px; }
   font: 600 14px/1.2 var(--font-sans);
   text-decoration: none;
   cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease, background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) ease, background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur) ease;
 }
-.btn--primary { background: var(--accent); color: var(--on-accent); }
-.btn--primary:hover { color: var(--on-accent); transform: translateY(-2px); box-shadow: 0 8px 22px -8px rgba(0, 0, 0, .45); }
+/* Hover: a fill sweeps in from the left under the label, and the button lifts a little. */
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--btn-fill, var(--accent-wash));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+.btn:hover::before { transform: scaleX(1); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .5); }
+.btn:active { transform: translateY(0) scale(.98); box-shadow: none; transition-duration: var(--dur-press); }
+.btn--primary { --btn-fill: rgba(0, 0, 0, .2); background: var(--accent); color: var(--on-accent); }
+.btn--primary:hover { color: var(--on-accent); }
 .btn--soft { background: var(--wash); border-color: var(--line); color: var(--ink); }
-.btn--soft:hover { background: var(--accent-wash); transform: translateY(-2px); }
-.btn--ghost { border-color: var(--line); color: var(--body); }
+.btn--ghost { --btn-fill: var(--wash-a); border-color: var(--line); color: var(--body); }
 .btn--ghost:hover { border-color: currentColor; color: var(--ink); }
 .btn--block { display: flex; width: 100%; }
 
